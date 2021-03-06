@@ -1,0 +1,19 @@
+{
+  "hosting": {
+    "public": "dist/ssr",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "function": "server"
+      }
+    ]
+  },
+  "functions": {
+    "source": "dist/ssr"
+  }
+}
