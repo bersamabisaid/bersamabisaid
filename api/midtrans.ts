@@ -3,12 +3,12 @@ import allowCors from './utils/allowCors';
 import midtrans from '../services/midtrans';
 
 module.exports = allowCors((async (req, res) => {
-  const transaction = await midtrans.snap.createTransaction({
+  const transaction = await midtrans.snap.createTransactionRedirectUrl({
     transaction_details: {
       order_id: Date.now(),
       gross_amount: 1,
     },
   });
 
-  res.json(transaction);
+  res.redirect(transaction);
 }) as NowApiHandler);

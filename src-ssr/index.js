@@ -13,7 +13,7 @@
 
 const express = require('express')
 const compression = require('compression')
-const functions = require('firebase-functions')
+// const functions = require('firebase-functions')
 
 const ssr = require('quasar-ssr')
 const extension = require('./extension')
@@ -104,4 +104,6 @@ app.get(ssr.resolveUrl('*'), (req, res) => {
 //   console.log(`Server listening at port ${port}`)
 // })
 
-exports.server = functions.https.onRequest(app)
+// exports.server = functions.https.onRequest(app)
+
+module.exports = app
