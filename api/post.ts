@@ -1,5 +1,5 @@
 import { NowApiHandler } from '@vercel/node';
-import fbs from '../services/firebase';
+import fbs from './services/firebase';
 import allowCors from './utils/allowCors';
 
 module.exports = allowCors((async (req, res) => {

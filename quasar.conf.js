@@ -64,7 +64,6 @@ module.exports = configure((ctx) => ({
     // showProgress: false,
     // gzip: true,
     // analyze: true,
-    distDir: `api/dist/${ctx.modeName}`,
 
     // Options below are automatically set depending on the env, set them if you want to override
     // extractCSS: false,

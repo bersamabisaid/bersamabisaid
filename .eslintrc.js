@@ -89,6 +89,7 @@ module.exports = {
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
 
     'func-names': 'off',
-    'max-len': ['warn', { "code": 150 }]
+    'max-len': ['warn', { "code": 150 }],
+    'no-underscore-dangle': 'off'
   }
 }
