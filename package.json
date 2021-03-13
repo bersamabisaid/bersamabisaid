@@ -8,13 +8,14 @@
   "scripts": {
     "lint": "eslint --ext .js,.ts,.vue ./",
     "test": "echo \"No test specified\" && exit 0",
-    "build": "quasar build"
+    "build": ""
   },
   "dependencies": {
     "@quasar/extras": "^1.0.0",
     "@tailwindcss/postcss7-compat": "^2.0.3",
     "@vercel/node": "^1.9.0",
     "@vue/composition-api": "^0.6.4",
+    "axios": "^0.21.1",
     "core-js": "^3.6.5",
     "firebase": "^8.2.9",
     "firebase-admin": "^9.5.0",
