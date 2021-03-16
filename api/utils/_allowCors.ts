@@ -11,11 +11,9 @@ export default function allowCors(fn: NowApiHandler): NowApiHandler {
     );
 
     if (req.method === 'OPTIONS') {
-      res.status(200).end();
-      return;
+      return res.status(200).end();
     }
 
-    // eslint-disable-next-line consistent-return
     return fn(req, res);
   };
 }

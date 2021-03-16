@@ -1,12 +1,23 @@
 import { NowApiHandler } from '@vercel/node';
-import fbs from './services/firebase';
-import allowCors from './utils/allowCors';
+import apiMethod from './utils/_apiMethod';
+import fbs from './services/_firebase';
+import allowCors from './utils/_allowCors';
 
-module.exports = allowCors((async (req, res) => {
-  const doc = await fbs.client().firestore().collection('tests').add(req.body);
+const handler = apiMethod.post((async (req, res) => {
+  try {
+    const doc = await fbs.client().firestore().collection('tests').add(req.body);
 
-  res.json({
-    uid: doc.id,
-    ...(await doc.get()).data(),
-  });
+    if (req.headers.accept === 'application/json') {
+      res.json({
+        uid: doc.id,
+        ...(await doc.get()).data(),
+      });
+    }
+  } catch (err) {
+    console.error(err);
+  }
+
+  res.end();
 }) as NowApiHandler);
+
+module.exports = allowCors(handler);

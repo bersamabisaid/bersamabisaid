@@ -34,3 +34,6 @@ yarn-error.log*
 *.sln
 
 .vercel
+
+# service, password, etc related
+firebase-service-account.json
