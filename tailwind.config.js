@@ -33,7 +33,7 @@ module.exports = {
     },
     fontFamily: {
       sans: [
-        'Roboto',
+        'Poppins',
         ...defaultTheme.fontFamily.sans,
       ],
       inter: defaultTheme.fontFamily.sans,

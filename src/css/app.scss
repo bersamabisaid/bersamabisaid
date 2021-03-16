@@ -2,15 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
-header {
-  .q-field {
-    &__label {
-      @apply px-2.5;
-    }
+@layer base {
+  @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap");
+}
 
-    &--standout.q-field--dark {
-      .q-field__control {
-        @apply bg-blue-gray-600 bg-opacity-80 ring-2 ring-light-blue-900;
+@layer components {
+  header {
+    .q-field {
+      &__label {
+        @apply px-2.5;
+      }
+
+      &--standout.q-field--dark {
+        .q-field__control {
+          @apply bg-blue-gray-600 bg-opacity-80 ring-2 ring-light-blue-900;
+        }
       }
     }
   }
