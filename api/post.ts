@@ -5,7 +5,7 @@ import allowCors from './utils/_allowCors';
 
 const handler = apiMethod.post((async (req, res) => {
   try {
-    const doc = await fbs.client().firestore().collection('tests').add(req.body);
+    const doc = await fbs.admin.firestore().collection('tests').add(req.body);
 
     if (req.headers.accept === 'application/json') {
       res.json({
