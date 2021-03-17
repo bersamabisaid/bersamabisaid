@@ -5,7 +5,7 @@ import midtrans from '../services/_midtrans';
 import fbs from '../services/_firebase';
 
 const handler: NowApiHandler = async (req, res) => {
-  await fbs.admin().firestore().collection('tests')
+  await fbs.admin.firestore().collection('tests')
     .add(await midtrans.snap.transaction.notification(req.body));
 
   res.end();

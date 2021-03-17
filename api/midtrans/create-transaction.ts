@@ -8,7 +8,7 @@ const handler: NowApiHandler = async (req, res) => {
   const id = Date.now();
 
   try {
-    await fbs.admin().firestore().collection('Transactions').add({
+    await fbs.admin.firestore().collection('Transactions').add({
       id,
       redirect: 'http://localhost:8080/',
     });
