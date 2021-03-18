@@ -2,7 +2,7 @@ import firebaseAdmin, { ServiceAccount } from 'firebase-admin';
 import collectionName from '../../shared/firestoreCollection';
 import { createSingleton } from '../../shared/utils/pattern';
 import { base64 } from '../../shared/utils/encoding';
-import type { ModelUIData } from '../../shared/types/model';
+import type { Model, ModelUIData, TimestampedModel } from '../../shared/types/model';
 import type { Donation, Donator } from '../../shared/types/modelData';
 
 const admin = createSingleton(() => {
@@ -31,8 +31,8 @@ const fbs = Object.assign(admin, {
 };
 
 const collection = {
-  Donations: fbs.db().collection(collectionName.DONATIONS) as firebaseAdmin.firestore.CollectionReference<Donation>,
-  Donators: fbs.db().collection(collectionName.DONATORS) as firebaseAdmin.firestore.CollectionReference<Donator>,
+  Donations: fbs.db().collection(collectionName.DONATIONS) as firebaseAdmin.firestore.CollectionReference<Model<Donation>>,
+  Donators: fbs.db().collection(collectionName.DONATORS) as firebaseAdmin.firestore.CollectionReference<Model<Donator>>,
 };
 
 const uiDataFactory = <T = unknown> (
@@ -44,8 +44,31 @@ const uiDataFactory = <T = unknown> (
   expiration,
 }) as ModelUIData<T>;
 
+const proxy = {
+  create<T = unknown>(data: T): Model<T> {
+    const now = admin().firestore.Timestamp.now();
+
+    return {
+      ...data,
+      _created: now,
+      _updated: now,
+      _deleted: null,
+    };
+  },
+
+  update<T extends TimestampedModel>(data: T): Model<T> {
+    const now = admin().firestore.Timestamp.now();
+
+    return {
+      ...data,
+      _updated: now,
+    };
+  },
+};
+
 export default fbs;
 export {
   collection,
   uiDataFactory,
+  proxy,
 };

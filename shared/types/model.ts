@@ -1,10 +1,12 @@
 import type fb from 'firebase';
 
-export type Model<T> = T & {
+export interface TimestampedModel {
   _created: fb.firestore.Timestamp;
   _updated: fb.firestore.Timestamp;
   _deleted: fb.firestore.Timestamp | null;
 }
+
+export type Model<T> = T & TimestampedModel;
 
 export type ModelToJson<T> = Model<T> & {
   uid: string;
