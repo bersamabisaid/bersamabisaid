@@ -37,7 +37,7 @@ api untuk membuat url redirect transaksi menggunakan midtrans snap integration, 
 - request header:
   - content-type: application/json
   - accept: application/json
-- request body: *typescript interface pada `shared/types/modelData`*
+- request body: *typescript interface pada `shared/types/backendRequest`*
 - response body:
   ```json
   {
@@ -53,7 +53,7 @@ redirect url setelah melakukan transaksi via midtrans snap. berdasarkan dokument
 - request header:
   - content-type: application/json
   - accept: application/json
-- request query: *typescript interface pada `shared/types/modelData`*
+- request query: *typescript interface pada `shared/types/backendRequest`*
 - response: redirect ke halaman setelah transaksi
 
 ### Midtrans webhook
