@@ -20,6 +20,10 @@ const admin = createSingleton(() => {
   return firebaseAdmin;
 });
 
-export default {
-  admin,
+const db = admin().firestore();
+
+export default Object.assign(admin, {
+  db,
+}) as typeof admin & {
+  db: typeof db;
 };
