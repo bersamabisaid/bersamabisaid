@@ -53,10 +53,10 @@
 </template>
 
 <script lang="ts">
-import NavbarComponent from 'components/Homepage/Navbar.vue';
 import { defineComponent } from '@vue/composition-api';
-import FooterComponent from 'components/Homepage/Footer.vue';
 import { uid } from 'quasar';
+import NavbarComponent from 'components/ui/Homepage/Navbar.vue';
+import FooterComponent from 'components/ui/Homepage/Footer.vue';
 
 export default defineComponent({
   name: 'Homepage',
