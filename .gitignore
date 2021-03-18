@@ -33,7 +33,11 @@ yarn-error.log*
 *.njsproj
 *.sln
 
+# vercel
 .vercel
 
 # service, password, etc related
 firebase-service-account.json
+
+# cache files
+.eslintcache
