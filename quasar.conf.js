@@ -10,6 +10,7 @@
 /* eslint global-require: 0 */
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { configure } = require('quasar/wrappers');
+const path = require('path');
 
 module.exports = configure((ctx) => ({
   // https://quasar.dev/quasar-cli/supporting-ts
@@ -79,6 +80,12 @@ module.exports = configure((ctx) => ({
           exclude: /node_modules/,
         });
       }
+
+      cfg.resolve.alias = {
+        ...cfg.resolve.alias,
+
+        shared: path.resolve(__dirname, './shared'),
+      };
     },
   },
 
