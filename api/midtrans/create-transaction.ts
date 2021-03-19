@@ -5,6 +5,11 @@ import allowCors from '../_middleware/allowCors';
 import midtrans from '../_services/midtrans';
 import { collection, proxy, uiDataFactory } from '../_services/firebase';
 import { CreateTransactionRequestBody, isCreateTransactionRequestBody } from '../../shared/types/backendRequest';
+import type { ApiResponse } from '../../shared/types/model';
+
+type SuccessResponse = ApiResponse<{
+  redirectUrl: string;
+}>;
 
 const buildUrl = ({ headers, url = '' }: VercelRequest) => {
   const proto = (headers['x-forwarded-proto'] || 'http') as string;
@@ -42,7 +47,8 @@ const handler = hasRequiredBody(isCreateTransactionRequestBody, async (req, res)
   const { donator, ...data } = req.body;
 
   try {
-    const [, donationRef] = await storeToFirestore({ ...data, donator }, buildUrl(req as NowRequest));
+    const finishPaymentRedirectUrl = data.finishPaymentRedirectUrl || buildUrl(req as NowRequest);
+    const [, donationRef] = await storeToFirestore({ ...data, donator }, finishPaymentRedirectUrl);
     const transactionRedirectUrl = await midtrans.snap.createTransactionRedirectUrl({
       transaction_details: {
         order_id: donationRef.id,
@@ -63,10 +69,22 @@ const handler = hasRequiredBody(isCreateTransactionRequestBody, async (req, res)
       },
     });
 
-    res.json(transactionRedirectUrl);
+    res.json({
+      success: true,
+      message: '',
+      data: { redirectUrl: transactionRedirectUrl },
+    } as SuccessResponse);
   } catch (err) {
+    /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+    /* eslint-disable @typescript-eslint/no-unsafe-member-access */
     console.error(err);
-    res.status(500).json(err);
+    res.status(500).json({
+      success: false,
+      message: err?.message || '',
+      data: err,
+    } as ApiResponse);
+    /* eslint-enable @typescript-eslint/no-unsafe-assignment */
+    /* eslint-enable @typescript-eslint/no-unsafe-member-access */
   }
 });
 
