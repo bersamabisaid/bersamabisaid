@@ -17,6 +17,7 @@
     "@vue/composition-api": "^0.6.4",
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
+    "faker": "^5.4.0",
     "firebase": "^8.2.9",
     "firebase-admin": "^9.5.0",
     "midtrans-node-client": "0.0.5",
