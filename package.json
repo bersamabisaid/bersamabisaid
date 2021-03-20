@@ -6,9 +6,9 @@
   "author": "",
   "private": true,
   "scripts": {
-    "lint": "eslint --ext .js,.ts,.vue ./",
+    "lint": "eslint --cache --ext .js,.ts,.vue ./",
     "test": "echo \"No test specified\" && exit 0",
-    "build": "quasar build"
+    "build": ""
   },
   "dependencies": {
     "@quasar/extras": "^1.0.0",
