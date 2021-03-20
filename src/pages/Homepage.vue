@@ -95,14 +95,10 @@
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
-<<<<<<< HEAD
-import FooterComponent from 'components/Homepage/Footer.vue';
-import ProgramCard from 'components/ProgramCard.vue';
-=======
->>>>>>> 8e5273365d04ffddeeebc672c76a9e44014c2039
 import { uid } from 'quasar';
 import NavbarComponent from 'components/ui/Homepage/Navbar.vue';
 import FooterComponent from 'components/ui/Homepage/Footer.vue';
+import ProgramCard from 'components/ProgramCard.vue';
 
 export default defineComponent({
   name: 'Homepage',
