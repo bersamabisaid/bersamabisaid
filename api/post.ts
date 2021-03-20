@@ -1,7 +1,7 @@
 import { NowApiHandler } from '@vercel/node';
-import apiMethod from './utils/_apiMethod';
-import fbs from './services/_firebase';
-import allowCors from './utils/_allowCors';
+import apiMethod from './_middleware/apiMethod';
+import allowCors from './_middleware/allowCors';
+import fbs from './_services/firebase';
 
 const handler = apiMethod.post((async (req, res) => {
   try {
