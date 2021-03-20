@@ -24,7 +24,7 @@
       </div> -->
       <div class="flex flex-wrap">
         <img
-          src="~assets/logo/BersamabisaLogo.png"
+          src="~assets/logo/Bbid-logo.png"
           width="250px"
         >
       </div>

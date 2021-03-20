@@ -2,7 +2,6 @@
   <q-btn
     flat
     rounded
-    padding="sm lg"
     class="text-white"
   >
     {{ caption }}
