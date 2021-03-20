@@ -1,3 +1,4 @@
+import { GetStatusTransaction } from 'app/shared/types/midtransApi';
 import type fb from 'firebase';
 import type { ModelUI, ModelUIHasRelation } from 'shared/types/model';
 
@@ -50,11 +51,17 @@ export interface Donator {
   hidden: boolean;
 }
 
+export interface PaymentStatus {
+  status: 'accepted' | 'pending' | 'need_action' | 'fail' | 'cancel' | 'expire' | 'refund';
+  timestamp: GetStatusTransaction['transaction_time'];
+}
+
 export interface Donation {
   eventId: string;
   donatorId: string;
   amount: number;
   message: string;
+  paymentStatus?: PaymentStatus;
   _ui: ModelUI<{
     donatorNickName: ModelUIHasRelation<string>;
     eventName: ModelUIHasRelation<string>;
