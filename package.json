@@ -8,7 +8,7 @@
   "scripts": {
     "lint": "eslint --cache --ext .js,.ts,.vue ./ --fix",
     "test": "echo \"No test specified\" && exit 0",
-    "build": "quasar d"
+    "build": "quasar build"
   },
   "dependencies": {
     "@quasar/extras": "^1.0.0",
