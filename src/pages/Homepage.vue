@@ -1,14 +1,14 @@
 <template>
   <q-page>
-    <header
-      class="relative w-full h-screen flex content-center items-center justify-center"
-    >
+    <header class="relative w-full h-screen flex content-center items-center justify-center">
+      <img
+        src="~assets/images/homepagePicture.png"
+        class="absolute w-full h-screen"
+      >
       <div
         class="absolute w-full h-screen"
-        style="background: linear-gradient(180deg, rgba(26, 41, 128, 0.79) 0%, rgba(38, 208, 206, 0.79) 100%)"
-      >
-        <!-- <img src="~assets/images/homepagePicture.png"> -->
-      </div>
+        style="background: linear-gradient(180deg, rgba(26, 41, 128, 0.79) 0%, rgba(38, 208, 206, 0.79) 100%);"
+      />
 
       <nav class="absolute top-0 right-0 w-full p-8 flex gap-x-4">
         <div class="container flex justify-between">
@@ -52,7 +52,7 @@
       </div>
     </header>
 
-    <main class="w-full bg-gray-900">
+    <main class="w-full">
       <section class="h-auto bg-white">
         <div class="container mx-auto px-4">
           <div class="flex justify-center q-pa-md">
@@ -61,7 +61,7 @@
                 PROGRAM KAMI
               </h6>
               <span class="text-lg">
-                Lorem ipsum dolor sit amet
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit
               </span>
             </div>
           </div>
@@ -77,18 +77,23 @@
         </div>
       </section>
 
-      <section
-        class="h-auto"
-        style="background: linear-gradient(111.05deg, rgba(26, 41, 128, 0.79) -5.69%, rgba(38, 208, 206, 0.79) 97.93%);"
-      >
-        <div class="container mx-auto px-4">
+      <section class="h-auto">
+        <img
+          :src="require('assets/images/donasiPicture.png')"
+          class="absolute w-full h-screen"
+        >
+        <div
+          class="absolute w-full h-screen"
+          style="background: linear-gradient(111.05deg, rgba(26, 41, 128, 0.79) -5.69%, rgba(38, 208, 206, 0.79) 97.93%);"
+        />
+        <div class="container relative mx-auto px-4">
           <div class="flex justify-center q-pa-md">
             <div class="text-center">
               <h6 class="text-4xl text-white font-bold">
                 DONASI
               </h6>
               <span class="text-lg text-white">
-                Lorem ipsum dolor sit amet
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit
               </span>
             </div>
           </div>
