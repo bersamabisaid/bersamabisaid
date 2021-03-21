@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable camelcase */
 export interface RefundTransaction {
   refund_chargeback_id: number;
@@ -14,21 +16,28 @@ export interface GetStatusTransaction {
   order_id: string;
   gross_amount: string;
   payment_type: string;
-  transaction_time: string;
-  transaction_status: 'capture' | 'deny' | 'authorize';
+  transaction_time: string; // timestamp
+  transaction_status: 'capture' | 'settlement' | 'pending' | 'deny' | 'cancel' | 'expire' | 'refund';
   fraud_status: 'accept' | 'challenge' | 'deny';
-  masked_card: string;
   status_code: string;
-  bank: string;
   status_message: string;
   signature_key: string;
-  approval_code: string;
-  channel_response_code: string;
-  channel_response_message: string;
-  card_type: string;
-  refund_amount: string;
-  refunds: RefundTransaction[];
+  bank?: string;
+  card_type?: string;
+  masked_card?: string;
+  approval_code?: string;
+  channel_response_code?: string;
+  channel_response_message?: string;
+  refund_amount?: string;
+  refunds?: RefundTransaction[];
 }
+
+// export const isGetTransactionStatus = function (data: any): data is GetStatusTransaction {
+//   return Boolean(
+//     data?.transaction_id,
+
+//   );
+// };
 
 export interface FinishPaymentRedirectQuery {
   order_id: string;

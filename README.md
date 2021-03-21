@@ -3,18 +3,9 @@
 Bersamabisa main web
 
 ## Todo
-### Membuat api specs untuk program donasi
-- **api/midtrans/create-transaction**
-
-  api untuk membuat url redirect transaksi menggunakan midtrans snap integration, sebelumn diarahkan ke redirect url data transaksi/donasi direkam kedalam firestore terlebih dahulu, untuk data yang direkam didefinisikan terlebih dahulu menggunakan interface typescript
-
-- **api/midtrans/payment-finish**
-
-  redirect setelah melakukan transaksi via midtrans snap. berdasarkan dokumentasi dari midtrans kita akan mendapat query berupa `order_id`, `status_code` dan `transaction_status`. nantinya `order_id` akan digunakan untuk mengambil redirect url dari firestore pada collection, kemudian redirect ke alamat tersebut.
-
-- **api/midtrans/payment-webhook**
-
-  webhook untuk menerima notifikasi dari midtrans.
+### Membuat api specs untuk transaksi pembayaran ✅
+### Membuat api sesuai api specs ✅
+### Membuat api Event (frontend)
 
 ## API Specs
 - endpoint prefix: `api/`
@@ -72,18 +63,23 @@ dokumentasi: https://docs.midtrans.com/en/after-payment/http-notification
   // below is required only, for full data see https://api-docs.midtrans.com/#get-transaction-status
   {
     "signature_key": string,
-    "status_code": string,
-    "status_message": string,
     "transaction_id": string,
     "order_id": string,
-    "gross_amount": string,
-    "payment_type": string,
-    "transaction_time": string (timestamp),
     "transaction_status": string,
+    "fraud_status": string,
   }
   // for possible data see https://docs.midtrans.com/en/after-payment/http-notification?id=sample-in-curl
   ```
 - response: *HTTP status code only*
+
+### Get Transaction Status
+Hanya perantara `Get Transaction Status Core API midtrans`
+
+- endpoint: `/midtrans/transaction/[transaction-id]`
+- method: GET
+- request header:
+  - content-type: application/json
+- response: lihat dokumentasi di https://api-docs.midtrans.com/#get-transaction-status
 
 
 ## Install the dependencies
