@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { GetStatusTransaction } from 'app/shared/types/midtransApi';
 import type fb from 'firebase';
 import type { ModelUI, ModelUIHasRelation } from 'shared/types/model';
@@ -42,6 +44,14 @@ export interface Address {
   zipCode: number;
 }
 
+export const isAddress = function (data: any) {
+  return typeof data?.country === 'string'
+    && typeof data?.province === 'string'
+    && typeof data?.city === 'string'
+    && typeof data?.streetAddress === 'string'
+    && typeof data?.zipCode === 'number';
+};
+
 export interface Donator {
   nickName: string;
   fullName: string;
@@ -50,6 +60,14 @@ export interface Donator {
   phoneNumber: string;
   hidden: boolean;
 }
+
+export const isDonator = function (data: any): data is Donator {
+  return typeof data?.nickName === 'string'
+    && typeof data?.fullName === 'string'
+    && typeof data?.email === 'string'
+    && isAddress(data?.address)
+    && typeof data?.phoneNumber === 'string';
+};
 
 export interface PaymentStatus {
   status: 'accepted' | 'pending' | 'need_action' | 'fail' | 'cancel' | 'expire' | 'refund';
