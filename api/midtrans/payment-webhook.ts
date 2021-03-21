@@ -1,10 +1,10 @@
-import { PaymentStatus } from 'app/shared/types/modelData';
 import hasRequiredBody from '../_middleware/hasRequiredBody';
 import allowCors from '../_middleware/allowCors';
 import apiMethod from '../_middleware/apiMethod';
 import midtrans from '../_services/midtrans';
 import { collection } from '../_services/firebase';
 import { isPaymentWebhookRequestBody } from '../../shared/types/backendRequest';
+import type { PaymentStatus } from '../../shared/types/modelData';
 import type { GetStatusTransaction } from '../../shared/types/midtransApi';
 
 const handler = hasRequiredBody(isPaymentWebhookRequestBody, async (req, res) => {

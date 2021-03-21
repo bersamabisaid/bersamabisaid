@@ -1,7 +1,7 @@
-import { ApiResponse } from 'app/shared/types/model';
 import apiMethod from '../../_middleware/apiMethod';
 import hasRequiredQuery from '../../_middleware/hasRequiredQuery';
 import midtrans from '../../_services/midtrans';
+import { ApiResponse } from '../../../shared/types/model';
 
 interface Query {
   id: string;
