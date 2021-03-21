@@ -57,7 +57,7 @@
         <div class="container mx-auto px-4">
           <div class="flex justify-center q-pa-md">
             <div class="text-center">
-              <h6 class="text-4xl font-bold">
+              <h6 class="text-4xl font-bold text-blue-900">
                 PROGRAM KAMI
               </h6>
               <span class="text-lg">
@@ -66,7 +66,7 @@
             </div>
           </div>
           <div class="flex justify-center q-py-lg">
-            <div class="q-pa-md row items-start q-gutter-md">
+            <div class="q-pa-md row items-start q-gutter-lg">
               <program-card
                 v-for="link in cardCustom"
                 :key="link.id"
@@ -77,16 +77,31 @@
         </div>
       </section>
 
-      <section class="h-screen text-white">
-        <h2>Section</h2>
-      </section>
-
-      <section class="h-screen text-white">
-        <h2>Section</h2>
-      </section>
-
-      <section class="h-screen text-white">
-        <h2>Section</h2>
+      <section
+        class="h-auto"
+        style="background: linear-gradient(111.05deg, rgba(26, 41, 128, 0.79) -5.69%, rgba(38, 208, 206, 0.79) 97.93%);"
+      >
+        <div class="container mx-auto px-4">
+          <div class="flex justify-center q-pa-md">
+            <div class="text-center">
+              <h6 class="text-4xl text-white font-bold">
+                DONASI
+              </h6>
+              <span class="text-lg text-white">
+                Lorem ipsum dolor sit amet
+              </span>
+            </div>
+          </div>
+          <div class="flex justify-center q-py-lg">
+            <div class="q-pa-md row items-start q-gutter-lg rounded-borders">
+              <program-card
+                v-for="link in cardCustom"
+                :key="link.id"
+                v-bind="link"
+              />
+            </div>
+          </div>
+        </div>
       </section>
     </main>
     <footer-component />
@@ -138,6 +153,24 @@ export default defineComponent({
           caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
           link: '/#',
         },
+        {
+          id: uid(),
+          title: 'Card Title',
+          caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
+          link: '/#',
+        },
+        {
+          id: uid(),
+          title: 'Card Title',
+          caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
+          link: '/#',
+        },
+        {
+          id: uid(),
+          title: 'Card Title',
+          caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
+          link: '/#',
+        },
       ],
     };
   },
@@ -152,8 +185,8 @@ export default defineComponent({
 <style lang="scss">
   .my-card {
     width: 100%;
-    max-width: 304px;
-    height: 100%;
-    max-height: 436px;
+    max-width: 250px;
+    // height: 100%;
+    // max-height: 436px;
   }
 </style>
