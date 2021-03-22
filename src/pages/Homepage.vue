@@ -3,7 +3,7 @@
     <header class="relative w-full h-screen flex content-center items-center justify-center">
       <img
         src="~assets/images/homepagePicture.png"
-        class="absolute w-full h-screen"
+        class="absolute w-full h-screen object-cover"
       >
       <div
         class="absolute w-full h-screen"

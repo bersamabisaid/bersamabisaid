@@ -41,3 +41,6 @@ firebase-service-account.json
 
 # cache files
 .eslintcache
+
+.env.development
+.env

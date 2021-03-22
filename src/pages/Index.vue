@@ -16,13 +16,13 @@
       >
         <template #navigation-icon="{ active, onClick }">
           <button
+            v-ripple
             :class="[
               'mx-1 w-8 h-2.5 transition-all duration-500 transform scale-y-50',
               'hover:bg-light-blue-300 hover:scale-y-100 focus:outline-none',
               active ? 'bg-light-blue-600 scale-y-100' : 'bg-gray-50',
             ]"
             @click="onClick"
-            v-ripple
           />
         </template>
 
