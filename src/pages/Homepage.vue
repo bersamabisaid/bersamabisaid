@@ -24,7 +24,7 @@
             />
           </div>
           <div>
-            <navbar-component
+            <the-navbar
               v-for="link in navbarCustom"
               :key="link.id"
               v-bind="link"
@@ -67,7 +67,7 @@
           </div>
           <div class="flex justify-center q-py-lg">
             <div class="q-pa-md row items-start q-gutter-lg">
-              <program-card
+              <card-program
                 v-for="link in cardCustom"
                 :key="link.id"
                 v-bind="link"
@@ -99,7 +99,7 @@
           </div>
           <div class="flex justify-center q-py-lg">
             <div class="q-pa-md row items-start q-gutter-lg rounded-borders">
-              <program-card
+              <card-program
                 v-for="link in cardCustom"
                 :key="link.id"
                 v-bind="link"
@@ -109,16 +109,16 @@
         </div>
       </section>
     </main>
-    <footer-component />
+    <the-footer />
   </q-page>
 </template>
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
 import { uid } from 'quasar';
-import NavbarComponent from 'components/ui/Homepage/Navbar.vue';
-import FooterComponent from 'components/ui/Homepage/Footer.vue';
-import ProgramCard from 'components/ProgramCard.vue';
+import TheNavbar from 'components/ui/Homepage/TheNavbar.vue';
+import TheFooter from 'components/ui/Homepage/TheFooter.vue';
+import CardProgram from 'components/CardProgram.vue';
 
 export default defineComponent({
   name: 'Homepage',
@@ -180,9 +180,9 @@ export default defineComponent({
     };
   },
   components: {
-    FooterComponent,
-    NavbarComponent,
-    ProgramCard,
+    TheFooter,
+    TheNavbar,
+    CardProgram,
   },
 });
 </script>
