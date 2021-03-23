@@ -4,14 +4,14 @@
     "baseUrl": ".",
     "skipLibCheck": true,
     "paths": {
-      "src/*": ["src/*"],
-      "app/*": ["*"],
-      "shared/*": ["shared/*"],
       "components/*": ["src/components/*"],
       "layouts/*": ["src/layouts/*"],
       "pages/*": ["src/pages/*"],
       "assets/*": ["src/assets/*"],
       "boot/*": ["src/boot/*"],
+      "shared/*": ["shared/*"],
+      "src/*": ["src/*"],
+      "app/*": ["*"],
     },
   }
 }
