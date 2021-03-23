@@ -1,23 +1,6 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <!-- <q-header elevated>
-      <q-toolbar>
-        <q-btn
-          flat
-          dense
-          round
-          icon="menu"
-          aria-label="Menu"
-          @click="leftDrawerOpen = !leftDrawerOpen"
-        />
-
-        <q-toolbar-title>
-          BersamabisaID
-        </q-toolbar-title>
-
-        <div>Quasar v{{ $q.version }}</div>
-      </q-toolbar>
-    </q-header> -->
+    <!-- <the-navbar /> -->
 
     <q-drawer
       v-model="leftDrawerOpen"
@@ -26,14 +9,17 @@
     />
 
     <q-page-container>
-      <router-view />
+      <router-view
+        @hide-navbar="hideNavbar"
+        @show-navbar="showNavbar"
+      />
     </q-page-container>
   </q-layout>
 </template>
 
 <script lang="ts">
-
 import { defineComponent, ref } from '@vue/composition-api';
+import TheNavbar from 'components/BaseNavbar.vue';
 
 export default defineComponent({
   name: 'MainLayout',
@@ -42,5 +28,25 @@ export default defineComponent({
 
     return { leftDrawerOpen };
   },
+  components: {
+    TheNavbar,
+  },
+  methods: {
+    hideNavbar() {
+      console.log('hide');
+    },
+    showNavbar() {
+      console.log('show');
+    },
+  },
+  // created() {
+  //   this.$on('hide-navbar', () => {
+  //     console.log('hide');
+  //   });
+
+  //   this.$on('show-navbar', () => {
+  //     console.log('showed');
+  //   });
+  // },
 });
 </script>
