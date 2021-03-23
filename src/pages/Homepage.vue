@@ -20,17 +20,24 @@
           <div class="container relative mx-auto">
             <div class="text-white text-center justify-center flex flex-wrap">
               <div class="q-gutter-y-md">
-                <span class="text-4xl">#HADIR UNTUK KEBAIKAN</span>
-                <h1 class="font-bold text-7xl">
-                  BersamabisaID
+                <span class="font-medium text-4xl">
+                  #HADIR UNTUK KEBAIKAN
+                </span>
+
+                <h1 class="font-extrabold text-7xl">
+                  BERSAMABISA.ID
                 </h1>
-                <div class="text-2xl">
+
+                <div class="font-medium text-2xl">
                   <p>BERSAMA HADIRKAN KEBAIKAN UNTUK</p>
                   <p>INDONESIA YANG LEBIH BERDAYA</p>
                 </div>
+
                 <q-btn
-                  color="green"
                   label="GET STARTED"
+                  color="positive"
+                  class="rounded-lg shadow"
+                  unelevated
                 />
               </div>
             </div>

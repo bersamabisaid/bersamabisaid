@@ -11,7 +11,7 @@
           alt="bersamabisa.id logo"
         />
 
-        <h3 class="font-bold text-2xl text-white">
+        <h3 class="font-extrabold text-2xl text-white">
           BERSAMABISA.ID
         </h3>
       </router-link>
