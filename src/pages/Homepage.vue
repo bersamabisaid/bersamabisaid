@@ -14,7 +14,7 @@
           />
 
           <nav class="absolute top-0 right-0 w-full">
-            <base-navbar />
+            <base-navbar transparent />
           </nav>
 
           <div class="container relative mx-auto">
