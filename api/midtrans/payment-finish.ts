@@ -20,7 +20,7 @@ const handler = hasRequiredQuery(isFinishPaymentRedirectQuery, async ({ query },
   if (doc.exists) {
     const data = doc.data();
 
-    res.redirect(data!._system.finishPaymentRedirectUrl);
+    res.redirect(data!.__system__.finishPaymentRedirectUrl);
   }
 
   res.status(404).end();

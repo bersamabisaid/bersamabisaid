@@ -2,7 +2,7 @@ import { createSingleton } from 'shared/utils/pattern';
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 
-const fbs = createSingleton(() => {
+const service = createSingleton(() => {
   if (firebase.apps.length) {
     firebase.app();
   } else {
@@ -20,6 +20,8 @@ const fbs = createSingleton(() => {
   return firebase;
 });
 
+const fbs = service();
+
 export default fbs;
 
-export const db = fbs().firestore();
+export const db = fbs.firestore();

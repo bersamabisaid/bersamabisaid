@@ -19,22 +19,21 @@ interface IBaseEvent {
   image: string;
   description: string;
   url: string;
-  donation: boolean;
 }
 
 interface IDonationEvent {
-  donation: boolean;
   deadline: fb.firestore.Timestamp;
   target: number | null;
-  _ui: ModelUI<{
+  __ui__: ModelUI<{
     progress: number;
     recentDonations: ModelUIHasRelation<DonationUI>[];
   }>;
 }
 
-export type Event = IBaseEvent & Partial<IDonationEvent>;
-
-export type DonationEvent = IBaseEvent & IDonationEvent;
+export type Event = IBaseEvent & (
+  { donation: false }
+  | { donation: true } & IDonationEvent
+);
 
 export interface Address {
   country: string;
@@ -80,11 +79,11 @@ export interface Donation {
   amount: number;
   message: string;
   paymentStatus?: PaymentStatus;
-  _ui: ModelUI<{
+  __ui__: ModelUI<{
     donatorNickName: ModelUIHasRelation<string>;
     eventName: ModelUIHasRelation<string>;
   }>;
-  _system: {
+  __system__: {
     finishPaymentRedirectUrl: string;
   };
 }
