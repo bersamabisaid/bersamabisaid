@@ -1,19 +1,19 @@
 import { RouteConfig } from 'vue-router';
 
 const routes: RouteConfig[] = [
-  {
-    path: '',
-    name: 'Home',
-    component: () => import('pages/Homepage.vue'),
-  },
+  // {
+  //   path: '',
+  //   name: 'Home',
+  //   component: () => import('pages/Homepage.vue'),
+  // },
   {
     path: '/',
     component: () => import('layouts/Main.vue'),
     children: [
       {
-        path: '/program',
+        path: '/',
         name: 'Program',
-        component: () => import('pages/Event.vue'),
+        component: () => import('pages/Homepage.vue'),
       },
     ],
   },

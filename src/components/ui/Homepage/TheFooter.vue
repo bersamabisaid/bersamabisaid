@@ -49,7 +49,7 @@
 
 <script>
 export default {
-  name: 'FooterComponent',
+  name: 'TheFooter',
   data() {
     return {
       date: new Date().getFullYear(),

@@ -12,7 +12,7 @@
 import { defineComponent } from '@vue/composition-api';
 
 export default defineComponent({
-  name: 'NavbarComponent',
+  name: 'TheNavbar',
   props: {
     caption: {
       type: String,
