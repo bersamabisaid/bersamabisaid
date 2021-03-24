@@ -3,9 +3,11 @@
     <q-page-container>
       <q-page>
         <header class="relative w-full h-screen flex content-center items-center justify-center">
-          <q-img
-            src="~assets/images/homepagePicture.png"
-            class="absolute w-full h-screen object-cover"
+          <q-parallax
+            :src="require('assets/images/homepagePicture.png')"
+            :height="$q.screen.height"
+            :speed="2.5"
+            class="absolute"
           />
 
           <div
@@ -57,23 +59,33 @@
                   </span>
                 </div>
               </div>
-              <div class="flex justify-center q-py-lg">
-                <div class="q-pa-md row items-start q-gutter-lg">
-                  <card-program
-                    v-for="link in cardCustom"
-                    :key="link.id"
-                    v-bind="link"
-                  />
-                </div>
+
+              <div class="py-8 flex justify-center">
+                <q-scroll-area
+                  horizontal
+                  class="card-program__grid__scroll-area"
+                >
+                  <div class="card-program__grid">
+                    <div
+                      v-for="link in cardCustom"
+                      :key="link.id"
+                      class="col-3"
+                    >
+                      <card-program v-bind="link" />
+                    </div>
+                  </div>
+                </q-scroll-area>
               </div>
             </div>
           </section>
 
           <section class="h-auto">
-            <img
+            <q-parallax
               :src="require('assets/images/donasiPicture.png')"
-              class="absolute w-full h-screen"
-            >
+              :height="$q.screen.height"
+              class="absolute w-full"
+            />
+
             <div
               class="absolute w-full h-screen"
               style="background: linear-gradient(111.05deg, rgba(26, 41, 128, 0.79) -5.69%, rgba(38, 208, 206, 0.79) 97.93%);"
@@ -90,13 +102,20 @@
                 </div>
               </div>
               <div class="flex justify-center q-py-lg">
-                <div class="q-pa-md row items-start q-gutter-lg rounded-borders">
-                  <card-program
-                    v-for="link in cardCustom"
-                    :key="link.id"
-                    v-bind="link"
-                  />
-                </div>
+                <q-scroll-area
+                  horizontal
+                  class="card-program__grid__scroll-area"
+                >
+                  <div class="card-program__grid">
+                    <div
+                      v-for="link in cardCustom"
+                      :key="link.id"
+                      class="col-3"
+                    >
+                      <card-program v-bind="link" />
+                    </div>
+                  </div>
+                </q-scroll-area>
               </div>
             </div>
           </section>
@@ -124,25 +143,31 @@ export default defineComponent({
           id: uid(),
           title: 'Card Title',
           caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
-          link: '/#',
+          to: '/#',
         },
         {
           id: uid(),
           title: 'Card Title',
           caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
-          link: '/#',
+          to: '/#',
         },
         {
           id: uid(),
           title: 'Card Title',
           caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
-          link: '/#',
+          to: '/#',
         },
         {
           id: uid(),
           title: 'Card Title',
           caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
-          link: '/#',
+          to: '/#',
+        },
+        {
+          id: uid(),
+          title: 'Card Title',
+          caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
+          to: '/#',
         },
       ],
     };
@@ -156,10 +181,34 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-  .my-card {
-    width: 100%;
-    max-width: 250px;
-    // height: 100%;
-    // max-height: 436px;
+@layer components {
+  .q-parallax {
+    &__media {
+      > img {
+        @apply object-fill;
+      }
+    }
   }
+
+  .card-program__grid {
+    @apply  px-12 py-8 flex grid-flow-col auto-cols-min items-center gap-0;
+
+    > div:not(:first-child) {
+      @apply -ml-32;
+    }
+
+    @screen sm {
+      @apply grid gap-10;
+
+      > div:not(:first-child) {
+        @apply m-0;
+      }
+    }
+
+    &__scroll-area {
+      @apply w-full;
+      height: theme('maxWidth.xl');
+    }
+  }
+}
 </style>

@@ -40,6 +40,8 @@
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
 import { evaMenu } from '@quasar/extras/eva-icons';
+import bbidLogoOnlyWhite from 'assets/logo/Bbid-logo-only-white.png';
+import bbidLogoOnly from 'assets/logo/Bbid-logo-only.png';
 
 const navItems = [
   {
@@ -81,8 +83,8 @@ export default defineComponent({
   computed: {
     brandLogoSrc(): string {
       return this.transparent
-        ? require('assets/logo/Bbid-logo-only-white.png') as string
-        : require('assets/logo/Bbid-logo-only.png') as string;
+        ? bbidLogoOnlyWhite as unknown as string
+        : bbidLogoOnly as unknown as string;
     },
   },
 });

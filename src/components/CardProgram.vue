@@ -1,7 +1,6 @@
 <template>
   <q-card
-    flat
-    class="w-full max-w-sm rounded-2xl border-t border-gray-100 shadow-lg"
+    class="card-program"
   >
     <q-card-section>
       <div class="relative w-full h-60">
@@ -34,7 +33,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from '@vue/composition-api';
-import { Route } from 'vue-router';
+import { RawLocation } from 'vue-router';
 
 export default defineComponent({
   name: 'ProgramCard',
@@ -53,8 +52,8 @@ export default defineComponent({
       default: '',
     },
     to: {
-      type: Object as PropType<Route>,
-      default: '',
+      type: [String, Object] as PropType<RawLocation>,
+      default: '/',
     },
     actionLabel: {
       type: String,
@@ -63,3 +62,16 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="scss" scoped>
+@layer components {
+  .card-program {
+    @apply w-full max-w-sm rounded-2xl border-t border-gray-100 shadow-lg transition-shadow;
+    min-width: theme('width.80');
+
+    &:hover {
+      @apply shadow-2xl;
+    }
+  }
+}
+</style>
