@@ -1,5 +1,5 @@
 <template>
-  <q-card class="my-card">
+  <q-card class="my-card rounded-lg">
     <img src="https://cdn.quasar.dev/img/mountains.jpg">
 
     <div class="q-ml-md">
