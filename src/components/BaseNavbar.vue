@@ -29,7 +29,7 @@
       />
 
       <q-btn
-        icon="menu"
+        :icon="evaMenu"
         unelevated
         round
       />
@@ -38,7 +38,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { defineComponent } from '@vue/composition-api';
+import { evaMenu } from '@quasar/extras/eva-icons';
 
 const navItems = [
   {
@@ -73,7 +74,8 @@ export default defineComponent({
   },
   setup() {
     return {
-      navItems: ref(navItems),
+      navItems,
+      evaMenu,
     };
   },
   computed: {
