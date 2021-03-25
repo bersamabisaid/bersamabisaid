@@ -1,36 +1,32 @@
 <template>
-  <q-card class="my-card rounded-lg">
-    <img :src="url">
-
-    <q-card class="card-program">
-      <q-card-section tag="article">
-        <div class="card-program__img-container">
-          <q-img
-            src="https://cdn.quasar.dev/img/mountains.jpg"
-            class="card-program__img"
-          />
-        </div>
-
-        <div class="px-4 pt-6 pb-2 flex flex-col">
-          <dt class="card-program__title">
-            {{ title }}
-          </dt>
-
-          <dd class="card-program__description">
-            {{ caption }}
-          </dd>
-        </div>
-      </q-card-section>
-
-      <q-card-actions class="px-6 pt-2 pb-6">
-        <q-btn
-          :label="actionLabel"
-          no-caps
-          unelevated
-          class="px-5 py-1 capitalize ring-1 ring-inset ring-gray-200 rounded-lg shadow-md"
+  <q-card class="card-program">
+    <q-card-section tag="article">
+      <div class="card-program__img-container">
+        <q-img
+          src="https://cdn.quasar.dev/img/mountains.jpg"
+          class="card-program__img"
         />
-      </q-card-actions>
-    </q-card>
+      </div>
+
+      <div class="px-4 pt-6 pb-2 flex flex-col">
+        <dt class="card-program__title">
+          {{ title }}
+        </dt>
+
+        <dd class="card-program__description">
+          {{ caption }}
+        </dd>
+      </div>
+    </q-card-section>
+
+    <q-card-actions class="px-6 pt-2 pb-6">
+      <q-btn
+        :label="actionLabel"
+        no-caps
+        unelevated
+        class="px-5 py-1 capitalize ring-1 ring-inset ring-gray-200 rounded-lg shadow-md"
+      />
+    </q-card-actions>
   </q-card>
 </template>
 
