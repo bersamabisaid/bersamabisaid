@@ -12,7 +12,7 @@ const routes: RouteConfig[] = [
     children: [
       {
         path: '/program',
-        name: 'Program',
+        name: 'ProgramList',
         component: () => import('pages/EventList.vue'),
       },
       {

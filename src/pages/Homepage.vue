@@ -135,27 +135,27 @@ const events: CardProgramProps[] = [
   {
     title: 'Card Title',
     caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
-    to: '/#',
+    url: 'pray-for-uyghur',
   },
   {
     title: 'Card Title',
     caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
-    to: '/#',
+    url: 'pray-for-uyghur',
   },
   {
     title: 'Card Title',
     caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
-    to: '/#',
+    url: 'pray-for-uyghur',
   },
   {
     title: 'Card Title',
     caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
-    to: '/#',
+    url: 'pray-for-uyghur',
   },
   {
     title: 'Card Title',
     caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
-    to: '/#',
+    url: 'pray-for-uyghur',
   },
 
 ];

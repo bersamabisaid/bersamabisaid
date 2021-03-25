@@ -58,11 +58,11 @@ const navItems: NavItem[] = [
   },
   {
     title: 'PROGRAM',
-    to: { name: 'Program' },
+    to: { name: 'ProgramList' },
   },
   {
     title: 'DONASI',
-    to: { name: 'Program', query: { category: 'donasi' } },
+    to: { name: 'ProgramList', query: { category: 'donasi' } },
   },
   {
     title: 'PROFIL',

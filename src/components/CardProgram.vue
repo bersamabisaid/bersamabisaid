@@ -24,6 +24,7 @@
         :label="actionLabel"
         no-caps
         unelevated
+        :to="toLocation"
         class="px-5 py-1 capitalize ring-1 ring-inset ring-gray-200 rounded-lg shadow-md"
       />
     </q-card-actions>
@@ -34,12 +35,14 @@
 import { defineComponent, PropType } from '@vue/composition-api';
 import type { RawLocation } from 'vue-router';
 
-export interface CardProgramProps {
+export type CardProgramProps = {
   title: string;
   caption: string;
-  to: RawLocation;
   actionLabel?: string;
-}
+} & (
+  { url: string }
+  | { to: RawLocation }
+)
 
 export default defineComponent({
   name: 'ProgramCard',
@@ -57,10 +60,6 @@ export default defineComponent({
       type: String,
       default: '',
     },
-    to: {
-      type: [String, Object] as PropType<RawLocation>,
-      default: '/',
-    },
     actionLabel: {
       type: String,
       default: 'action',
@@ -68,6 +67,19 @@ export default defineComponent({
     url: {
       type: String,
       default: '',
+    },
+    to: {
+      type: [String, Object] as PropType<RawLocation>,
+      default: '',
+    },
+  },
+  computed: {
+    toLocation(): RawLocation {
+      // it means prior to 'to' property
+      return this.to
+        || (this.url
+          ? { name: 'Program', params: { programUrl: this.url } }
+          : { name: 'ProgramList', query: { notFound: 'true' } });
     },
   },
 });
