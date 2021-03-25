@@ -1,23 +1,22 @@
 <template>
-  <q-card
-    class="card-program"
-  >
-    <q-card-section>
-      <div class="relative w-full h-60">
+  <q-card class="card-program">
+    <q-card-section tag="article">
+      <div class="card-program__img-container">
         <q-img
           src="https://cdn.quasar.dev/img/mountains.jpg"
-          class="w-full h-full rounded-2xl"
+          class="card-program__img"
         />
       </div>
 
-      <article class="px-4 pt-6 pb-2 flex flex-col">
-        <div class="font-semibold text-h6 text-primary">
+      <div class="px-4 pt-6 pb-2 flex flex-col">
+        <dt class="card-program__title">
           {{ title }}
-        </div>
-        <div class="q-pt-sm text-subtitle2 text-secondary">
+        </dt>
+
+        <dd class="card-program__description">
           {{ caption }}
-        </div>
-      </article>
+        </dd>
+      </div>
     </q-card-section>
 
     <q-card-actions class="px-6 pt-2 pb-6">
@@ -66,11 +65,26 @@ export default defineComponent({
 <style lang="scss" scoped>
 @layer components {
   .card-program {
-    @apply w-full max-w-sm rounded-2xl border-t border-gray-100 shadow-lg transition-shadow;
-    min-width: theme('width.80');
+    @apply w-80 rounded-2xl border-t border-gray-100 shadow-lg transition-shadow;
 
     &:hover {
       @apply shadow-2xl;
+    }
+
+    &__img-container {
+      @apply relative w-full h-60;
+    }
+
+    &__img {
+      @apply w-full h-full rounded-2xl;
+    }
+
+    &__title {
+      @apply font-bold text-xl text-primary;
+    }
+
+    &__description {
+      @apply pt-1.5 text-sm text-secondary;
     }
   }
 }
