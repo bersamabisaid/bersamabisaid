@@ -1,6 +1,12 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
-    <!-- <the-navbar /> -->
+  <q-layout view="lHh Lpr lff">
+    <q-header
+      reveal
+      elevated
+      class="bg-white"
+    >
+      <base-navbar />
+    </q-header>
 
     <q-drawer
       v-model="leftDrawerOpen"
@@ -14,12 +20,15 @@
         @show-navbar="showNavbar"
       />
     </q-page-container>
+
+    <base-footer />
   </q-layout>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from '@vue/composition-api';
-import TheNavbar from 'components/BaseNavbar.vue';
+import BaseNavbar from 'components/BaseNavbar.vue';
+import BaseFooter from 'components/BaseFooter.vue';
 
 export default defineComponent({
   name: 'MainLayout',
@@ -29,7 +38,8 @@ export default defineComponent({
     return { leftDrawerOpen };
   },
   components: {
-    TheNavbar,
+    BaseNavbar,
+    BaseFooter,
   },
   methods: {
     hideNavbar() {
