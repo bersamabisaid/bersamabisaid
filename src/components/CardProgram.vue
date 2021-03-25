@@ -1,6 +1,6 @@
 <template>
   <q-card class="my-card rounded-lg">
-    <img src="https://cdn.quasar.dev/img/mountains.jpg">
+    <img :src="url">
 
     <div class="q-ml-md">
       <q-card-section>
@@ -41,6 +41,10 @@ export default defineComponent({
       default: '',
     },
     link: {
+      type: String,
+      default: '',
+    },
+    url: {
       type: String,
       default: '',
     },
