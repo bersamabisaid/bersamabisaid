@@ -222,6 +222,7 @@
           label="Donasi sekarang"
           flat
           class="bg-positive font-semibold text-xl text-white rounded-none shadow-sm"
+          :to="donateActionURL"
         />
 
         <div class="p-4 bg-info shadow-sm flex flex-col items-end gap-y-2">
@@ -275,6 +276,7 @@
 import { defineComponent } from '@vue/composition-api';
 import { copyToClipboard } from 'quasar';
 import { mdiFacebook, mdiWhatsapp, mdiTwitter } from '@quasar/extras/mdi-v5';
+import type { RawLocation } from 'vue-router';
 
 export default defineComponent({
   name: 'PageEventDetail',
@@ -299,6 +301,14 @@ export default defineComponent({
       const url = new URL(location?.href || 'http://localhost');
       url.pathname = this.$route.fullPath;
       return url.toString();
+    },
+    donateActionURL(): RawLocation {
+      return {
+        name: 'Payment',
+        query: {
+          eventId: this.programUrl,
+        },
+      };
     },
   },
   methods: {
@@ -329,7 +339,7 @@ export default defineComponent({
 @layer components {
   .program {
     &__tab {
-      @apply  bg-warning bg-opacity-60;
+      @apply bg-warning bg-opacity-60;
 
       &:first-child {
         @apply rounded-tl-xl;

@@ -2,7 +2,7 @@ import { RouteConfig } from 'vue-router';
 
 const routes: RouteConfig[] = [
   {
-    path: '',
+    path: '/',
     name: 'Home',
     component: () => import('pages/Homepage.vue'),
   },
@@ -19,6 +19,17 @@ const routes: RouteConfig[] = [
         path: '/program/:programUrl',
         name: 'Program',
         component: () => import('pages/Event.vue'),
+      },
+    ],
+  },
+  {
+    path: '/',
+    component: () => import('layouts/MinimalistLayout.vue'),
+    children: [
+      {
+        path: '/pay',
+        name: 'Payment',
+        component: () => import('pages/Pay.vue'),
       },
     ],
   },

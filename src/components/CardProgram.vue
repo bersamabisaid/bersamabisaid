@@ -19,7 +19,10 @@
       </div>
     </q-card-section>
 
-    <q-card-actions class="px-6 pt-2 pb-6">
+    <q-card-actions
+      v-if="!noAction"
+      class="px-6 pt-2 pb-6"
+    >
       <q-btn
         :label="actionLabel"
         no-caps
@@ -71,6 +74,10 @@ export default defineComponent({
     to: {
       type: [String, Object] as PropType<RawLocation>,
       default: '',
+    },
+    noAction: {
+      type: Boolean,
+      default: false,
     },
   },
   computed: {
