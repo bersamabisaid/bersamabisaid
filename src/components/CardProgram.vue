@@ -32,7 +32,14 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from '@vue/composition-api';
-import { RawLocation } from 'vue-router';
+import type { RawLocation } from 'vue-router';
+
+export interface CardProgramProps {
+  title: string;
+  caption: string;
+  to: RawLocation;
+  actionLabel?: string;
+}
 
 export default defineComponent({
   name: 'ProgramCard',
@@ -80,11 +87,11 @@ export default defineComponent({
     }
 
     &__title {
-      @apply font-bold text-xl text-primary;
+      @apply font-bold text-xl text-primary line-clamp-1;
     }
 
     &__description {
-      @apply pt-1.5 text-sm text-secondary;
+      @apply pt-1.5 text-sm text-secondary line-clamp-3;
     }
   }
 }

@@ -32,6 +32,8 @@
         :icon="evaMenu"
         unelevated
         round
+        class="inline-block sm:hidden"
+        @click="$emit('toggle-sidebar')"
       />
     </div>
   </q-toolbar>
@@ -42,27 +44,33 @@ import { defineComponent } from '@vue/composition-api';
 import { evaMenu } from '@quasar/extras/eva-icons';
 import bbidLogoOnlyWhite from 'assets/logo/Bbid-logo-only-white.png';
 import bbidLogoOnly from 'assets/logo/Bbid-logo-only.png';
+import type { RawLocation } from 'vue-router';
 
-const navItems = [
+interface NavItem {
+  title: string;
+  to: RawLocation;
+}
+
+const navItems: NavItem[] = [
   {
     title: 'HOME',
-    link: '/#',
+    to: { name: 'Home' },
   },
   {
     title: 'PROGRAM',
-    link: '/#',
+    to: { name: 'Program' },
   },
   {
     title: 'DONASI',
-    link: '/#',
+    to: { name: 'Program', query: { category: 'donasi' } },
   },
   {
     title: 'PROFIL',
-    link: '/#',
+    to: '/#',
   },
   {
     title: 'KONTAK',
-    link: '/#',
+    to: '/#',
   },
 ];
 

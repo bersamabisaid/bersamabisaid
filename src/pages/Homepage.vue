@@ -67,11 +67,11 @@
                 >
                   <div class="card-program__grid">
                     <div
-                      v-for="link in cardCustom"
-                      :key="link.id"
+                      v-for="(event, i) in events"
+                      :key="i"
                       class="col-3"
                     >
-                      <card-program v-bind="link" />
+                      <card-program v-bind="event" />
                     </div>
                   </div>
                 </q-scroll-area>
@@ -107,13 +107,11 @@
                   class="card-program__grid__scroll-area"
                 >
                   <div class="card-program__grid">
-                    <div
-                      v-for="link in cardCustom"
-                      :key="link.id"
-                      class="col-3"
-                    >
-                      <card-program v-bind="link" />
-                    </div>
+                    <card-program
+                      v-for="(event, i) in events"
+                      :key="i"
+                      v-bind="event"
+                    />
                   </div>
                 </q-scroll-area>
               </div>
@@ -129,47 +127,44 @@
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
-import { uid } from 'quasar';
 import BaseNavbar from 'components/BaseNavbar.vue';
 import BaseFooter from 'components/BaseFooter.vue';
-import CardProgram from 'components/CardProgram.vue';
+import CardProgram, { CardProgramProps } from 'components/CardProgram.vue';
+
+const events: CardProgramProps[] = [
+  {
+    title: 'Card Title',
+    caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
+    to: '/#',
+  },
+  {
+    title: 'Card Title',
+    caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
+    to: '/#',
+  },
+  {
+    title: 'Card Title',
+    caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
+    to: '/#',
+  },
+  {
+    title: 'Card Title',
+    caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
+    to: '/#',
+  },
+  {
+    title: 'Card Title',
+    caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
+    to: '/#',
+  },
+
+];
 
 export default defineComponent({
   name: 'PageHome',
-  data() {
+  setup() {
     return {
-      cardCustom: [
-        {
-          id: uid(),
-          title: 'Card Title',
-          caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
-          to: '/#',
-        },
-        {
-          id: uid(),
-          title: 'Card Title',
-          caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
-          to: '/#',
-        },
-        {
-          id: uid(),
-          title: 'Card Title',
-          caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
-          to: '/#',
-        },
-        {
-          id: uid(),
-          title: 'Card Title',
-          caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
-          to: '/#',
-        },
-        {
-          id: uid(),
-          title: 'Card Title',
-          caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
-          to: '/#',
-        },
-      ],
+      events,
     };
   },
   components: {
