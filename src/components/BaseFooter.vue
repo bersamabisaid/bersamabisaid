@@ -1,5 +1,8 @@
 <template>
-  <q-footer class="bg-white">
+  <q-footer
+    elevated
+    class="bg-white"
+  >
     <q-toolbar class="px-0 pt-8 column">
       <div class="container py-10 column gap-y-12">
         <div class="col-12 row">
