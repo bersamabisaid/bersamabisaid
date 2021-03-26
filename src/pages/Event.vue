@@ -14,12 +14,12 @@
       />
 
       <q-card-section>
-        <h1 class="m-2 pl-6 py-2 font-extrabold text-4xl text-primary border-l-4 border-positive">
+        <h1 class="mt-2 mb-3 lg:m-2 pl-4 lg:pl-6 py-2 font-extrabold text-4xl text-primary border-l-4 border-positive">
           Pray for Uyghur
         </h1>
 
-        <div class="w-full px-4 pt-2 flex flex-col">
-          <div class="flex justify-between">
+        <div class="w-full px-4 pt-3 lg:pt-2 flex flex-col">
+          <div class="pb-2 flex justify-between">
             <div>
               <span class="font-bold text-positive">Rp 1000 0000</span>
               <span class="font-normal"> terkumpul</span>
@@ -29,18 +29,19 @@
 
           <q-linear-progress :value=".6" />
 
-          <span class="self-end font-dark">tersisa 7 hari lagi</span>
+          <span class="self-end mt-1.5 text-sm lg:text-base text-dark text-opacity-60">tersisa 7 hari lagi</span>
         </div>
 
-        <section class="px-2 pt-6 pb-10">
+        <section class="lg:px-2 pt-4 lg:pt-6 pb-10">
           <q-tabs
             v-model="tab"
             dense
-            class="text-white"
             active-color="white"
             active-bg-color="warning"
             indicator-color="accent"
             align="justify"
+            mobile-arrows
+            class="program__tabs"
           >
             <q-tab
               name="tentang"
@@ -64,7 +65,7 @@
           <q-tab-panels
             v-model="tab"
             animated
-            class="p-6 bg-secondary bg-opacity-70 rounded-b-xl"
+            class="py-4 px-2 md:p-6 bg-secondary bg-opacity-70 rounded-b-xl"
           >
             <q-tab-panel name="tentang">
               <article>
@@ -216,16 +217,27 @@
       </q-card-section>
     </q-card>
 
-    <q-page-sticky position="top-right">
-      <div class="p-10 flex flex-col items-end gap-y-4">
+    <q-page-sticky :position="$q.screen.width > $q.screen.sizes.md ? 'top-right' : 'bottom'">
+      <div class="quick-action">
         <q-btn
-          label="Donasi sekarang"
+          label="Bagikan"
+          icon-right="share"
           flat
-          class="bg-positive font-semibold text-xl text-white rounded-none shadow-sm"
-          :to="donateActionURL"
+          no-caps
+          class="lg:hidden bg-info font-semibold text-xl text-white rounded-none"
         />
 
-        <social-share :shared-url="url" />
+        <q-btn
+          label="Donasi sekarang"
+          :to="donateActionURL"
+          flat
+          class="flex-grow bg-positive font-semibold text-xl lg:text-xl text-white rounded-none lg:shadow-sm"
+        />
+
+        <social-share
+          :shared-url="url"
+          class="hidden lg:flex"
+        />
       </div>
     </q-page-sticky>
   </q-page>
@@ -285,7 +297,7 @@ export default defineComponent({
 @layer components {
   .program {
     &__tab {
-      @apply bg-warning bg-opacity-60;
+      @apply bg-warning bg-opacity-60 text-primary text-opacity-90;
 
       &:first-child {
         @apply rounded-tl-xl;
@@ -296,8 +308,28 @@ export default defineComponent({
 
       // quasar override
       .q-tab__label {
-        @apply py-2 text-lg;
+        @apply py-2 md:text-lg;
       }
+    }
+
+    &__tabs {
+      // quasar override
+      .q-tabs__arrow {
+        @apply text-blue-600;
+      }
+    }
+  }
+
+  .quick-action {
+    @apply w-screen max-w-screen-sm mx-2 px-4 pt-3 pb-1 bg-white flex gap-x-1;
+    @apply border-t-2 border-l border-r border-blue-gray-300 rounded-t-xl shadow-2xl;
+
+    @screen lg {
+      @apply w-auto p-4 flex-col items-end border-none rounded-none gap-y-4;
+    }
+
+    @screen xl {
+      @apply px-8 py-10;
     }
   }
 

@@ -1,5 +1,5 @@
 <template>
-  <q-toolbar :class="['p-6 sm:p-10', transparent ? 'bg-transparent' : 'bg-white']">
+  <q-toolbar :class="['p-6 md:p-10', transparent ? 'bg-transparent' : 'bg-white']">
     <q-toolbar-title class="flex flex-row items-center gap-x-4">
       <router-link
         :to="{name: 'Home'}"
@@ -11,7 +11,7 @@
           alt="bersamabisa.id logo"
         />
 
-        <h3 :class="['hidden sm:inline-block font-extrabold text-2xl', transparent ? 'text-white' : 'text-primary']">
+        <h3 :class="['hidden lg:inline-block font-extrabold text-2xl', transparent ? 'text-white' : 'text-primary']">
           BERSAMABISA.ID
         </h3>
       </router-link>
@@ -25,14 +25,14 @@
         flat
         rounded
         v-bind="navItem"
-        class="hidden sm:inline-block"
+        class="hidden md:inline-block"
       />
 
       <q-btn
         :icon="evaMenu"
         unelevated
         round
-        class="inline-block sm:hidden"
+        class="inline-block md:hidden"
         @click="$emit('toggle-sidebar')"
       />
     </div>
