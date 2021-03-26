@@ -68,7 +68,7 @@
           >
             <q-tab-panel name="tentang">
               <article>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Error doloremque obcaecati corporis commodi ipsa unde ad perspiciatis, rem corrupti, nulla amet est non laborum libero nobis totam dolorum! Blanditiis, doloribus!
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
               </article>
             </q-tab-panel>
 
@@ -80,7 +80,7 @@
                     subtitle="February 22, 1986"
                   >
                     <div>
-                      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                      Lorem ipsum dolor sit amet, consectetur adipisicing elit.
                     </div>
                   </q-timeline-entry>
 
@@ -89,7 +89,7 @@
                     subtitle="February 21, 1986"
                   >
                     <div>
-                      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                      Lorem ipsum dolor sit amet, consectetur adipisicing elit.
                     </div>
                   </q-timeline-entry>
 
@@ -102,7 +102,7 @@
                     subtitle="February 22, 1986"
                   >
                     <div>
-                      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                      Lorem ipsum dolor sit amet, consectetur adipisicing elit.
                     </div>
                   </q-timeline-entry>
 
@@ -111,7 +111,7 @@
                     subtitle="February 22, 1986"
                   >
                     <div>
-                      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                      Lorem ipsum dolor sit amet, consectetur adipisicing elit.
                     </div>
                   </q-timeline-entry>
 
@@ -121,7 +121,7 @@
                     color="orange"
                   >
                     <div>
-                      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                      Lorem ipsum dolor sit amet, consectetur adipisicing elit.
                     </div>
                   </q-timeline-entry>
 
@@ -130,7 +130,7 @@
                     subtitle="February 22, 1986"
                   >
                     <div>
-                      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                      Lorem ipsum dolor sit amet, consectetur adipisicing elit.
                     </div>
                   </q-timeline-entry>
 
@@ -139,7 +139,7 @@
                     subtitle="February 22, 1986"
                   >
                     <div>
-                      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                      Lorem ipsum dolor sit amet, consectetur adipisicing elit.
                     </div>
                   </q-timeline-entry>
                 </q-timeline>
@@ -225,48 +225,7 @@
           :to="donateActionURL"
         />
 
-        <div class="p-4 bg-info shadow-sm flex flex-col items-end gap-y-2">
-          <div class="font-semibold text-xl text-white flex flex-row items-center gap-x-2">
-            <q-icon name="share" />
-            <span>Bagikan</span>
-          </div>
-
-          <div class="select-all truncate w-56 pl-2 pr-3 py-1 bg-blue-gray-200 font-light text-xs text-gray-700 rounded-xl">
-            <q-btn
-              icon="content_copy"
-              size="xs"
-              flat
-              round
-              class="mr-1"
-              @click="shareToClipboard"
-            />
-            <span>{{ url }}</span>
-          </div>
-
-          <div class="w-full flex flex-row justify-center gap-x-2">
-            <q-btn
-              :icon="mdiWhatsapp"
-              round
-              flat
-              class="text-white"
-              @click="shareToWhatsapp"
-            />
-            <q-btn
-              :icon="mdiFacebook"
-              round
-              flat
-              class="text-white"
-              @click="shareToFacebook"
-            />
-            <q-btn
-              :icon="mdiTwitter"
-              round
-              flat
-              class="text-white"
-              @click="shareToTwitter"
-            />
-          </div>
-        </div>
+        <social-share :shared-url="url" />
       </div>
     </q-page-sticky>
   </q-page>
@@ -274,8 +233,8 @@
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
-import { copyToClipboard } from 'quasar';
 import { mdiFacebook, mdiWhatsapp, mdiTwitter } from '@quasar/extras/mdi-v5';
+import SocialShare from 'components/SocialShare.vue';
 import type { RawLocation } from 'vue-router';
 
 export default defineComponent({
@@ -311,26 +270,13 @@ export default defineComponent({
       };
     },
   },
-  methods: {
-    shareToClipboard() {
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      copyToClipboard(this.url)
-        .then(() => alert?.('copied to clipboard'));
-    },
-    shareToWhatsapp() {
-      //
-    },
-    shareToFacebook() {
-      //
-    },
-    shareToTwitter() {
-      //
-    },
-  },
   mounted() {
     if (this.$route.query.tab) {
       this.tab = this.$route.query.tab as string;
     }
+  },
+  components: {
+    SocialShare,
   },
 });
 </script>
