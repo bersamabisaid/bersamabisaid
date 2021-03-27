@@ -94,6 +94,12 @@
         </q-scroll-area>
       </q-drawer>
     </template>
+
+    <template #default>
+      <transition :enter-active-class="routeTransitionName">
+        <router-view />
+      </transition>
+    </template>
   </minimalist-layout>
 </template>
 
@@ -104,6 +110,10 @@ import {
 } from '@quasar/extras/material-icons-round';
 import MinimalistLayout from 'layouts/MinimalistLayout.vue';
 import type { QItem } from 'quasar';
+
+interface IRouteMeta {
+  transitionName?: string;
+}
 
 type NavItem = Pick<QItem, 'to' | 'exact'> & {
   label: string;
@@ -126,9 +136,9 @@ const drawerItems: NavItem[] = [
     exact: true,
     children: [
       {
-        label: 'Tambah program',
-        icon: 'add',
-        to: { name: 'AdminEventAdd' },
+        label: 'Program donasi',
+        icon: 'attach_money',
+        to: { name: 'AdminEventIndex', query: { donation: true } },
         exact: true,
       },
     ],
@@ -153,8 +163,18 @@ export default defineComponent({
   },
   data() {
     return {
+      routeTransitionAnimationName: 'slideInLeft',
       isDrawerOpen: false,
     };
+  },
+  computed: {
+    routeTransitionName() {
+      return ['animated', this.routeTransitionAnimationName].join(' ');
+    },
+  },
+  beforeRouteUpdate(to, from, next) {
+    this.routeTransitionAnimationName = (to.meta as IRouteMeta)?.transitionName || 'slideInLeft';
+    return next();
   },
   components: {
     MinimalistLayout,

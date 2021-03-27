@@ -124,7 +124,7 @@ module.exports = configure((ctx) => ({
 
   // animations: 'all', // --- includes all animations
   // https://quasar.dev/options/animations
-  animations: [],
+  animations: ['slideInLeft', 'slideInRight'],
 
   // https://quasar.dev/quasar-cli/developing-ssr/configuring-ssr
   ssr: {

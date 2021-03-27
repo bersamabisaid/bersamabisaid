@@ -45,6 +45,7 @@ const routes: RouteConfig[] = [
         path: 'events/new',
         name: 'AdminEventAdd',
         component: () => import('pages/admin/EventForm.vue'),
+        meta: { transitionName: 'slideInRight' },
       },
       {
         path: 'events/:programURL',
