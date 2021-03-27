@@ -33,6 +33,32 @@ const routes: RouteConfig[] = [
       },
     ],
   },
+  {
+    path: '/admin',
+    component: () => import('layouts/DashboardLayout.vue'),
+    children: [
+      {
+        path: '',
+        name: 'AdminDashboard',
+        component: () => import('pages/admin/Overview.vue'),
+      },
+      {
+        path: '/events',
+        name: 'AdminEventIndex',
+        component: () => import('pages/admin/EventIndex.vue'),
+      },
+      {
+        path: '/events/new',
+        name: 'AdminEventAdd',
+        component: () => import('pages/admin/EventForm.vue'),
+      },
+      {
+        path: '/events/:programURL',
+        name: 'AdminEventEdit',
+        component: () => import('pages/admin/EventForm.vue'),
+      },
+    ],
+  },
 
   // Always leave this as last one,
   // but you can also remove it
