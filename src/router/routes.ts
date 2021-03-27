@@ -23,32 +23,26 @@ const routes: RouteConfig[] = [
     ],
   },
   {
-    path: '/',
-    component: () => import('layouts/MinimalistLayout.vue'),
-    children: [
-      {
-        path: '/pay',
-        name: 'Payment',
-        component: () => import('pages/Pay.vue'),
-      },
-    ],
+    path: '/pay',
+    name: 'Payment',
+    component: () => import('pages/Pay.vue'),
   },
   {
     path: '/admin',
     component: () => import('layouts/DashboardLayout.vue'),
     children: [
       {
-        path: '',
+        path: '/',
         name: 'AdminDashboard',
         component: () => import('pages/admin/Overview.vue'),
       },
       {
-        path: '/events',
+        path: 'events',
         name: 'AdminEventIndex',
         component: () => import('pages/admin/EventIndex.vue'),
       },
       {
-        path: '/events/new',
+        path: 'events/new',
         name: 'AdminEventAdd',
         component: () => import('pages/admin/EventForm.vue'),
       },
