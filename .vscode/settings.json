@@ -7,6 +7,10 @@
   "conventionalCommits.scopes": [
     "api",
     "page",
-    "ui"
+    "ui",
+    "vscode"
+  ],
+  "tailwindCSS.experimental.classRegex": [
+    "\\w*-class=\"([^\"]*)",
   ]
 }
