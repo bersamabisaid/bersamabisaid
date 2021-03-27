@@ -31,7 +31,7 @@
         <q-scroll-area class="flex-grow w-full bg-warning">
           <q-list padding>
             <q-item
-              v-for="{ label, icon, onClick, ...item } in drawerItems"
+              v-for="{ label, icon, onClick = () => {}, ...item } in drawerItems"
               :key="label"
               v-ripple
               clickable
@@ -61,12 +61,12 @@
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
 import {
-  roundHome, roundEvent, roundPaid, roundFeed, roundLogout,
+  roundHome, roundEvent, roundFeed, roundLogout,
 } from '@quasar/extras/material-icons-round';
 import MinimalistLayout from 'layouts/MinimalistLayout.vue';
 import type { QItem } from 'quasar';
 
-type NavItem = Pick<QItem, 'to'> & {
+type NavItem = Pick<QItem, 'to' | 'exact'> & {
   label: string;
   icon: string;
   onClick?: () => void;
@@ -77,11 +77,13 @@ const drawerItems: NavItem[] = [
     label: 'Overview',
     icon: roundHome,
     to: { name: 'AdminDashboard' },
+    exact: true,
   },
   {
     label: 'Program',
     icon: roundEvent,
     to: { name: 'AdminEventIndex' },
+    exact: true,
   },
   {
     label: 'Postingan',
