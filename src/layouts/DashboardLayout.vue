@@ -1,5 +1,5 @@
 <template>
-  <minimalist-layout>
+  <minimalist-layout class="admin-layout">
     <template #nav-top-left>
       <q-btn
         icon="menu"
@@ -30,27 +30,66 @@
 
         <q-scroll-area class="flex-grow w-full bg-warning">
           <q-list padding>
-            <q-item
-              v-for="{ label, icon, onClick = () => {}, ...item } in drawerItems"
-              :key="label"
-              v-ripple
-              clickable
-              class="py-5"
-              active-class="bg-yellow-500"
-              v-bind="item"
-              @click="onClick"
+            <template
+              v-for="{ label, icon, children, onClick = () => {}, ...item } in drawerItems"
             >
-              <q-item-section
-                avatar
-                class="text-yellow-900 text-opacity-95"
+              <q-expansion-item
+                v-if="children && children.length"
+                :key="label"
+                :label="label"
+                :icon="icon"
+                default-opened
+                active-class="bg-yellow-500"
+                :content-inset-level=".25"
+                v-bind="item"
               >
-                <q-icon :name="icon" />
-              </q-item-section>
+                <q-list class="bg-yellow-500 bg-opacity-30">
+                  <q-item
+                    v-for="{label: childLabel, icon: childIcon, onClick: childOnClick = () => {}, ...child} in children"
+                    :key="childLabel"
+                    v-ripple
+                    clickable
+                    class="pl-4 py-3"
+                    active-class="bg-yellow-500"
+                    v-bind="child"
+                    @click="childOnClick"
+                  >
+                    <q-item-section
+                      avatar
+                      class="text-yellow-900 text-opacity-95"
+                    >
+                      <q-icon :name="childIcon" />
+                    </q-item-section>
 
-              <q-item-section class="font-medium text-base text-white">
-                {{ label }}
-              </q-item-section>
-            </q-item>
+                    <q-item-section class="font-medium text-sm text-white">
+                      {{ childLabel }}
+                    </q-item-section>
+                  </q-item>
+                </q-list>
+              </q-expansion-item>
+
+              <q-item
+                v-else
+                :key="label"
+                v-ripple
+                clickable
+                class="py-5"
+                active-class="bg-yellow-500"
+                v-bind="item"
+                @click="onClick"
+              >
+                <q-item-section
+                  avatar
+                  class="text-yellow-900 text-opacity-95"
+                >
+                  <q-icon :name="icon" />
+                </q-item-section>
+
+                <q-item-section class="font-medium text-base text-white">
+                  {{ label }}
+                </q-item-section>
+              </q-item>
+            </template>
           </q-list>
         </q-scroll-area>
       </q-drawer>
@@ -70,6 +109,7 @@ type NavItem = Pick<QItem, 'to' | 'exact'> & {
   label: string;
   icon: string;
   onClick?: () => void;
+  children?: Omit<NavItem, 'children'>[];
 }
 
 const drawerItems: NavItem[] = [
@@ -84,6 +124,14 @@ const drawerItems: NavItem[] = [
     icon: roundEvent,
     to: { name: 'AdminEventIndex' },
     exact: true,
+    children: [
+      {
+        label: 'Tambah program',
+        icon: 'add',
+        to: { name: 'AdminEventAdd' },
+        exact: true,
+      },
+    ],
   },
   {
     label: 'Postingan',
@@ -113,3 +161,24 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="scss">
+@layer components {
+  // quasar override
+  .admin-layout {
+    .q-expansion-item {
+      .q-item {
+        @apply py-5;
+
+        &__section--main {
+          @apply font-medium text-base text-white;
+        }
+        &__section--avatar,
+        &__section--side {
+          @apply text-yellow-900 text-opacity-95;
+        }
+      }
+    }
+  }
+}
+</style>

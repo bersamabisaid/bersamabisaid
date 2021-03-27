@@ -1,5 +1,8 @@
 <template>
-  <q-layout view="lHh Lpr lff">
+  <q-layout
+    view="lHh Lpr lff"
+    v-bind="$attrs"
+  >
     <q-header
       reveal
       elevated

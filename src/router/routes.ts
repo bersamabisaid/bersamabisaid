@@ -32,7 +32,7 @@ const routes: RouteConfig[] = [
     component: () => import('layouts/DashboardLayout.vue'),
     children: [
       {
-        path: '/',
+        path: '',
         name: 'AdminDashboard',
         component: () => import('pages/admin/Overview.vue'),
       },
@@ -47,7 +47,7 @@ const routes: RouteConfig[] = [
         component: () => import('pages/admin/EventForm.vue'),
       },
       {
-        path: '/events/:programURL',
+        path: 'events/:programURL',
         name: 'AdminEventEdit',
         component: () => import('pages/admin/EventForm.vue'),
       },
