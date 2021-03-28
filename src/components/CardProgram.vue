@@ -8,7 +8,7 @@
         />
       </div>
 
-      <div class="px-4 pt-6 pb-2 flex flex-col">
+      <div class="px-2 pt-6 flex flex-col">
         <dt class="card-program__title">
           {{ title }}
         </dt>
@@ -21,7 +21,7 @@
 
     <q-card-actions
       v-if="!noAction"
-      class="px-6 pt-2 pb-6"
+      class="px-6 pt-1 pb-6"
     >
       <q-btn
         :label="actionLabel"
@@ -95,7 +95,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 @layer components {
   .card-program {
-    @apply w-80 rounded-2xl border-t border-gray-100 shadow-lg transition-shadow;
+    @apply w-72 rounded-2xl border-t border-gray-100 shadow-lg transition-shadow;
 
     &:hover {
       @apply shadow-2xl;

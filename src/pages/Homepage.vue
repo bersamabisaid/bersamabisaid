@@ -3,13 +3,10 @@
     <q-page-container>
       <q-page>
         <header class="relative w-full h-screen flex content-center items-center justify-center">
-          <q-parallax
+          <img
             :src="require('assets/images/homepagePicture.png')"
-            :height="$q.screen.height"
-            :speed="2.5"
-            class="absolute"
-          />
-
+            class="absolute w-full h-screen object-cover"
+          >
           <div
             class="absolute w-full h-screen"
             style="background: linear-gradient(180deg, rgba(26, 41, 128, 0.79) 0%, rgba(38, 208, 206, 0.79) 100%);"
@@ -61,31 +58,29 @@
               </div>
 
               <div class="py-8 flex justify-center">
-                <q-scroll-area
+                <!-- <q-scroll-area
                   horizontal
                   class="card-program__grid__scroll-area"
-                >
-                  <div class="card-program__grid">
-                    <div
-                      v-for="(event, i) in events"
-                      :key="i"
-                      class="col-3"
-                    >
-                      <card-program v-bind="event" />
-                    </div>
+                > -->
+                <div class="card-program__grid">
+                  <div
+                    v-for="(event, i) in events"
+                    :key="i"
+                    class="col-3"
+                  >
+                    <card-program v-bind="event" />
                   </div>
-                </q-scroll-area>
+                </div>
+                <!-- </q-scroll-area> -->
               </div>
             </div>
           </section>
 
           <section class="h-auto">
-            <q-parallax
+            <img
               :src="require('assets/images/donasiPicture.png')"
-              :height="$q.screen.height"
-              class="absolute w-full"
-            />
-
+              class="absolute w-full h-screen object-cover"
+            >
             <div
               class="absolute w-full h-screen"
               style="background: linear-gradient(111.05deg, rgba(26, 41, 128, 0.79) -5.69%, rgba(38, 208, 206, 0.79) 97.93%);"
@@ -102,18 +97,18 @@
                 </div>
               </div>
               <div class="flex justify-center q-py-lg">
-                <q-scroll-area
+                <!-- <q-scroll-area
                   horizontal
                   class="card-program__grid__scroll-area"
-                >
-                  <div class="card-program__grid">
-                    <card-program
-                      v-for="(event, i) in events"
-                      :key="i"
-                      v-bind="event"
-                    />
-                  </div>
-                </q-scroll-area>
+                > -->
+                <div class="card-program__grid">
+                  <card-program
+                    v-for="(event, i) in events"
+                    :key="i"
+                    v-bind="event"
+                  />
+                </div>
+                <!-- </q-scroll-area> -->
               </div>
             </div>
           </section>
@@ -152,11 +147,11 @@ const events: CardProgramProps[] = [
     caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
     url: 'pray-for-uyghur',
   },
-  {
-    title: 'Card Title',
-    caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
-    url: 'pray-for-uyghur',
-  },
+  // {
+  //   title: 'Card Title',
+  //   caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
+  //   url: 'pray-for-uyghur',
+  // },
 
 ];
 
@@ -177,23 +172,15 @@ export default defineComponent({
 
 <style lang="scss">
 @layer components {
-  .q-parallax {
-    &__media {
-      > img {
-        @apply object-fill;
-      }
-    }
-  }
-
   .card-program__grid {
-    @apply  px-12 py-8 flex grid-flow-col auto-cols-min items-center gap-0;
+    @apply  px-12 flex grid-flow-col auto-cols-min gap-0;
 
     > div:not(:first-child) {
       @apply -ml-32;
     }
 
     @screen sm {
-      @apply grid gap-10;
+      @apply grid gap-6;
 
       > div:not(:first-child) {
         @apply m-0;

@@ -1,6 +1,5 @@
 <template>
   <q-footer
-    elevated
     class="bg-white"
   >
     <q-toolbar class="px-0 pt-8 column">
