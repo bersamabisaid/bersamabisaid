@@ -96,18 +96,40 @@
                   </span>
                 </div>
               </div>
-              <div class="flex justify-center q-py-lg">
+              <div class="flex justify-center q-py-md">
                 <!-- <q-scroll-area
                   horizontal
                   class="card-program__grid__scroll-area"
                 > -->
-                <div class="card-program__grid">
-                  <card-program
-                    v-for="(event, i) in events"
-                    :key="i"
-                    v-bind="event"
-                  />
-                </div>
+                <q-carousel
+                  v-model="slide"
+                  animated
+                  arrows
+                  swipeable
+                  infinite
+                  transition-prev="slide-right"
+                  transition-next="slide-left"
+                  class="bg-transparent h-auto"
+                >
+                  <q-carousel-slide name="1">
+                    <div class="card-program__grid">
+                      <card-program
+                        v-for="(event, i) in events"
+                        :key="i"
+                        v-bind="event"
+                      />
+                    </div>
+                  </q-carousel-slide>
+                  <q-carousel-slide name="2">
+                    <div class="card-program__grid">
+                      <card-program
+                        v-for="(event, i) in events"
+                        :key="i"
+                        v-bind="event"
+                      />
+                    </div>
+                  </q-carousel-slide>
+                </q-carousel>
                 <!-- </q-scroll-area> -->
               </div>
             </div>
@@ -142,11 +164,11 @@ const events: CardProgramProps[] = [
     caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
     url: 'pray-for-uyghur',
   },
-  {
-    title: 'Card Title',
-    caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
-    url: 'pray-for-uyghur',
-  },
+  // {
+  //   title: 'Card Title',
+  //   caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
+  //   url: 'pray-for-uyghur',
+  // },
   // {
   //   title: 'Card Title',
   //   caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
@@ -160,6 +182,7 @@ export default defineComponent({
   setup() {
     return {
       events,
+      slide: '1',
     };
   },
   components: {
@@ -173,7 +196,7 @@ export default defineComponent({
 <style lang="scss">
 @layer components {
   .card-program__grid {
-    @apply  px-12 flex grid-flow-col auto-cols-min gap-0;
+    @apply px-12 flex grid-flow-col auto-cols-min gap-0;
 
     > div:not(:first-child) {
       @apply -ml-32;
