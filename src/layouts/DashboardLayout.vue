@@ -23,7 +23,7 @@
             class="flex-shrink w-9"
             alt="bersamabisa.id logo"
           />
-          <span class="flex-grow font-semibold text-lg text-white">
+          <span class="flex-grow font-semibold text-lg text-white tracking-tighter">
             Admin Dashboard
           </span>
         </div>

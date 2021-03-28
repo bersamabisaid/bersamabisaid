@@ -1,5 +1,5 @@
 <template>
-  <q-page class="event-index flex">
+  <q-page class="event-index bg-blue-50 flex">
     <q-scroll-area class="self-stretch w-full px-4 py-6">
       <div class=" flex flex-col gap-y-4">
         <div class="px-6 flex justify-between">
@@ -22,8 +22,8 @@
             icon="add"
             flat
             rounded
-            class="bg-blue-50 text-dark"
-            :to="{name: 'AdminEventAdd'}"
+            class="bg-blue-100 text-dark"
+            :to="{name: $route.query.donation ? 'AdminEventAddDonation' : 'AdminEventAdd'}"
           />
         </div>
 
@@ -126,6 +126,10 @@ export default defineComponent({
   .event-index {
     thead tr th {
       @apply sticky top-0 z-10;
+    }
+
+    .q-responsive {
+      max-height: 70vh;
     }
   }
 }

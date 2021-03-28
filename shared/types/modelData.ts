@@ -22,8 +22,8 @@ interface IBaseEvent {
 }
 
 interface IDonationEvent {
-  deadline: fb.firestore.Timestamp;
   target: number | null;
+  deadline: fb.firestore.Timestamp | null;
   __ui__: ModelUI<{
     progress: number;
     recentDonations: ModelUIHasRelation<DonationUI>[];
