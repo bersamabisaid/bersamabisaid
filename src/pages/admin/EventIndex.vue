@@ -17,14 +17,45 @@
               />
             </template>
           </q-input>
-          <q-btn
-            label="Tambah program"
-            icon="add"
-            flat
-            rounded
-            class="bg-blue-100 text-dark"
-            :to="{name: $route.query.donation ? 'AdminEventAddDonation' : 'AdminEventAdd'}"
-          />
+
+          <transition-group
+            appear
+            enter-active-class="animated fadeIn"
+            leave-active-class="animated fadeOut"
+            class="flex gap-x-2"
+          >
+            <template v-if="selection.length">
+              <q-btn
+                key="Hapus program"
+                label="Hapus program"
+                icon="delete"
+                flat
+                rounded
+                class="bg-red-100 text-dark"
+                @click="deleteSelected"
+              />
+
+              <q-btn
+                key="Edit program"
+                label="Edit program"
+                icon="mode_edit"
+                flat
+                rounded
+                class="bg-blue-100 text-dark"
+                @click="editSelected"
+              />
+            </template>
+
+            <q-btn
+              key="Tambah program"
+              label="Tambah program"
+              icon="add"
+              :to="{name: $route.query.donation ? 'AdminEventAddDonation' : 'AdminEventAdd'}"
+              flat
+              rounded
+              class="bg-green-100 text-dark"
+            />
+          </transition-group>
         </div>
 
         <q-responsive
@@ -117,6 +148,14 @@ export default defineComponent({
         _updated: fbs.firestore.Timestamp.now(),
       } as Model<Event>)),
     };
+  },
+  methods: {
+    editSelected() {
+      console.log(this.selection);
+    },
+    deleteSelected() {
+      console.log(this.selection);
+    },
   },
 });
 </script>

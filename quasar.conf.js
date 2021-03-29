@@ -119,12 +119,14 @@ module.exports = configure((ctx) => ({
     // directives: [],
 
     // Quasar plugins
-    plugins: [],
+    plugins: [
+      'Meta',
+    ],
   },
 
   // animations: 'all', // --- includes all animations
   // https://quasar.dev/options/animations
-  animations: ['slideInLeft', 'slideInRight'],
+  animations: ['slideInLeft', 'slideInRight', 'fadeIn', 'fadeOut'],
 
   // https://quasar.dev/quasar-cli/developing-ssr/configuring-ssr
   ssr: {
