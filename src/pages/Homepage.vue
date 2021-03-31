@@ -175,8 +175,7 @@ import { defineComponent } from '@vue/composition-api';
 import BaseNavbar from 'components/BaseNavbar.vue';
 import BaseFooter from 'components/BaseFooter.vue';
 import CardProgram, { CardProgramProps } from 'components/CardProgram.vue';
-import VueGlide, { Glide, GlideSlide } from 'vue-glide-js';
-import 'vue-glide-js/dist/vue-glide.css';
+import { Glide, GlideSlide } from 'vue-glide-js';
 
 const events: CardProgramProps[] = [
   {
@@ -225,8 +224,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-// @import "node_modules/@glidejs/glide/src/assets/sass/glide.core";
-@import "node_modules/@glidejs/glide/src/assets/sass/glide.theme";
+// @import 'node_modules/@glidejs/glide/src/assets/sass/glide.core';
+@import '~@glidejs/glide/src/assets/sass/glide.theme';
+@import '~vue-glide-js/dist/vue-glide.css';
 
 @layer components {
   .card-program__grid {
