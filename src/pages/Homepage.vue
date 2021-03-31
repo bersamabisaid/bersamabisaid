@@ -58,10 +58,6 @@
               </div>
 
               <div class="py-8 flex justify-center">
-                <!-- <q-scroll-area
-                  horizontal
-                  class="card-program__grid__scroll-area"
-                > -->
                 <div class="card-program__grid">
                   <div
                     v-for="(event, i) in events"
@@ -71,7 +67,6 @@
                     <card-program v-bind="event" />
                   </div>
                 </div>
-                <!-- </q-scroll-area> -->
               </div>
             </div>
           </section>
@@ -96,41 +91,45 @@
                   </span>
                 </div>
               </div>
-              <div class="flex justify-center q-py-md">
-                <!-- <q-scroll-area
-                  horizontal
-                  class="card-program__grid__scroll-area"
-                > -->
-                <q-carousel
-                  v-model="slide"
-                  animated
-                  arrows
-                  swipeable
-                  infinite
-                  transition-prev="slide-right"
-                  transition-next="slide-left"
-                  class="bg-transparent h-auto"
+              <div class="py-8 flex justify-center">
+                <vue-glide
+                  type="carousel"
+                  per-view="4"
                 >
-                  <q-carousel-slide name="1">
-                    <div class="card-program__grid">
-                      <card-program
-                        v-for="(event, i) in events"
-                        :key="i"
-                        v-bind="event"
+                  <vue-glide-slide
+                    v-for="(event, i) in events"
+                    :key="i"
+                  >
+                    <card-program
+                      v-bind="event"
+                    />
+                  </vue-glide-slide>
+                  <template
+                    slot="control"
+                    class="glide__arrows grid justify-items-stretch"
+                  >
+                    <button
+                      data-glide-dir="<"
+                      class="glide__arrow glide__arrow--left justify-self-start"
+                    >
+                      <q-icon
+                        name="keyboard_arrow_left"
+                        size="lg"
+                        color="white"
                       />
-                    </div>
-                  </q-carousel-slide>
-                  <q-carousel-slide name="2">
-                    <div class="card-program__grid">
-                      <card-program
-                        v-for="(event, i) in events"
-                        :key="i"
-                        v-bind="event"
+                    </button>
+                    <button
+                      data-glide-dir=">"
+                      class="glide__arrow glide__arrow--right"
+                    >
+                      <q-icon
+                        name="keyboard_arrow_right"
+                        size="lg"
+                        color="white"
                       />
-                    </div>
-                  </q-carousel-slide>
-                </q-carousel>
-                <!-- </q-scroll-area> -->
+                    </button>
+                  </template>
+                </vue-glide>
               </div>
             </div>
           </section>
@@ -147,34 +146,35 @@ import { defineComponent } from '@vue/composition-api';
 import BaseNavbar from 'components/BaseNavbar.vue';
 import BaseFooter from 'components/BaseFooter.vue';
 import CardProgram, { CardProgramProps } from 'components/CardProgram.vue';
+import VueGlide, { Glide, GlideSlide } from 'vue-glide-js';
+import 'vue-glide-js/dist/vue-glide.css';
 
 const events: CardProgramProps[] = [
   {
-    title: 'Card Title',
+    title: 'Card Title (1)',
     caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
     url: 'pray-for-uyghur',
   },
   {
-    title: 'Card Title',
+    title: 'Card Title (2)',
     caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
     url: 'pray-for-uyghur',
   },
   {
-    title: 'Card Title',
+    title: 'Card Title (3)',
     caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
     url: 'pray-for-uyghur',
   },
-  // {
-  //   title: 'Card Title',
-  //   caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
-  //   url: 'pray-for-uyghur',
-  // },
-  // {
-  //   title: 'Card Title',
-  //   caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
-  //   url: 'pray-for-uyghur',
-  // },
-
+  {
+    title: 'Card Title (4)',
+    caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
+    url: 'pray-for-uyghur',
+  },
+  {
+    title: 'Card Title (5)',
+    caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
+    url: 'pray-for-uyghur',
+  },
 ];
 
 export default defineComponent({
@@ -189,30 +189,30 @@ export default defineComponent({
     BaseFooter,
     BaseNavbar,
     CardProgram,
+    [Glide.name]: Glide,
+    [GlideSlide.name]: GlideSlide,
   },
 });
 </script>
 
 <style lang="scss">
+// @import "node_modules/@glidejs/glide/src/assets/sass/glide.core";
+@import "node_modules/@glidejs/glide/src/assets/sass/glide.theme";
+
 @layer components {
   .card-program__grid {
-    @apply px-12 flex grid-flow-col auto-cols-min gap-0;
+    @apply flex grid-flow-col auto-cols-min object-contain gap-0;
 
     > div:not(:first-child) {
       @apply -ml-32;
     }
 
     @screen sm {
-      @apply grid gap-6;
+      @apply gap-5;
 
       > div:not(:first-child) {
         @apply m-0;
       }
-    }
-
-    &__scroll-area {
-      @apply w-full;
-      height: theme('maxWidth.xl');
     }
   }
 }
