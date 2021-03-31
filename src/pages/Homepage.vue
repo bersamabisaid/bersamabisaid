@@ -58,15 +58,44 @@
               </div>
 
               <div class="py-8 flex justify-center">
-                <div class="card-program__grid">
-                  <div
+                <vue-glide
+                  type="carousel"
+                  per-view="4"
+                >
+                  <vue-glide-slide
                     v-for="(event, i) in events"
                     :key="i"
-                    class="col-3"
                   >
-                    <card-program v-bind="event" />
-                  </div>
-                </div>
+                    <card-program
+                      v-bind="event"
+                    />
+                  </vue-glide-slide>
+                  <template
+                    slot="control"
+                    class="glide__arrows grid justify-items-stretch"
+                  >
+                    <button
+                      data-glide-dir="<"
+                      class="glide__arrow glide__arrow--left justify-self-start"
+                    >
+                      <q-icon
+                        name="keyboard_arrow_left"
+                        size="lg"
+                        color="white"
+                      />
+                    </button>
+                    <button
+                      data-glide-dir=">"
+                      class="glide__arrow glide__arrow--right"
+                    >
+                      <q-icon
+                        name="keyboard_arrow_right"
+                        size="lg"
+                        color="white"
+                      />
+                    </button>
+                  </template>
+                </vue-glide>
               </div>
             </div>
           </section>
