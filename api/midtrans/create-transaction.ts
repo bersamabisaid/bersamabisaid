@@ -25,7 +25,7 @@ const storeToFirestore = async (data: CreateTransactionRequestBody, redirecUrl: 
     donatorId: donatorRef.id,
     amount: data.amount,
     message: data.message,
-    __ui__: {
+    _ui: {
       donatorNickName: uiDataFactory({
         foreignKey: donatorRef.id,
         data: data.donator.nickName,
@@ -35,7 +35,7 @@ const storeToFirestore = async (data: CreateTransactionRequestBody, redirecUrl: 
         data: data.eventName,
       }),
     },
-    __system__: {
+    _system: {
       finishPaymentRedirectUrl: redirecUrl,
     },
   }));

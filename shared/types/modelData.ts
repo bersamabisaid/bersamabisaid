@@ -24,7 +24,7 @@ interface IBaseEvent {
 interface IDonationEvent {
   target: number | null;
   deadline: fb.firestore.Timestamp | null;
-  __ui__: ModelUI<{
+  _ui: ModelUI<{
     progress: number;
     recentDonations: ModelUIHasRelation<DonationUI>[];
   }>;
@@ -34,6 +34,16 @@ export type Event = IBaseEvent & (
   { donation: false }
   | { donation: true } & IDonationEvent
 );
+
+export type EventCommon = IBaseEvent & {
+  donation: false;
+};
+
+export type EventDonation = IBaseEvent & IDonationEvent & {
+  donation: true;
+};
+
+export const isEventDonation = (data: Event): data is EventDonation => data.donation;
 
 export interface Address {
   country: string;
@@ -79,11 +89,11 @@ export interface Donation {
   amount: number;
   message: string;
   paymentStatus?: PaymentStatus;
-  __ui__: ModelUI<{
+  _ui: ModelUI<{
     donatorNickName: ModelUIHasRelation<string>;
     eventName: ModelUIHasRelation<string>;
   }>;
-  __system__: {
+  _system: {
     finishPaymentRedirectUrl: string;
   };
 }
