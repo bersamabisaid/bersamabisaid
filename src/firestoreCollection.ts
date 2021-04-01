@@ -1,6 +1,8 @@
 import fbs, { db } from 'src/services/firebaseService';
 import firestoreCollectionName from 'shared/firestoreCollection';
-import type { Model, ModelUIData, TimestampedModel } from 'shared/types/model';
+import type {
+  Model, ModelUIData, TimestampedModel,
+} from 'shared/types/model';
 import type { Event } from 'shared/types/modelData';
 import type fb from 'firebase';
 
@@ -10,6 +12,10 @@ const firestoreCollection = {
   Events: db.collection(firestoreCollectionName.EVENTS) as ModelCollectionReference<Event>,
 
 };
+
+const isSnapshotExists = <T = unknown>(
+  snapshot: fb.firestore.DocumentSnapshot<T>,
+): snapshot is fb.firestore.QueryDocumentSnapshot<T> => snapshot.exists;
 
 const createAttrs = (): TimestampedModel => {
   const now = fbs.firestore.Timestamp.now();
@@ -46,6 +52,7 @@ const modelUiDataFactory = <T = unknown>(value: T, expiration: ModelUIData<T>['e
 export default firestoreCollection;
 
 export {
+  isSnapshotExists,
   createAttrs,
   updateAttrs,
   deleteAttrs,

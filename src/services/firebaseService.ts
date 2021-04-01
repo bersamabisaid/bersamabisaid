@@ -1,6 +1,8 @@
 import { createSingleton } from 'shared/utils/pattern';
 import firebase from 'firebase/app';
 import 'firebase/firestore';
+import 'firebase/storage';
+import storageReferencePathName from 'shared/storageReference';
 
 const service = createSingleton(() => {
   if (firebase.apps.length) {
@@ -25,3 +27,10 @@ const fbs = service();
 export default fbs;
 
 export const db = fbs.firestore();
+
+export const storage = fbs.storage().ref();
+
+export const storageRef = Object.assign(storage, {
+  Events: storage.child(storageReferencePathName.EVENTS),
+
+});

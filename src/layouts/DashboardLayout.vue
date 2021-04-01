@@ -97,7 +97,9 @@
 
     <template #default>
       <transition :enter-active-class="routeTransitionName">
-        <router-view />
+        <keep-alive>
+          <router-view />
+        </keep-alive>
       </transition>
     </template>
   </minimalist-layout>

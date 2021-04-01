@@ -5,11 +5,11 @@
   >
     <div class="text-dark flex items-center gap-x-4">
       <q-btn
+        v-go-back="{ name: 'AdminEventIndex' }"
         icon="arrow_back"
         round
         flat
         class="bg-white shadow"
-        @click="() => $router.back()"
       />
 
       <h4 class="px-2 pb-1 font-semibold text-xl tracking-tight border-b-2 border-primary">
@@ -36,6 +36,8 @@
             icon="upload"
             rounded
             flat
+            :loading="processState.hasTask"
+            :percentage="processState.allProgressPercentage"
             class="bg-info bg-opacity-70 text-white shadow-lg"
             @click="() => vFileInput.click()"
           />
@@ -46,6 +48,13 @@
         <q-input
           v-model="eventTitle"
           label="Nama program"
+          dense
+          :rules="[requiredRule]"
+        />
+
+        <q-input
+          v-model="eventOrganizer"
+          label="Nama penyelenggara"
           dense
           :rules="[requiredRule]"
         />
@@ -106,10 +115,13 @@
       </div>
 
       <q-inner-loading :showing="isLoading">
-        <q-spinner
-          size="lg"
-          color="accent"
-        />
+        <div class="flex flex-col items-center gap-y-3">
+          <q-spinner
+            size="lg"
+            color="accent"
+          />
+          <span>{{ processState.hasTask ? 'Uploading image...' : 'Saving...' }}</span>
+        </div>
       </q-inner-loading>
     </q-form>
   </q-page>
@@ -120,8 +132,9 @@ import { defineComponent } from '@vue/composition-api';
 import { date } from 'quasar';
 import { Money } from 'v-money';
 import { requiredRule } from 'src/composables/useInputRules';
-import fbs from 'src/services/firebaseService';
-import { modelUiDataFactory } from 'src/firestoreCollection';
+import fbs, { storageRef } from 'src/services/firebaseService';
+import firestoreCollection, { modelUiDataFactory, createAttrs } from 'src/firestoreCollection';
+import useStorageUpload from 'src/composables/useStorageUpload';
 import type { Event } from 'shared/types/modelData';
 
 const createFileInput = (accept = '*') => {
@@ -144,13 +157,19 @@ export default defineComponent({
     },
   },
   setup() {
+    const { tasks, state, upload } = useStorageUpload(storageRef.Events);
+
     return {
+      uploadQueue: tasks,
+      processState: state,
+      uploadFile: upload,
       requiredRule,
     };
   },
   data() {
     return {
       eventTitle: '',
+      eventOrganizer: '',
       eventDescription: '',
       eventThumbnail: '',
       eventURL: '',
@@ -186,32 +205,40 @@ export default defineComponent({
   methods: {
     async save() {
       this.isLoading = true;
+
       try {
-        await this.uploadImg();
-        const baseEventData: Omit<Event, 'donation'> = {
-          title: this.eventTitle,
-          description: this.eventDescription,
-          url: this.eventURL || this.eventTitle,
-          image: this.eventThumbnail,
-        };
+        if (this.fileSelected) {
+          const doc = firestoreCollection.Events.doc();
 
-        const data: Event = this.donation ? {
-          ...baseEventData,
-          donation: this.donation,
-          target: this.donationTarget,
-          deadline: fbs.firestore.Timestamp.fromDate(
-            date.extractDate(this.donationDeadline, 'DD/MM/YYYY'),
-          ),
-          __ui__: {
-            progress: modelUiDataFactory(0),
-            recentDonations: modelUiDataFactory([]),
-          },
-        } : {
-          ...baseEventData,
-          donation: this.donation,
-        };
+          this.uploadFile(this.fileSelected, doc.id);
 
-        console.log(data);
+          const baseEventData: Omit<Event, 'donation'> = {
+            title: this.eventTitle,
+            description: this.eventDescription,
+            url: this.eventURL || this.eventTitle,
+            image: this.eventThumbnail,
+          };
+
+          const data: Event = this.donation ? {
+            ...baseEventData,
+            donation: this.donation,
+            target: this.donationTarget,
+            deadline: fbs.firestore.Timestamp.fromDate(
+              date.extractDate(this.donationDeadline, 'DD/MM/YYYY'),
+            ),
+            _ui: {
+              progress: modelUiDataFactory(0),
+              recentDonations: modelUiDataFactory([]),
+            },
+          } : {
+            ...baseEventData,
+            donation: this.donation,
+          };
+
+          await doc.set({ ...data, ...createAttrs() });
+        } else {
+          throw new Error('No file selected!');
+        }
 
         this.isLoading = false;
       } catch (err) {
@@ -219,15 +246,6 @@ export default defineComponent({
 
         this.isLoading = false;
       }
-    },
-    uploadImg() {
-      return new Promise((resolve, reject) => {
-        setTimeout(() => (
-          this.fileSelected
-            ? resolve()
-            : reject('image is empty')
-        ), 3000);
-      });
     },
     onFileInputChange() {
       const [file] = Array.from(this.vFileInput.files || []);
