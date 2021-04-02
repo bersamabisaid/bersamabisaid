@@ -1,9 +1,15 @@
-import { onMounted, ref } from '@vue/composition-api';
+import {
+  computed, ComputedRef, isRef, ref, watch,
+} from '@vue/composition-api';
 import type fb from 'firebase';
 
 export default function useCollection<T = unknown>(
-  collectionRef: fb.firestore.CollectionReference<T> | fb.firestore.Query<T>,
+  collectionRef: fb.firestore.CollectionReference<T>
+    | fb.firestore.Query<T>
+    | ComputedRef<fb.firestore.CollectionReference<T>>
+    | ComputedRef<fb.firestore.Query<T>>,
 ) {
+  const dbRef = computed(() => (isRef(collectionRef) ? collectionRef.value : collectionRef));
   const data = ref<T[]>([]);
   const loading = ref(true);
   const error = ref<fb.firestore.FirestoreError | null>(null);
@@ -11,7 +17,7 @@ export default function useCollection<T = unknown>(
     loading.value = true;
 
     try {
-      const snapshot = await collectionRef.get();
+      const snapshot = await dbRef.value.get();
       data.value = snapshot.docs.map((doc) => doc.data());
     } catch (err) {
       console.log('%cuseCollection error!', 'color: red;');
@@ -21,7 +27,7 @@ export default function useCollection<T = unknown>(
     loading.value = false;
   };
 
-  onMounted(() => update());
+  watch(dbRef, () => update(), { immediate: true });
 
   return [
     data,
