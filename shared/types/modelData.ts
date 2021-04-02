@@ -14,14 +14,15 @@ export interface Content {
   url: string;
 }
 
-interface IBaseEvent {
+export interface IBaseEvent {
   title: string;
   image: string;
   description: string;
+  organizer: string;
   url: string;
 }
 
-interface IDonationEvent {
+export interface IDonationEvent {
   target: number | null;
   deadline: fb.firestore.Timestamp | null;
   _ui: ModelUI<{

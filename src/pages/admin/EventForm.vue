@@ -24,6 +24,7 @@
         'flex flex-col gap-y-4'
       ]"
       @submit="save"
+      @reset="onFormReset"
     >
       <q-img
         :src="eventThumbnail"
@@ -36,8 +37,6 @@
             icon="upload"
             rounded
             flat
-            :loading="processState.hasTask"
-            :percentage="processState.allProgressPercentage"
             class="bg-info bg-opacity-70 text-white shadow-lg"
             @click="() => vFileInput.click()"
           />
@@ -120,7 +119,7 @@
             size="lg"
             color="accent"
           />
-          <span>{{ processState.hasTask ? 'Uploading image...' : 'Saving...' }}</span>
+          <span>{{ !!uploadQueue.length ? 'Uploading image...' : 'Saving...' }}</span>
         </div>
       </q-inner-loading>
     </q-form>
@@ -129,13 +128,14 @@
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
-import { date } from 'quasar';
+import { date, QForm } from 'quasar';
 import { Money } from 'v-money';
 import { requiredRule } from 'src/composables/useInputRules';
 import fbs, { storageRef } from 'src/services/firebaseService';
 import firestoreCollection, { modelUiDataFactory, createAttrs } from 'src/firestoreCollection';
 import useStorageUpload from 'src/composables/useStorageUpload';
-import type { Event } from 'shared/types/modelData';
+import { notifyError, notifySuccess } from 'src/composables/useNotification';
+import type { Event, IBaseEvent } from 'shared/types/modelData';
 
 const createFileInput = (accept = '*') => {
   const el = document.createElement('input');
@@ -209,14 +209,14 @@ export default defineComponent({
       try {
         if (this.fileSelected) {
           const doc = firestoreCollection.Events.doc();
+          const filePathRef = await this.uploadFile(this.fileSelected, doc.id);
 
-          this.uploadFile(this.fileSelected, doc.id);
-
-          const baseEventData: Omit<Event, 'donation'> = {
+          const baseEventData: IBaseEvent = {
             title: this.eventTitle,
+            image: filePathRef,
             description: this.eventDescription,
+            organizer: this.eventOrganizer,
             url: this.eventURL || this.eventTitle,
-            image: this.eventThumbnail,
           };
 
           const data: Event = this.donation ? {
@@ -237,15 +237,27 @@ export default defineComponent({
 
           await doc.set({ ...data, ...createAttrs() });
         } else {
-          throw new Error('No file selected!');
+          throw new Error('No image selected!');
         }
 
         this.isLoading = false;
+        notifySuccess('Berhasil ditambahkan!');
+        (this.$refs.formEvent as QForm).reset();
+        this.$router.back();
       } catch (err) {
-        console.log(err);
-
         this.isLoading = false;
+        notifyError(err);
       }
+    },
+    onFormReset() {
+      this.eventTitle = '';
+      this.eventOrganizer = '';
+      this.eventDescription = '';
+      this.eventThumbnail = '';
+      this.eventURL = '';
+      this.donationTarget = 0;
+      this.donationDeadline = date.formatDate(Date.now(), 'DD/MM/YYYY');
+      this.fileSelected = null;
     },
     onFileInputChange() {
       const [file] = Array.from(this.vFileInput.files || []);
