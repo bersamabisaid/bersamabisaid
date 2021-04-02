@@ -10,7 +10,7 @@ export interface CreateTransactionRequestBody {
   donator: Donator;
   amount: number;
   message: string;
-  finishPaymentRedirectUrl?: string;
+  finishPaymentRedirectURL?: string;
 }
 
 export const isCreateTransactionRequestBody = function (data: any): data is CreateTransactionRequestBody {

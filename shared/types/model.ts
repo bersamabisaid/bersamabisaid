@@ -8,8 +8,8 @@ export interface TimestampedModel {
 
 export type Model<T> = T & TimestampedModel;
 
-export type ModelToJson<T> = Model<T> & {
-  uid: string;
+export type ModelInObject<T> = Model<T> & {
+  _uid: string;
 }
 
 export interface ModelUIData<T> {

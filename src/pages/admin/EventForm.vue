@@ -216,7 +216,7 @@ export default defineComponent({
             image: filePathRef,
             description: this.eventDescription,
             organizer: this.eventOrganizer,
-            url: this.eventURL || this.eventTitle,
+            URL: this.eventURL || this.eventTitle,
           };
 
           const data: Event = this.donation ? {

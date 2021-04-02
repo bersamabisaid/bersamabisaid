@@ -8,7 +8,7 @@ import { CreateTransactionRequestBody, isCreateTransactionRequestBody } from '..
 import type { ApiResponse } from '../../shared/types/model';
 
 type SuccessResponse = ApiResponse<{
-  redirectUrl: string;
+  redirectURL: string;
 }>;
 
 const buildUrl = ({ headers, url = '' }: VercelRequest) => {
@@ -36,7 +36,7 @@ const storeToFirestore = async (data: CreateTransactionRequestBody, redirecUrl: 
       }),
     },
     _system: {
-      finishPaymentRedirectUrl: redirecUrl,
+      finishPaymentRedirectURL: redirecUrl,
     },
   }));
 
@@ -47,7 +47,7 @@ const handler = hasRequiredBody(isCreateTransactionRequestBody, async (req, res)
   const { donator, ...data } = req.body;
 
   try {
-    const finishPaymentRedirectUrl = data.finishPaymentRedirectUrl || buildUrl(req as NowRequest);
+    const finishPaymentRedirectUrl = data.finishPaymentRedirectURL || buildUrl(req as NowRequest);
     const [, donationRef] = await storeToFirestore({ ...data, donator }, finishPaymentRedirectUrl);
     const transactionRedirectUrl = await midtrans.snap.createTransactionRedirectUrl({
       transaction_details: {
@@ -72,7 +72,7 @@ const handler = hasRequiredBody(isCreateTransactionRequestBody, async (req, res)
     res.json({
       success: true,
       message: '',
-      data: { redirectUrl: transactionRedirectUrl },
+      data: { redirectURL: transactionRedirectUrl },
     } as SuccessResponse);
   } catch (err) {
     /* eslint-disable @typescript-eslint/no-unsafe-assignment */

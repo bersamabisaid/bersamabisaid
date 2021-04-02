@@ -11,7 +11,7 @@ export interface Content {
   image: string;
   category: string;
   tags: string[];
-  url: string;
+  URL: string;
 }
 
 export interface IBaseEvent {
@@ -19,7 +19,7 @@ export interface IBaseEvent {
   image: string;
   description: string;
   organizer: string;
-  url: string;
+  URL: string;
 }
 
 export interface IDonationEvent {
@@ -95,7 +95,7 @@ export interface Donation {
     eventName: ModelUIHasRelation<string>;
   }>;
   _system: {
-    finishPaymentRedirectUrl: string;
+    finishPaymentRedirectURL: string;
   };
 }
 
