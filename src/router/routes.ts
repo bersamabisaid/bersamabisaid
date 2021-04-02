@@ -42,6 +42,12 @@ const routes: RouteConfig[] = [
         component: () => import('pages/admin/EventIndex.vue'),
       },
       {
+        path: 'events/donation',
+        name: 'AdminEventDonation',
+        component: () => import('pages/admin/EventIndex.vue'),
+        props: { donation: true },
+      },
+      {
         path: 'events/new',
         name: 'AdminEventAdd',
         component: () => import('pages/admin/EventForm.vue'),
