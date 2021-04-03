@@ -73,7 +73,10 @@
                   <!-- eslint-disable max-len -->
                   <router-link
                     class="cursor-pointer max-w-sm font-semibold text-sm text-primary truncate border-b-0 border-primary transition-all group-hover:border-b-2"
-                    :to="{name: 'AdminEventEdit', params: {programURL: props.row.url}}"
+                    :to="{
+                      name: donation ? 'AdminEventDonationEdit' : 'AdminEventEdit',
+                      params: {programURL: props.row._uid}
+                    }"
                   >
                     {{ props.value }}
                   </router-link>

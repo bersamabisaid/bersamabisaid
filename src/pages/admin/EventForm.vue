@@ -119,7 +119,7 @@
             size="lg"
             color="accent"
           />
-          <span>{{ !!uploadQueue.length ? 'Uploading image...' : 'Saving...' }}</span>
+          <span>{{ !!uploadQueue.length ? 'Uploading image...' : 'Processing...' }}</span>
         </div>
       </q-inner-loading>
     </q-form>
@@ -127,14 +127,19 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import {
+  defineComponent, computed,
+} from '@vue/composition-api';
 import { date, QForm } from 'quasar';
 import { Money } from 'v-money';
 import { requiredRule } from 'src/composables/useInputRules';
 import fbs, { storageRef } from 'src/services/firebaseService';
-import firestoreCollection, { modelUiDataFactory, createAttrs } from 'src/firestoreCollection';
+import firestoreCollection, { modelUiDataFactory, createAttrs, updateAttrs } from 'src/firestoreCollection';
 import useStorageUpload from 'src/composables/useStorageUpload';
+import useDocument from 'src/composables/useDocument';
 import { notifyError, notifySuccess } from 'src/composables/useNotification';
+import { getStorageFile } from 'src/composables/useStorage';
+import type { Model } from 'shared/types/model';
 import type { Event, IBaseEvent } from 'shared/types/modelData';
 
 const createFileInput = (accept = '*') => {
@@ -144,6 +149,12 @@ const createFileInput = (accept = '*') => {
 
   return el;
 };
+
+const DATE_FORMAT = 'DD/MM/YYYY';
+
+const dateToDateString = (d: Parameters<typeof date['formatDate']>[0]) => date.formatDate(d, DATE_FORMAT);
+
+const dateStringToDate = (d: string) => date.extractDate(d, DATE_FORMAT);
 
 export default defineComponent({
   name: 'PageAdminEventForm',
@@ -156,14 +167,42 @@ export default defineComponent({
       required: true,
     },
   },
-  setup() {
+  setup(props, { root }) {
     const { tasks, state, upload } = useStorageUpload(storageRef.Events);
+    const docId = computed<string | undefined>(() => root.$route.params.programURL);
+    const docRef = computed(() => firestoreCollection.Events.doc(docId.value));
+    const baseDefaults: Model<IBaseEvent> = {
+      title: '',
+      organizer: '',
+      description: '',
+      image: '',
+      URL: '',
+      ...createAttrs(),
+    };
+    const [dbData, isLoading] = useDocument(docRef, props.donation ? {
+      ...baseDefaults,
+      donation: true,
+      target: 0,
+      deadline: fbs.firestore.Timestamp.now(),
+      _ui: {
+        progress: modelUiDataFactory(0),
+        recentDonations: modelUiDataFactory([]),
+      },
+    } : {
+      ...baseDefaults,
+      donation: false,
+    });
+    const isNewDoc = computed(() => !docId.value);
 
     return {
       uploadQueue: tasks,
       processState: state,
       uploadFile: upload,
       requiredRule,
+      docRef,
+      dbData,
+      isLoading,
+      isNewDoc,
     };
   },
   data() {
@@ -174,11 +213,10 @@ export default defineComponent({
       eventThumbnail: '',
       eventURL: '',
       donationTarget: 0,
-      donationDeadline: date.formatDate(Date.now(), 'DD/MM/YYYY'),
+      donationDeadline: dateToDateString(Date.now()),
 
       vFileInput: createFileInput('image/*'),
       fileSelected: null as File | null,
-      isLoading: false,
       moneyFormat: {
         decimal: ',',
         thousands: '.',
@@ -207,47 +245,91 @@ export default defineComponent({
       this.isLoading = true;
 
       try {
-        if (this.fileSelected) {
-          const doc = firestoreCollection.Events.doc();
-          const filePathRef = await this.uploadFile(this.fileSelected, doc.id);
-
-          const baseEventData: IBaseEvent = {
-            title: this.eventTitle,
-            image: filePathRef,
-            description: this.eventDescription,
-            organizer: this.eventOrganizer,
-            URL: this.eventURL || this.eventTitle,
-          };
-
-          const data: Event = this.donation ? {
-            ...baseEventData,
-            donation: this.donation,
-            target: this.donationTarget,
-            deadline: fbs.firestore.Timestamp.fromDate(
-              date.extractDate(this.donationDeadline, 'DD/MM/YYYY'),
-            ),
-            _ui: {
-              progress: modelUiDataFactory(0),
-              recentDonations: modelUiDataFactory([]),
-            },
-          } : {
-            ...baseEventData,
-            donation: this.donation,
-          };
-
-          await doc.set({ ...data, ...createAttrs() });
-        } else {
-          throw new Error('No image selected!');
-        }
+        if (this.isNewDoc) await this.create();
+        else await this.update();
 
         this.isLoading = false;
-        notifySuccess('Berhasil ditambahkan!');
+        notifySuccess(this.isNewDoc ? 'Berhasil ditambahkan!' : 'Berhasil diperbarui!');
         (this.$refs.formEvent as QForm).reset();
         this.$router.back();
       } catch (err) {
         this.isLoading = false;
         notifyError(err);
       }
+    },
+    async update() {
+      const filePathRef = this.fileSelected && await this.uploadFile(this.fileSelected, this.docRef.id);
+
+      const baseEventData: IBaseEvent = {
+        title: this.eventTitle,
+        image: filePathRef || this.eventThumbnail,
+        description: this.eventDescription,
+        organizer: this.eventOrganizer,
+        URL: this.eventURL || this.eventTitle,
+      };
+
+      const data: Partial<Event> = this.donation ? {
+        ...baseEventData,
+        target: this.donationTarget || null,
+        deadline: fbs.firestore.Timestamp.fromDate(dateStringToDate(this.donationDeadline)),
+      } : {
+        ...baseEventData,
+      };
+
+      await this.docRef.set({ ...data, ...updateAttrs() }, { merge: true });
+    },
+    async create() {
+      if (this.fileSelected) {
+        const filePathRef = await this.uploadFile(this.fileSelected, this.docRef.id);
+
+        const baseEventData: IBaseEvent = {
+          title: this.eventTitle,
+          image: filePathRef,
+          description: this.eventDescription,
+          organizer: this.eventOrganizer,
+          URL: this.eventURL || this.eventTitle,
+        };
+
+        const data: Event = this.donation ? {
+          ...baseEventData,
+          donation: this.donation,
+          target: this.donationTarget || null,
+          deadline: fbs.firestore.Timestamp.fromDate(dateStringToDate(this.donationDeadline)),
+          _ui: {
+            progress: modelUiDataFactory(0),
+            recentDonations: modelUiDataFactory([]),
+          },
+        } : {
+          ...baseEventData,
+          donation: this.donation,
+        };
+
+        await this.docRef.set({ ...data, ...createAttrs() });
+      } else {
+        throw new Error('No image selected!');
+      }
+    },
+    syncForm() {
+      this.isLoading = true;
+      this.eventTitle = this.dbData.title;
+      this.eventOrganizer = this.dbData.organizer;
+      this.eventDescription = this.dbData.description;
+      this.eventThumbnail = this.dbData.image;
+      this.eventURL = this.dbData.URL;
+
+      if (this.dbData.donation) {
+        this.donationTarget = this.dbData.target || 0;
+        this.donationDeadline = dateToDateString(this.dbData.deadline?.toMillis() || Date.now());
+      }
+
+      const thumbnailPathRef = storageRef.root.child(this.dbData.image);
+
+      getStorageFile(thumbnailPathRef)
+        .then(({ URL }) => {
+          this.eventThumbnail = URL;
+        }).finally(() => {
+          this.isLoading = false;
+        });
     },
     onFormReset() {
       this.eventTitle = '';
@@ -256,7 +338,7 @@ export default defineComponent({
       this.eventThumbnail = '';
       this.eventURL = '';
       this.donationTarget = 0;
-      this.donationDeadline = date.formatDate(Date.now(), 'DD/MM/YYYY');
+      this.donationDeadline = dateToDateString(Date.now());
       this.fileSelected = null;
     },
     onFileInputChange() {
@@ -268,6 +350,11 @@ export default defineComponent({
   },
   created() {
     this.vFileInput.addEventListener('change', () => this.onFileInputChange());
+  },
+  watch: {
+    dbData() {
+      this.syncForm();
+    },
   },
   components: {
     Money,
