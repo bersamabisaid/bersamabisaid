@@ -44,8 +44,9 @@
         </header>
 
         <main class="w-full">
-          <section class="h-auto bg-white">
-            <div class="container mx-auto px-4">
+          <section class="h-auto">
+            <div class="absolute w-full h-screen bg-transparent" />
+            <div class="container relative mx-auto px-4">
               <div class="flex justify-center q-pa-md">
                 <div class="text-center">
                   <h6 class="text-4xl font-bold text-blue-900">
@@ -57,10 +58,17 @@
                 </div>
               </div>
 
-              <div class="py-8 flex justify-center">
+              <div class="py-8 flex justify-center w-full bg-blue-400">
                 <vue-glide
                   type="carousel"
                   per-view="4"
+                  class="px-2"
+                  :breakpoints="{
+                    640: { perView: 1 },
+                    758: { perView: 2 },
+                    1024: { perView: 3 },
+                    1280: { perView: 4 }
+                  }"
                 >
                   <vue-glide-slide
                     v-for="(event, i) in events"
@@ -120,10 +128,17 @@
                   </span>
                 </div>
               </div>
-              <div class="py-8 flex justify-center">
+              <div class="py-8 flex justify-center bg-yellow-400">
                 <vue-glide
                   type="carousel"
                   per-view="4"
+                  class="px-2"
+                  :breakpoints="{
+                    640: { perView: 1 },
+                    758: { perView: 2 },
+                    1024: { perView: 3 },
+                    1280: { perView: 4 }
+                  }"
                 >
                   <vue-glide-slide
                     v-for="(event, i) in events"
@@ -175,7 +190,8 @@ import { defineComponent } from '@vue/composition-api';
 import BaseNavbar from 'components/BaseNavbar.vue';
 import BaseFooter from 'components/BaseFooter.vue';
 import CardProgram, { CardProgramProps } from 'components/CardProgram.vue';
-import { Glide, GlideSlide } from 'vue-glide-js';
+import VueGlide, { Glide, GlideSlide } from 'vue-glide-js';
+import 'vue-glide-js/dist/vue-glide.css';
 
 const events: CardProgramProps[] = [
   {
@@ -224,9 +240,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-// @import 'node_modules/@glidejs/glide/src/assets/sass/glide.core';
-@import '~@glidejs/glide/src/assets/sass/glide.theme';
-@import '~vue-glide-js/dist/vue-glide.css';
+@import "node_modules/@glidejs/glide/src/assets/sass/glide.core";
+@import "node_modules/@glidejs/glide/src/assets/sass/glide.theme";
 
 @layer components {
   .card-program__grid {
