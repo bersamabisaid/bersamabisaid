@@ -1,5 +1,5 @@
 import {
-  computed, ComputedRef, isRef, onMounted, ref,
+  computed, ComputedRef, isRef, ref, watch,
 } from '@vue/composition-api';
 import type fb from 'firebase';
 
@@ -29,7 +29,7 @@ export default function useDocument<T = unknown>(
     loading.value = false;
   };
 
-  onMounted(() => update());
+  watch(dbRef, () => update(), { immediate: true });
 
   return [
     data,
