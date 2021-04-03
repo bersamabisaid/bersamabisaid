@@ -59,7 +59,7 @@
         />
 
         <q-input
-          v-model="eventURL"
+          v-model="programURL"
           label="Link program"
           :hint="finalEventURL"
           dense
@@ -132,6 +132,7 @@ import {
 } from '@vue/composition-api';
 import { date, QForm } from 'quasar';
 import { Money } from 'v-money';
+import _kebabCase from 'lodash/kebabCase';
 import { requiredRule } from 'src/composables/useInputRules';
 import fbs, { storageRef } from 'src/services/firebaseService';
 import firestoreCollection, { modelUiDataFactory, createAttrs, updateAttrs } from 'src/firestoreCollection';
@@ -227,11 +228,19 @@ export default defineComponent({
     };
   },
   computed: {
+    programURL: {
+      get(): string {
+        return this.eventURL || _kebabCase(this.eventTitle).toLowerCase();
+      },
+      set(val: string) {
+        this.eventURL = _kebabCase(val).toString();
+      },
+    },
     finalEventURL(): string {
       if (this.eventURL || this.eventTitle) {
         const { href } = this.$router.resolve({
           name: 'Program',
-          params: { programURL: (this.eventURL || this.eventTitle) },
+          params: { programURL: this.programURL },
         });
 
         return href;
@@ -258,14 +267,14 @@ export default defineComponent({
       }
     },
     async update() {
-      const filePathRef = this.fileSelected && await this.uploadFile(this.fileSelected, this.docRef.id);
+      const newFilePathRef = this.fileSelected && await this.uploadFile(this.fileSelected, this.docRef.id);
 
-      const baseEventData: IBaseEvent = {
+      const baseEventData: Partial<IBaseEvent> = {
         title: this.eventTitle,
-        image: filePathRef || this.eventThumbnail,
         description: this.eventDescription,
         organizer: this.eventOrganizer,
-        URL: this.eventURL || this.eventTitle,
+        URL: this.programURL,
+        ...(newFilePathRef && { image: newFilePathRef }),
       };
 
       const data: Partial<Event> = this.donation ? {
@@ -287,7 +296,7 @@ export default defineComponent({
           image: filePathRef,
           description: this.eventDescription,
           organizer: this.eventOrganizer,
-          URL: this.eventURL || this.eventTitle,
+          URL: this.programURL,
         };
 
         const data: Event = this.donation ? {
