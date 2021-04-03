@@ -97,9 +97,7 @@
 
     <template #default>
       <transition :enter-active-class="routeTransitionName">
-        <keep-alive>
-          <router-view />
-        </keep-alive>
+        <router-view />
       </transition>
     </template>
   </minimalist-layout>
@@ -140,7 +138,7 @@ const drawerItems: NavItem[] = [
       {
         label: 'Program donasi',
         icon: 'attach_money',
-        to: { name: 'AdminEventIndex', query: { donation: true } },
+        to: { name: 'AdminEventDonation' },
         exact: true,
       },
     ],
