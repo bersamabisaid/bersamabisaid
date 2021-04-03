@@ -58,7 +58,7 @@
                 </div>
               </div>
 
-              <div class="py-8 flex justify-center w-full bg-blue-400">
+              <div class="py-8 flex justify-center">
                 <vue-glide
                   type="carousel"
                   per-view="4"
@@ -128,7 +128,7 @@
                   </span>
                 </div>
               </div>
-              <div class="py-8 flex justify-center bg-yellow-400">
+              <div class="py-8 flex justify-center">
                 <vue-glide
                   type="carousel"
                   per-view="4"
@@ -190,7 +190,7 @@ import { defineComponent } from '@vue/composition-api';
 import BaseNavbar from 'components/BaseNavbar.vue';
 import BaseFooter from 'components/BaseFooter.vue';
 import CardProgram, { CardProgramProps } from 'components/CardProgram.vue';
-import VueGlide, { Glide, GlideSlide } from 'vue-glide-js';
+import { Glide, GlideSlide } from 'vue-glide-js';
 import 'vue-glide-js/dist/vue-glide.css';
 
 const events: CardProgramProps[] = [
