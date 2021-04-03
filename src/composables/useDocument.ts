@@ -1,22 +1,25 @@
-import { onMounted, ref } from '@vue/composition-api';
+import {
+  computed, ComputedRef, isRef, onMounted, ref,
+} from '@vue/composition-api';
 import type fb from 'firebase';
 
 type Options = fb.firestore.GetOptions & {
 }
 
 export default function useDocument<T = unknown>(
-  docRef: fb.firestore.DocumentReference<T>,
+  docRef: fb.firestore.DocumentReference<T> | ComputedRef<fb.firestore.DocumentReference<T>>,
   initialValue: T | null = null,
   { ...getOptions }: Options = {},
 ) {
-  const data = ref(initialValue);
+  const dbRef = computed(() => (isRef(docRef) ? docRef.value : docRef));
+  const data = ref(initialValue as typeof initialValue extends null ? (T | null) : T);
   const error = ref<fb.firestore.FirestoreError | null>(null);
   const loading = ref(true);
   const update = async () => {
     loading.value = true;
 
     try {
-      const docSnapshot = await docRef.get(getOptions);
+      const docSnapshot = await dbRef.value.get(getOptions);
       data.value = (docSnapshot.data() || null) as typeof data['value'];
     } catch (err) {
       console.log('%cuseDocument error!', 'color: red;');
