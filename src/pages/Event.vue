@@ -264,8 +264,8 @@ export default defineComponent({
     };
   },
   computed: {
-    programUrl(): string {
-      return this.$route.params.programUrl;
+    programURL(): string {
+      return this.$route.params.programURL;
     },
     url(): string {
       // eslint-disable-next-line no-restricted-globals
@@ -277,7 +277,7 @@ export default defineComponent({
       return {
         name: 'Payment',
         query: {
-          eventId: this.programUrl,
+          eventId: this.programURL,
         },
       };
     },

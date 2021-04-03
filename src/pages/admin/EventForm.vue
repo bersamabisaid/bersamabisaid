@@ -231,7 +231,7 @@ export default defineComponent({
       if (this.eventURL || this.eventTitle) {
         const { href } = this.$router.resolve({
           name: 'Program',
-          params: { programUrl: (this.eventURL || this.eventTitle) },
+          params: { programURL: (this.eventURL || this.eventTitle) },
         });
 
         return href;

@@ -20,7 +20,7 @@ export default function useDocument<T = unknown>(
 
     try {
       const docSnapshot = await dbRef.value.get(getOptions);
-      data.value = (docSnapshot.data() || null) as typeof data['value'];
+      data.value = (docSnapshot.data() || initialValue) as typeof data['value'];
     } catch (err) {
       console.log('%cuseDocument error!', 'color: red;');
       error.value = err as fb.firestore.FirestoreError;

@@ -16,7 +16,7 @@ const routes: RouteConfig[] = [
         component: () => import('pages/EventList.vue'),
       },
       {
-        path: '/program/:programUrl',
+        path: '/program/:programURL',
         name: 'Program',
         component: () => import('pages/Event.vue'),
       },

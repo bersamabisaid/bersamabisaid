@@ -85,7 +85,7 @@ export default defineComponent({
       // it means prior to 'to' property
       return this.to
         || (this.url
-          ? { name: 'Program', params: { programUrl: this.url } }
+          ? { name: 'Program', params: { programURL: this.url } }
           : { name: 'ProgramList', query: { notFound: 'true' } });
     },
   },

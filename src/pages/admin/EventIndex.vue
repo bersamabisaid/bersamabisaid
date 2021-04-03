@@ -40,7 +40,7 @@
               key="Tambah program"
               label="Tambah program"
               icon="add"
-              :to="{name: $route.query.donation ? 'AdminEventAddDonation' : 'AdminEventAdd'}"
+              :to="{name: donation ? 'AdminEventAddDonation' : 'AdminEventAdd'}"
               flat
               rounded
               class="bg-green-100 text-dark"
@@ -68,21 +68,38 @@
             bordered
           >
             <template #body-cell-title="props">
-              <q-td :props="props">
-                <div class="group flex items-center">
+              <q-td
+                class="group"
+                :props="props"
+              >
+                <div class="flex items-center">
                   <!-- eslint-disable max-len -->
                   <router-link
-                    class="cursor-pointer max-w-sm font-semibold text-sm text-primary truncate border-b-0 border-primary transition-all group-hover:border-b-2"
+                    class="cursor-pointer max-w-sm font-semibold text-sm text-primary truncate border-b-0 border-primary transition-all flex items-center gap-x-1 group-hover:border-b-2"
+                    :to="{
+                      name: 'Program',
+                      params: {programURL: props.row.URL}
+                    }"
+                    target="_blank"
+                  >
+                    <span>{{ props.value }}</span>
+                    <q-icon
+                      :name="roundOpenInNew"
+                      class="opacity-0 font-medium text-xs text-primary transition-opacity group-hover:opacity-100"
+                    />
+                  </router-link>
+                  <q-btn
+                    label="Edit"
+                    :icon="roundEdit"
                     :to="{
                       name: donation ? 'AdminEventDonationEdit' : 'AdminEventEdit',
                       params: {programURL: props.row._uid}
                     }"
-                  >
-                    {{ props.value }}
-                  </router-link>
-                  <span class="opacity-0 ml-3 font-medium text-xs text-primary text-opacity-60 tracking-tight transition-opacity group-hover:opacity-100">
-                    Lihat detail/Edit
-                  </span>
+                    flat
+                    no-caps
+                    size="sm"
+                    class="opacity-0 ml-3 bg-opacity-80 font-medium text-blue-500 transition-opacity group-hover:opacity-100"
+                  />
                   <!-- eslint-enable max-len -->
                 </div>
               </q-td>
@@ -108,6 +125,7 @@
 
 <script lang="ts">
 import { defineComponent, watch, computed } from '@vue/composition-api';
+import { roundOpenInNew, roundEdit } from '@quasar/extras/material-icons-round';
 import firestoreCollection from 'src/firestoreCollection';
 import useCollection from 'src/composables/useCollection';
 import { notifyError } from 'src/composables/useNotification';
@@ -193,6 +211,9 @@ export default defineComponent({
       data,
       isDataLoading,
       columns: columnDefinition,
+
+      roundOpenInNew,
+      roundEdit,
     };
   },
   data() {
