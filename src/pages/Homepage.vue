@@ -19,13 +19,17 @@
           <div class="container relative mx-auto">
             <div class="text-white text-center justify-center flex flex-wrap">
               <div class="q-gutter-y-md">
-                <span class="font-medium text-4xl">
-                  #HADIR UNTUK KEBAIKAN
-                </span>
+                <div>
+                  <span class="font-medium text-4xl">
+                    #HADIR UNTUK KEBAIKAN
+                  </span>
+                </div>
 
-                <h1 class="font-extrabold text-7xl">
-                  BERSAMABISA.ID
-                </h1>
+                <div>
+                  <h1 class="font-extrabold text-7xl">
+                    BERSAMABISA.ID
+                  </h1>
+                </div>
 
                 <div class="font-medium text-2xl">
                   <p>BERSAMA HADIRKAN KEBAIKAN UNTUK</p>
@@ -65,9 +69,8 @@
                   class="px-2"
                   :breakpoints="{
                     640: { perView: 1 },
-                    758: { perView: 2 },
-                    1024: { perView: 3 },
-                    1280: { perView: 4 }
+                    1023: { perView: 2 },
+                    1280: { perView: 3 }
                   }"
                 >
                   <vue-glide-slide
@@ -135,9 +138,8 @@
                   class="px-2"
                   :breakpoints="{
                     640: { perView: 1 },
-                    758: { perView: 2 },
-                    1024: { perView: 3 },
-                    1280: { perView: 4 }
+                    1023: { perView: 2 },
+                    1280: { perView: 3 }
                   }"
                 >
                   <vue-glide-slide
