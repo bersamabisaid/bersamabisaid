@@ -46,6 +46,17 @@ export type EventDonation = IBaseEvent & IDonationEvent & {
 
 export const isEventDonation = (data: Event): data is EventDonation => data.donation;
 
+export interface EventNews {
+  title: string;
+  /**
+   * max 200 characters
+   */
+  description: string;
+  timestamp: fb.firestore.Timestamp;
+  imgURL?: string;
+  URL?: string;
+}
+
 export interface Address {
   country: string;
   province: string;
@@ -102,7 +113,12 @@ export interface Donation {
 export interface DonationUI {
   name: string;
   amount: number;
+  /**
+   * max 200 characters
+   */
   message: string;
-  // will be taken from _created property
+  /*
+   * will be taken from _created property
+   */
   timestamp: fb.firestore.Timestamp;
 }

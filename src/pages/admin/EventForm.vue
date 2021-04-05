@@ -130,17 +130,18 @@
 import {
   defineComponent, computed,
 } from '@vue/composition-api';
-import { date, QForm } from 'quasar';
+import { QForm } from 'quasar';
 import { Money } from 'v-money';
 import _kebabCase from 'lodash/kebabCase';
 import { requiredRule } from 'src/composables/useInputRules';
 import fbs, { storageRef } from 'src/services/firebaseService';
 import firestoreCollection, { modelUiDataFactory, createAttrs, updateAttrs } from 'src/firestoreCollection';
+import { eventDataRepo } from 'src/dataRepositories';
 import useStorageUpload from 'src/composables/useStorageUpload';
 import useDocument from 'src/composables/useDocument';
 import { notifyError, notifySuccess } from 'src/composables/useNotification';
 import { getStorageFile } from 'src/composables/useStorage';
-import type { Model } from 'shared/types/model';
+import { dateToDateString, dateStringToDate } from 'shared/utils/formatter';
 import type { Event, IBaseEvent } from 'shared/types/modelData';
 
 const createFileInput = (accept = '*') => {
@@ -150,12 +151,6 @@ const createFileInput = (accept = '*') => {
 
   return el;
 };
-
-const DATE_FORMAT = 'DD/MM/YYYY';
-
-const dateToDateString = (d: Parameters<typeof date['formatDate']>[0]) => date.formatDate(d, DATE_FORMAT);
-
-const dateStringToDate = (d: string) => date.extractDate(d, DATE_FORMAT);
 
 export default defineComponent({
   name: 'PageAdminEventForm',
@@ -172,27 +167,9 @@ export default defineComponent({
     const { tasks, state, upload } = useStorageUpload(storageRef.Events);
     const docId = computed<string | undefined>(() => root.$route.params.programURL);
     const docRef = computed(() => firestoreCollection.Events.doc(docId.value));
-    const baseDefaults: Model<IBaseEvent> = {
-      title: '',
-      organizer: '',
-      description: '',
-      image: '',
-      URL: '',
-      ...createAttrs(),
-    };
-    const [dbData, isLoading] = useDocument(docRef, props.donation ? {
-      ...baseDefaults,
-      donation: true,
-      target: 0,
-      deadline: fbs.firestore.Timestamp.now(),
-      _ui: {
-        progress: modelUiDataFactory(0),
-        recentDonations: modelUiDataFactory([]),
-      },
-    } : {
-      ...baseDefaults,
-      donation: false,
-    });
+    const [dbData, isLoading] = useDocument(docRef, props.donation
+      ? eventDataRepo.defaultDonationModelData()
+      : eventDataRepo.defaultCommonModelData());
     const isNewDoc = computed(() => !docId.value);
 
     return {

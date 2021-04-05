@@ -82,7 +82,9 @@ const routes: RouteConfig[] = [
   // Always leave this as last one,
   // but you can also remove it
   {
-    path: '*',
+    name: '404',
+    path: '/404',
+    alias: '*',
     component: () => import('pages/Error404.vue'),
   },
 ];

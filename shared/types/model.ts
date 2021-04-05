@@ -12,7 +12,7 @@ export type ModelInObject<T> = Model<T> & {
   _uid: string;
 }
 
-export interface ModelUIData<T> {
+export interface ModelUIData<T = unknown> {
   value: T;
   lastUpdate: fb.firestore.Timestamp;
   expiration: fb.firestore.Timestamp | null;

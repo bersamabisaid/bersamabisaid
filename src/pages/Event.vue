@@ -9,27 +9,42 @@
       class="w-full max-w-4xl mr-32 border-b-8 border-r-2 border-info rounded-3xl shadow"
     >
       <q-img
-        src="https://picsum.photos/600"
+        :src="imgURL"
         :ratio="16/9"
+        class="bg-blue-gray-200"
       />
 
       <q-card-section>
         <h1 class="mt-2 mb-3 lg:m-2 pl-4 lg:pl-6 py-2 font-extrabold text-4xl text-primary border-l-4 border-positive">
-          Pray for Uyghur
+          {{ eventData.title }}
         </h1>
 
-        <div class="w-full px-4 pt-3 lg:pt-2 flex flex-col">
+        <div
+          v-if="eventData.donation"
+          class="w-full px-4 pt-3 lg:pt-2 flex flex-col"
+        >
           <div class="pb-2 flex justify-between">
             <div>
-              <span class="font-bold text-positive">Rp 1000 0000</span>
+              <span class="font-bold text-positive">{{ toIdr(eventData._ui.progress.value, 0) }}</span>
               <span class="font-normal"> terkumpul</span>
             </div>
-            <span class="font-bold text-positive">Rp 2000 0000</span>
+            <span class="font-bold text-positive">{{ eventData.target ? toIdr(eventData.target, 0) : '∞' }}</span>
           </div>
 
-          <q-linear-progress :value=".6" />
+          <div class="flex flex-nowrap items-center gap-x-2">
+            <q-linear-progress
+              v-if="eventData.target"
+              :value="progressPercentage"
+              class="flex-grow"
+            />
+            <q-icon
+              name="check_circle"
+              size="xs"
+              :class="[progressPercentage >= 100 ? 'text-positive' : 'text-blue-gray-300']"
+            />
+          </div>
 
-          <span class="self-end mt-1.5 text-sm lg:text-base text-dark text-opacity-60">tersisa 7 hari lagi</span>
+          <span class="self-end mt-1.5 text-sm text-dark text-opacity-60">{{ dayRemainingMessage }}</span>
         </div>
 
         <section class="lg:px-2 pt-4 lg:pt-6 pb-10">
@@ -54,8 +69,9 @@
               class="program__tab"
             />
             <q-tab
+              v-if="eventData.donation"
               name="donatur"
-              label="Donatur (2313)"
+              :label="`Donatur (${donaturList.length})`"
               class="program__tab"
             />
           </q-tabs>
@@ -64,157 +80,54 @@
 
           <q-tab-panels
             v-model="tab"
+            keep-alive
             animated
             class="py-4 px-2 md:p-6 bg-secondary bg-opacity-70 rounded-b-xl"
           >
-            <q-tab-panel name="tentang">
-              <article>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-              </article>
+            <q-tab-panel
+              name="tentang"
+              class="bg-white rounded-xl shadow-sm"
+            >
+              <!-- eslint-disable-next-line vue/no-v-html -->
+              <article v-html="eventData.description" />
             </q-tab-panel>
 
             <q-tab-panel name="berita">
               <article>
                 <q-timeline color="secondary">
                   <q-timeline-entry
-                    title="Event Title"
-                    subtitle="February 22, 1986"
+                    v-for="(el, i) in news"
+                    :key="`${i}-${el.title}`"
+                    :title="el.title"
+                    :subtitle="el.timestamp.toDate().toLocaleString()"
                   >
-                    <div>
-                      Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                    </div>
+                    <news-item v-bind="el" />
                   </q-timeline-entry>
 
-                  <q-timeline-entry
-                    title="Event Title"
-                    subtitle="February 21, 1986"
-                  >
-                    <div>
-                      Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                    </div>
-                  </q-timeline-entry>
-
-                  <q-timeline-entry heading>
+                  <!-- <q-timeline-entry heading>
                     November, 2017
-                  </q-timeline-entry>
-
-                  <q-timeline-entry
-                    title="Event Title"
-                    subtitle="February 22, 1986"
-                  >
-                    <div>
-                      Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                    </div>
-                  </q-timeline-entry>
-
-                  <q-timeline-entry
-                    title="Event Title"
-                    subtitle="February 22, 1986"
-                  >
-                    <div>
-                      Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                    </div>
-                  </q-timeline-entry>
-
-                  <q-timeline-entry
-                    title="Event Title"
-                    subtitle="February 22, 1986"
-                    color="orange"
-                  >
-                    <div>
-                      Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                    </div>
-                  </q-timeline-entry>
-
-                  <q-timeline-entry
-                    title="Event Title"
-                    subtitle="February 22, 1986"
-                  >
-                    <div>
-                      Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                    </div>
-                  </q-timeline-entry>
-
-                  <q-timeline-entry
-                    title="Event Title"
-                    subtitle="February 22, 1986"
-                  >
-                    <div>
-                      Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                    </div>
-                  </q-timeline-entry>
+                  </q-timeline-entry> -->
                 </q-timeline>
               </article>
             </q-tab-panel>
 
-            <q-tab-panel name="donatur">
+            <q-tab-panel
+              v-if="eventData.donation"
+              name="donatur"
+            >
               <q-list class="flex flex-col gap-y-4">
-                <q-item class="p-4 bg-white rounded-xl">
-                  <q-item-section avatar>
-                    <q-avatar
-                      color="secondary"
-                      text-color="white"
-                    >
-                      A
-                    </q-avatar>
-                  </q-item-section>
-
-                  <q-item-section>
-                    <q-item-label>
-                      <span class="font-medium">Djarwo</span>
-                      <span class="ml-4 font-light text-xs text-gray-400 italic">2 min ago</span>
-                    </q-item-label>
-                    <q-item-label caption>
-                      <p>
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos laudantium, similique sed ab aliquid deserunt ipsa eveniet accusamus. Est, earum eligendi. Natus perferendis quis vel ad velit dolore. Temporibus, voluptates!
-                      </p>
-                    </q-item-label>
-                  </q-item-section>
-
-                  <q-item-section
-                    side
-                    top
-                    class="font-bold text-primary"
-                  >
-                    Rp 1000.0000
-                  </q-item-section>
-                </q-item>
-
-                <q-item class="p-4 bg-white rounded-xl">
-                  <q-item-section avatar>
-                    <q-avatar
-                      color="secondary"
-                      text-color="white"
-                    >
-                      A
-                    </q-avatar>
-                  </q-item-section>
-
-                  <q-item-section>
-                    <q-item-label>
-                      <span class="font-medium">Djarwo</span>
-                      <span class="ml-4 font-light text-xs text-gray-400 italic">10 Agustus 2001</span>
-                    </q-item-label>
-                    <q-item-label caption>
-                      <p>
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos laudantium, similique sed ab aliquid deserunt ipsa eveniet accusamus. Est, earum eligendi. Natus perferendis quis vel ad velit dolore. Temporibus, voluptates!
-                      </p>
-                    </q-item-label>
-                  </q-item-section>
-
-                  <q-item-section
-                    side
-                    top
-                    class="font-bold text-primary"
-                  >
-                    Rp 1000.0000
-                  </q-item-section>
-                </q-item>
+                <donation-item
+                  v-for="(el, i) in donaturList"
+                  :key="`${i}-${el.name}`"
+                  v-bind="el"
+                />
               </q-list>
             </q-tab-panel>
           </q-tab-panels>
         </section>
       </q-card-section>
+
+      <q-inner-loading :showing="isDataLoading" />
     </q-card>
 
     <q-page-sticky :position="$q.screen.width > $q.screen.sizes.md ? 'top-right' : 'bottom'">
@@ -244,20 +157,134 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import {
+  defineComponent, ref, onMounted, computed,
+} from '@vue/composition-api';
+import { Loading, date } from 'quasar';
+import { preFetch } from 'quasar/wrappers';
 import { mdiFacebook, mdiWhatsapp, mdiTwitter } from '@quasar/extras/mdi-v5';
 import SocialShare from 'components/SocialShare.vue';
+import DonationItem, { DonationItemProps } from 'components/ui/Event/DonationItem.vue';
+import NewsItem from 'components/ui/Event/NewsItem.vue'
+import firestoreCollection from 'src/firestoreCollection';
+import { eventDataRepo } from 'src/dataRepositories';
+import fbs, { storageRef } from 'src/services/firebaseService';
+import { getStorageFile } from 'src/composables/useStorage';
+import { createSingleton } from 'shared/utils/pattern';
+import { toIdr } from 'shared/utils/formatter';
+import {
+  Event, EventDonation, EventNews, isEventDonation,
+} from 'shared/types/modelData';
 import type { RawLocation } from 'vue-router';
+import type { Store } from 'vuex';
+import type { StateInterface } from 'src/store';
+import type { Model } from 'shared/types/model';
+
+const getEventByURL = async (programURL: string) => {
+  const query = firestoreCollection.Events.where('URL', '==', programURL).limit(1);
+  const { docs: [eventDoc] } = await query.get();
+
+  if (eventDoc) {
+    const docData = eventDoc.data();
+    const { URL } = await getStorageFile(storageRef.root.child(docData.image));
+
+    return {
+      data: docData,
+      imgURL: URL,
+    };
+  }
+
+  return undefined;
+};
+
+const setupData = createSingleton(() => {
+  const called = ref(false);
+  const data = ref<Model<Event>>(eventDataRepo.defaultCommonModelData());
+  const imgURL = ref('');
+
+  /**
+   * Return true if there's data update
+   */
+  const syncData = async (programURL: string) => {
+    called.value = true;
+    const eventData = await getEventByURL(programURL);
+
+    if (eventData) {
+      data.value = eventData.data;
+      imgURL.value = eventData.imgURL;
+
+      return true;
+    }
+    return false;
+  };
+
+  return {
+    data,
+    imgURL,
+    syncData,
+    called: computed(() => called.value),
+  };
+});
+
+const news: EventNews[] = Array.from(Array(10), () => ({
+  title: 'Event Title',
+  description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit.',
+  timestamp: fbs.firestore.Timestamp.now(),
+  ...(Math.random() > 0.5 ? { imgURL: 'https://picsum.photos/300' } : null),
+}));
+
+const donaturList: DonationItemProps[] = [
+  {
+    name: 'Djarwo',
+    amount: 1_000_000,
+    message: 'Lorem ipsum dolor sit amet',
+    timestamp: fbs.firestore.Timestamp.now(),
+  },
+];
 
 export default defineComponent({
   name: 'PageEventDetail',
-  setup() {
+  setup(props, { root }) {
+    const {
+      data, imgURL, syncData, called,
+    } = setupData();
+    const isDataLoading = ref(true);
+
+    onMounted(async () => {
+      isDataLoading.value = true;
+      if (!called.value) {
+        const { programURL } = root.$route.params;
+        const isInitialized = await syncData(programURL);
+
+        if (!isInitialized) {
+          await root.$router.push({ name: '404' });
+        }
+      }
+      isDataLoading.value = false;
+    });
+
     return {
+      eventData: data,
+      imgURL,
+      toIdr,
+      news,
+      donaturList,
+      isDataLoading,
+
       mdiFacebook,
       mdiWhatsapp,
       mdiTwitter,
     };
   },
+  preFetch: preFetch<Store<StateInterface>>(async ({ currentRoute, redirect }) => {
+    Loading.show();
+    const eventId = currentRoute.params.programURL;
+    const isInitialized = await setupData().syncData(eventId);
+
+    Loading.hide();
+
+    return isInitialized ? undefined : redirect({ name: '404' });
+  }),
   data() {
     return {
       tab: 'tentang',
@@ -281,6 +308,31 @@ export default defineComponent({
         },
       };
     },
+    dayRemaining(): number {
+      if ((this.eventData as EventDonation).deadline) {
+        const deadlineDate = (this.eventData as EventDonation).deadline!.toDate();
+        const diff = date.getDateDiff(deadlineDate, new Date(), 'days');
+
+        return diff;
+      }
+
+      return Infinity;
+    },
+    dayRemainingMessage(): string {
+      return this.dayRemaining === Infinity
+        ? '-'
+        : `tersisa ${this.dayRemaining} hari lagi`;
+    },
+    progressPercentage(): number {
+      if (isEventDonation(this.eventData)) {
+        const progress = this.eventData._ui.progress.value || this.eventData.target || 0;
+        const target = this.eventData.target || 1;
+
+        return (progress / target) * 100;
+      }
+
+      return 0;
+    },
   },
   mounted() {
     if (this.$route.query.tab) {
@@ -289,6 +341,8 @@ export default defineComponent({
   },
   components: {
     SocialShare,
+    DonationItem,
+    NewsItem,
   },
 });
 </script>
@@ -317,6 +371,13 @@ export default defineComponent({
       .q-tabs__arrow {
         @apply text-blue-600;
       }
+    }
+
+  }
+
+  .q-timeline {
+    &__title {
+      @apply mb-2 font-semibold text-primary;
     }
   }
 
