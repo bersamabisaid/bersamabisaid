@@ -17,21 +17,19 @@
           </nav>
 
           <div class="container relative mx-auto">
-            <div class="text-white text-center justify-center flex flex-wrap">
-              <div class="q-gutter-y-md">
-                <div>
-                  <span class="font-medium text-4xl">
-                    #HADIR UNTUK KEBAIKAN
-                  </span>
-                </div>
+            <div class="text-white text-center justify-center">
+              <div class="q-gutter-y-md mx-2">
+                <span class="font-medium text-3xl md:text-4xl">
+                  #HADIR UNTUK KEBAIKAN
+                </span>
 
                 <div>
-                  <h1 class="font-extrabold text-7xl">
+                  <h1 class="font-extrabold text-4xl break-words md:text-7xl">
                     BERSAMABISA.ID
                   </h1>
                 </div>
 
-                <div class="font-medium text-2xl">
+                <div class="font-medium text-xl md:text-2xl">
                   <p>BERSAMA HADIRKAN KEBAIKAN UNTUK</p>
                   <p>INDONESIA YANG LEBIH BERDAYA</p>
                 </div>
