@@ -1,19 +1,17 @@
 <template>
-  <q-footer
-    class="bg-white"
-  >
+  <q-footer class="bg-white">
     <q-toolbar class="px-0 pt-8 column">
-      <div class="container py-10 column gap-y-12">
-        <div class="col-12 row">
-          <div class="col-3 flex justify-center items-center">
+      <div class="container py-10 px-4 column gap-y-8">
+        <div class="flex flex-wrap">
+          <div class="w-full md:w-3/12 px-4 flex items-center justify-center mb-8">
             <img
               :src="require('assets/logo/Bbid-logo.png')"
               alt="logo bersamabisa.id"
-              class="w-64"
+              class="w-52"
             >
           </div>
 
-          <div class="col px-8 py-4 flex flex-col justify-center">
+          <div class="w-full md:w-9/12 flex justify-center md:justify-start px-4">
             <h5 class="font-extrabold text-4xl text-primary">
               PROFIL
             </h5>
