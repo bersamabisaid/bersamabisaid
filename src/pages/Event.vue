@@ -165,7 +165,7 @@ import { preFetch } from 'quasar/wrappers';
 import { mdiFacebook, mdiWhatsapp, mdiTwitter } from '@quasar/extras/mdi-v5';
 import SocialShare from 'components/SocialShare.vue';
 import DonationItem, { DonationItemProps } from 'components/ui/Event/DonationItem.vue';
-import NewsItem from 'components/ui/Event/NewsItem.vue'
+import NewsItem from 'components/ui/Event/NewsItem.vue';
 import firestoreCollection from 'src/firestoreCollection';
 import { eventDataRepo } from 'src/dataRepositories';
 import fbs, { storageRef } from 'src/services/firebaseService';

@@ -3,14 +3,16 @@
     <q-card-section tag="article">
       <div class="card-program__img-container">
         <q-img
-          src="https://cdn.quasar.dev/img/mountains.jpg"
+          :src="imgURL"
           class="card-program__img"
         />
       </div>
 
-      <div class="px-2 pt-6 flex flex-col">
+      <div class="px-2 pt-6 flex flex-col items-start">
         <dt class="card-program__title">
-          {{ title }}
+          <router-link :to="toLocation">
+            {{ title }}
+          </router-link>
         </dt>
 
         <dd class="card-program__description">
@@ -36,12 +38,14 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from '@vue/composition-api';
+import defaultImage from 'assets/logo/Bbid-logo-only.png';
 import type { RawLocation } from 'vue-router';
 
 export type CardProgramProps = {
   title: string;
   caption: string;
   actionLabel?: string;
+  imgURL?: string;
 } & (
   { url: string }
   | { to: RawLocation }
@@ -49,11 +53,6 @@ export type CardProgramProps = {
 
 export default defineComponent({
   name: 'ProgramCard',
-  data() {
-    return {
-      lorem: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
-    };
-  },
   props: {
     title: {
       type: String,
@@ -75,6 +74,10 @@ export default defineComponent({
       type: [String, Object] as PropType<RawLocation>,
       default: '',
     },
+    imgURL: {
+      type: String,
+      default: defaultImage,
+    },
     noAction: {
       type: Boolean,
       default: false,
@@ -95,7 +98,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 @layer components {
   .card-program {
-    @apply w-72 rounded-2xl border-t border-gray-100 shadow-lg transition-shadow;
+    @apply w-72 rounded-2xl border-t border-gray-100 shadow-lg flex flex-col transition-shadow;
 
     &:hover {
       @apply shadow-2xl;
@@ -106,15 +109,30 @@ export default defineComponent({
     }
 
     &__img {
-      @apply w-full h-full rounded-2xl;
+      @apply w-full h-full bg-blue-gray-200 rounded-2xl;
     }
 
     &__title {
-      @apply font-bold text-xl text-primary line-clamp-1;
+      @apply cursor-pointer relative font-bold text-xl text-primary line-clamp-1;
+
+      &::after {
+        content: '';
+        @apply absolute left-0 bottom-0 opacity-0 w-full h-0.5 bg-primary rounded-lg transition-opacity;
+      }
+
+      &:hover::after {
+          @apply opacity-100;
+      }
     }
 
     &__description {
-      @apply pt-1.5 text-sm text-secondary line-clamp-3;
+      @apply flex-grow pt-1.5 text-sm text-secondary line-clamp-3;
+    }
+
+    .q-card {
+      &__section {
+        @apply flex-grow;
+      }
     }
   }
 }
