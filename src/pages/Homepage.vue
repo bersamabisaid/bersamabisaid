@@ -72,15 +72,19 @@
                   }"
                 >
                   <vue-glide-slide
-                    v-for="(event, i) in events"
-                    :key="i"
+                    v-for="(el, i) in events"
+                    :key="`${i}-${el.title}`"
                   >
                     <card-program
-                      v-bind="event"
+                      :title="el.title"
+                      :caption="extractTextFromHTML(el.description)"
+                      :url="el.URL"
+                      v-bind="el"
+                      action-label="Lihat detail"
                     />
                   </vue-glide-slide>
                   <template
-                    slot="control"
+                    #control
                     class="glide__arrows grid justify-items-stretch"
                   >
                     <button
@@ -134,6 +138,7 @@
                   type="carousel"
                   per-view="4"
                   class="px-2"
+                  focus-at="center"
                   :breakpoints="{
                     640: { perView: 1 },
                     1023: { perView: 2 },
@@ -141,15 +146,19 @@
                   }"
                 >
                   <vue-glide-slide
-                    v-for="(event, i) in events"
-                    :key="i"
+                    v-for="(el, i) in events"
+                    :key="`${i}-${el.title}`"
                   >
                     <card-program
-                      v-bind="event"
+                      :title="el.title"
+                      :caption="extractTextFromHTML(el.description)"
+                      :url="el.URL"
+                      v-bind="el"
+                      action-label="Lihat detail"
                     />
                   </vue-glide-slide>
                   <template
-                    slot="control"
+                    #control
                     class="glide__arrows grid justify-items-stretch"
                   >
                     <button
@@ -186,47 +195,69 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent, computed } from '@vue/composition-api';
 import BaseNavbar from 'components/BaseNavbar.vue';
 import BaseFooter from 'components/BaseFooter.vue';
-import CardProgram, { CardProgramProps } from 'components/CardProgram.vue';
+// import CardProgram, { CardProgramProps } from 'components/CardProgram.vue';
+import CardProgram from 'components/CardProgram.vue';
 import { Glide, GlideSlide } from 'vue-glide-js';
 import 'vue-glide-js/dist/vue-glide.css';
+import firestoreCollection from 'src/firestoreCollection';
+import useCollection from 'src/composables/useCollection';
 
-const events: CardProgramProps[] = [
-  {
-    title: 'Card Title (1)',
-    caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
-    url: 'pray-for-uyghur',
-  },
-  {
-    title: 'Card Title (2)',
-    caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
-    url: 'pray-for-uyghur',
-  },
-  {
-    title: 'Card Title (3)',
-    caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
-    url: 'pray-for-uyghur',
-  },
-  {
-    title: 'Card Title (4)',
-    caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
-    url: 'pray-for-uyghur',
-  },
-  {
-    title: 'Card Title (5)',
-    caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
-    url: 'pray-for-uyghur',
-  },
-];
+// const events: CardProgramProps[] = [
+//   {
+//     title: 'Card Title (1)',
+//     caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
+//     url: 'pray-for-uyghur',
+//   },
+//   {
+//     title: 'Card Title (2)',
+//     caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
+//     url: 'pray-for-uyghur',
+//   },
+//   {
+//     title: 'Card Title (3)',
+//     caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
+//     url: 'pray-for-uyghur',
+//   },
+//   {
+//     title: 'Card Title (4)',
+//     caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
+//     url: 'pray-for-uyghur',
+//   },
+//   {
+//     title: 'Card Title (5)',
+//     caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
+//     url: 'pray-for-uyghur',
+//   },
+// ];
+
+const extractTextFromHTML = (input: string | HTMLElement) => {
+  const isElement = input instanceof HTMLElement;
+  const vElement = isElement ? (input as HTMLElement) : document.createElement('div');
+
+  if (!isElement) {
+    vElement.innerHTML = input as string;
+  }
+
+  return vElement.textContent;
+};
 
 export default defineComponent({
   name: 'PageHome',
-  setup() {
+  setup(props, { root }) {
+    const isDonation = computed(() => root.$route.query.category === 'donasi');
+    const query = computed(() => (isDonation.value
+      ? firestoreCollection.Events.where('donation', '==', true)
+      : firestoreCollection.Events));
+    const [events, isDataLoading] = useCollection(query);
+
     return {
       events,
       slide: '1',
+      isDataLoading,
+      extractTextFromHTML,
     };
   },
   components: {
