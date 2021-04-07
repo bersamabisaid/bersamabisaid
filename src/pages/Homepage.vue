@@ -18,7 +18,7 @@
 
           <div class="container relative mx-auto">
             <div class="text-white text-center justify-center">
-              <div class="q-gutter-y-md mx-2">
+              <div class="grid gap-y-4 mx-2">
                 <span class="font-medium text-3xl md:text-4xl">
                   #HADIR UNTUK KEBAIKAN
                 </span>
@@ -33,14 +33,13 @@
                   <p>BERSAMA HADIRKAN KEBAIKAN UNTUK</p>
                   <p>INDONESIA YANG LEBIH BERDAYA</p>
                 </div>
-
-                <q-btn
-                  label="GET STARTED"
-                  color="positive"
-                  class="rounded-lg shadow"
-                  unelevated
-                />
               </div>
+              <q-btn
+                label="GET STARTED"
+                color="positive"
+                class="rounded-lg shadow mt-4"
+                unelevated
+              />
             </div>
           </div>
         </header>
@@ -198,40 +197,11 @@
 import { defineComponent, computed } from '@vue/composition-api';
 import BaseNavbar from 'components/BaseNavbar.vue';
 import BaseFooter from 'components/BaseFooter.vue';
-// import CardProgram, { CardProgramProps } from 'components/CardProgram.vue';
 import CardProgram from 'components/CardProgram.vue';
 import { Glide, GlideSlide } from 'vue-glide-js';
 import 'vue-glide-js/dist/vue-glide.css';
 import firestoreCollection from 'src/firestoreCollection';
 import useCollection from 'src/composables/useCollection';
-
-// const events: CardProgramProps[] = [
-//   {
-//     title: 'Card Title (1)',
-//     caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
-//     url: 'pray-for-uyghur',
-//   },
-//   {
-//     title: 'Card Title (2)',
-//     caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
-//     url: 'pray-for-uyghur',
-//   },
-//   {
-//     title: 'Card Title (3)',
-//     caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
-//     url: 'pray-for-uyghur',
-//   },
-//   {
-//     title: 'Card Title (4)',
-//     caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
-//     url: 'pray-for-uyghur',
-//   },
-//   {
-//     title: 'Card Title (5)',
-//     caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
-//     url: 'pray-for-uyghur',
-//   },
-// ];
 
 const extractTextFromHTML = (input: string | HTMLElement) => {
   const isElement = input instanceof HTMLElement;
