@@ -24,17 +24,7 @@ import { defineComponent, computed } from '@vue/composition-api';
 import CardProgram from 'components/CardProgram.vue';
 import firestoreCollection from 'src/firestoreCollection';
 import useCollection from 'src/composables/useCollection';
-
-const extractTextFromHTML = (input: string | HTMLElement) => {
-  const isElement = input instanceof HTMLElement;
-  const vElement = isElement ? (input as HTMLElement) : document.createElement('div');
-
-  if (!isElement) {
-    vElement.innerHTML = input as string;
-  }
-
-  return vElement.textContent;
-};
+import { extractTextFromHTML } from 'shared/utils/dom';
 
 export default defineComponent({
   name: 'PageEventList',

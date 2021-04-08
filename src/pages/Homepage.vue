@@ -62,13 +62,13 @@
               <div class="py-8 flex justify-center">
                 <vue-glide
                   type="carousel"
-                  per-view="4"
-                  class="px-2"
+                  :per-view="4"
                   :breakpoints="{
                     640: { perView: 1 },
                     1023: { perView: 2 },
                     1280: { perView: 3 }
                   }"
+                  class="px-2"
                 >
                   <vue-glide-slide
                     v-for="(el, i) in events"
@@ -135,14 +135,14 @@
               <div class="py-8 flex justify-center">
                 <vue-glide
                   type="carousel"
-                  per-view="4"
-                  class="px-2"
+                  :per-view="4"
                   focus-at="center"
                   :breakpoints="{
                     640: { perView: 1 },
                     1023: { perView: 2 },
                     1280: { perView: 3 }
                   }"
+                  class="px-2"
                 >
                   <vue-glide-slide
                     v-for="(el, i) in events"
@@ -195,24 +195,13 @@
 
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
+import { Glide, GlideSlide } from 'vue-glide-js';
 import BaseNavbar from 'components/BaseNavbar.vue';
 import BaseFooter from 'components/BaseFooter.vue';
 import CardProgram from 'components/CardProgram.vue';
-import { Glide, GlideSlide } from 'vue-glide-js';
-import 'vue-glide-js/dist/vue-glide.css';
 import firestoreCollection from 'src/firestoreCollection';
 import useCollection from 'src/composables/useCollection';
-
-const extractTextFromHTML = (input: string | HTMLElement) => {
-  const isElement = input instanceof HTMLElement;
-  const vElement = isElement ? (input as HTMLElement) : document.createElement('div');
-
-  if (!isElement) {
-    vElement.innerHTML = input as string;
-  }
-
-  return vElement.textContent;
-};
+import { extractTextFromHTML } from 'shared/utils/dom';
 
 export default defineComponent({
   name: 'PageHome',
@@ -225,7 +214,6 @@ export default defineComponent({
 
     return {
       events,
-      slide: '1',
       isDataLoading,
       extractTextFromHTML,
     };
@@ -241,8 +229,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "node_modules/@glidejs/glide/src/assets/sass/glide.core";
-@import "node_modules/@glidejs/glide/src/assets/sass/glide.theme";
+@import '~@glidejs/glide/src/assets/sass/glide.core';
+@import '~@glidejs/glide/src/assets/sass/glide.theme';
+@import '~vue-glide-js/dist/vue-glide.css';
 
 @layer components {
   .card-program__grid {
