@@ -26,4 +26,8 @@ export class Singleton<T> {
 
     return this.#value;
   }
+
+  reset() {
+    this.#value = undefined;
+  }
 }

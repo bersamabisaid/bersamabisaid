@@ -12,11 +12,21 @@
         :src="imgURL"
         :ratio="16/9"
         class="bg-blue-gray-200"
-      />
+      >
+        <template #loading>
+          <q-skeleton class="w-full h-full" />
+        </template>
+      </q-img>
 
       <q-card-section>
         <h1 class="mt-2 mb-3 lg:m-2 pl-4 lg:pl-6 py-2 font-extrabold text-4xl text-primary border-l-4 border-positive">
-          {{ eventData.title }}
+          <q-skeleton
+            v-if="isDataLoading"
+            class="w-full max-w-md h-9"
+          />
+          <template v-else>
+            {{ eventData.title }}
+          </template>
         </h1>
 
         <div
@@ -88,21 +98,60 @@
               name="tentang"
               class="bg-white rounded-xl shadow-sm"
             >
-              <!-- eslint-disable-next-line vue/no-v-html -->
-              <article v-html="eventData.description" />
+              <div
+                v-if="isDataLoading"
+                class="flex flex-col gap-y-2"
+              >
+                <q-skeleton type="rect" />
+                <q-skeleton type="rect" />
+                <q-skeleton
+                  type="rect"
+                  class="max-w-xs"
+                />
+              </div>
+              <!-- eslint-disable vue/no-v-html -->
+              <article
+                v-else
+                v-html="eventData.description"
+              />
+              <!-- eslint-enable vue/no-v-html -->
             </q-tab-panel>
 
             <q-tab-panel name="berita">
               <article>
                 <q-timeline color="secondary">
-                  <q-timeline-entry
-                    v-for="(el, i) in news"
-                    :key="`${i}-${el.title}`"
-                    :title="el.title"
-                    :subtitle="el.timestamp.toDate().toLocaleString()"
-                  >
-                    <news-item v-bind="el" />
-                  </q-timeline-entry>
+                  <template v-if="isDataLoading">
+                    <q-timeline-entry
+                      v-for="i in 3"
+                      :key="i"
+                    >
+                      <div class="flex gap-x-3">
+                        <q-skeleton
+                          type="rect"
+                          class="w-20 h-20"
+                        />
+                        <div class="flex-grow flex flex-col">
+                          <q-skeleton type="rect" />
+                          <q-skeleton type="text" />
+                          <q-skeleton
+                            type="text"
+                            class="max-w-xs"
+                          />
+                        </div>
+                      </div>
+                    </q-timeline-entry>
+                  </template>
+
+                  <template v-else>
+                    <q-timeline-entry
+                      v-for="(el, i) in news"
+                      :key="`${i}-${el.title}`"
+                      :title="el.title"
+                      :subtitle="el.timestamp.toDate().toLocaleString()"
+                    >
+                      <news-item v-bind="el" />
+                    </q-timeline-entry>
+                  </template>
 
                   <q-timeline-entry heading>
                     November, 2017
@@ -126,8 +175,6 @@
           </q-tab-panels>
         </section>
       </q-card-section>
-
-      <q-inner-loading :showing="isDataLoading" />
     </q-card>
 
     <q-page-sticky :position="$q.screen.width > $q.screen.sizes.md ? 'top-right' : 'bottom'">
@@ -168,7 +215,7 @@ import DonationItem, { DonationItemProps } from 'components/ui/Event/DonationIte
 import NewsItem from 'components/ui/Event/NewsItem.vue';
 import firestoreCollection from 'src/firestoreCollection';
 import { eventDataRepo } from 'src/dataRepositories';
-import fbs, { storageRef } from 'src/services/firebaseService';
+import { storageRef } from 'src/services/firebaseService';
 import { getStorageFile } from 'src/composables/useStorage';
 import { Singleton } from 'shared/utils/pattern';
 import { toIdr } from 'shared/utils/formatter';
@@ -226,21 +273,9 @@ const setupData = new Singleton(() => {
   };
 });
 
-const news: EventNews[] = Array.from(Array(10), () => ({
-  title: 'Event Title',
-  description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit.',
-  timestamp: fbs.firestore.Timestamp.now(),
-  ...(Math.random() > 0.5 ? { imgURL: 'https://picsum.photos/300' } : null),
-}));
+const news: EventNews[] = [];
 
-const donaturList: DonationItemProps[] = [
-  {
-    name: 'Djarwo',
-    amount: 1_000_000,
-    message: 'Lorem ipsum dolor sit amet',
-    timestamp: fbs.firestore.Timestamp.now(),
-  },
-];
+const donaturList: DonationItemProps[] = [];
 
 export default defineComponent({
   name: 'PageEventDetail',
@@ -276,7 +311,11 @@ export default defineComponent({
       mdiTwitter,
     };
   },
-  preFetch: preFetch<Store<StateInterface>>(async ({ currentRoute, redirect }) => {
+  preFetch: preFetch<Store<StateInterface>>(async ({ previousRoute, currentRoute, redirect }) => {
+    if (previousRoute.name) {
+      return undefined;
+    }
+
     Loading.show();
     const eventId = currentRoute.params.programURL;
     const isInitialized = await setupData.value.syncData(eventId);
@@ -339,6 +378,10 @@ export default defineComponent({
       this.tab = this.$route.query.tab as string;
     }
   },
+  beforeRouteLeave(to, from, next) {
+    setupData.reset();
+    next();
+  },
   components: {
     SocialShare,
     DonationItem,
@@ -375,12 +418,6 @@ export default defineComponent({
 
   }
 
-  .q-timeline {
-    &__title {
-      @apply mb-2 font-semibold text-primary;
-    }
-  }
-
   .quick-action {
     @apply w-screen max-w-screen-sm mx-2 px-4 pt-3 pb-1 bg-white flex gap-x-1;
     @apply border-t-2 border-l border-r border-blue-gray-300 rounded-t-xl shadow-2xl;
@@ -396,9 +433,17 @@ export default defineComponent({
 
   // quasar override
   .q-timeline {
+    &__title {
+      @apply mb-2 font-semibold text-primary;
+    }
+
     &__content {
       @apply mb-4 py-4 px-6 bg-white rounded-2xl shadow-sm;
     }
+  }
+
+  .q-skeleton {
+    @apply rounded-xl;
   }
 }
 </style>

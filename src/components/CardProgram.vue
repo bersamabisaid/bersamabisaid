@@ -10,7 +10,10 @@
 
       <div class="px-2 pt-6 flex flex-col items-start">
         <dt class="card-program__title">
-          <router-link :to="toLocation">
+          <router-link
+            :to="toLocation"
+            target="_blank"
+          >
             {{ title }}
           </router-link>
         </dt>
