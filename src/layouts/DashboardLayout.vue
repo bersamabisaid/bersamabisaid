@@ -110,6 +110,8 @@ import {
 } from '@quasar/extras/material-icons-round';
 import MinimalistLayout from 'layouts/MinimalistLayout.vue';
 import type { QItem } from 'quasar';
+import useGuardAuth from 'src/composables/useGuardAuth';
+import { auth } from 'src/services/firebaseService';
 
 interface IRouteMeta {
   transitionName?: string;
@@ -150,13 +152,15 @@ const drawerItems: NavItem[] = [
   {
     label: 'Keluar',
     icon: roundLogout,
-    onClick: () => alert?.('sdadsasd'),
+    onClick: () => auth.signOut(),
   },
 ];
 
 export default defineComponent({
   name: 'DashboardLayout',
   setup() {
+    useGuardAuth();
+
     return {
       drawerItems,
     };

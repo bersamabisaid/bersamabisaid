@@ -104,9 +104,9 @@
                     <news-item v-bind="el" />
                   </q-timeline-entry>
 
-                  <!-- <q-timeline-entry heading>
+                  <q-timeline-entry heading>
                     November, 2017
-                  </q-timeline-entry> -->
+                  </q-timeline-entry>
                 </q-timeline>
               </article>
             </q-tab-panel>
@@ -170,7 +170,7 @@ import firestoreCollection from 'src/firestoreCollection';
 import { eventDataRepo } from 'src/dataRepositories';
 import fbs, { storageRef } from 'src/services/firebaseService';
 import { getStorageFile } from 'src/composables/useStorage';
-import { createSingleton } from 'shared/utils/pattern';
+import { Singleton } from 'shared/utils/pattern';
 import { toIdr } from 'shared/utils/formatter';
 import {
   Event, EventDonation, EventNews, isEventDonation,
@@ -197,7 +197,7 @@ const getEventByURL = async (programURL: string) => {
   return undefined;
 };
 
-const setupData = createSingleton(() => {
+const setupData = new Singleton(() => {
   const called = ref(false);
   const data = ref<Model<Event>>(eventDataRepo.defaultCommonModelData());
   const imgURL = ref('');
@@ -247,7 +247,7 @@ export default defineComponent({
   setup(props, { root }) {
     const {
       data, imgURL, syncData, called,
-    } = setupData();
+    } = setupData.value;
     const isDataLoading = ref(true);
 
     onMounted(async () => {
@@ -279,7 +279,7 @@ export default defineComponent({
   preFetch: preFetch<Store<StateInterface>>(async ({ currentRoute, redirect }) => {
     Loading.show();
     const eventId = currentRoute.params.programURL;
-    const isInitialized = await setupData().syncData(eventId);
+    const isInitialized = await setupData.value.syncData(eventId);
 
     Loading.hide();
 
