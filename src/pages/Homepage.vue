@@ -12,13 +12,9 @@
             style="background: linear-gradient(180deg, rgba(26, 41, 128, 0.79) 0%, rgba(38, 208, 206, 0.79) 100%);"
           />
 
-          <nav class="absolute top-0 right-0 w-full">
-            <base-navbar transparent />
-          </nav>
-
           <div class="container relative mx-auto">
             <div class="text-white text-center justify-center">
-              <div class="grid gap-y-4 mx-2">
+              <div class="grid gap-y-4 mx-2 md:z-0">
                 <span class="font-medium text-3xl md:text-4xl">
                   #HADIR UNTUK KEBAIKAN
                 </span>
@@ -42,6 +38,10 @@
               />
             </div>
           </div>
+
+          <nav class="absolute top-0 right-0 w-full">
+            <base-navbar transparent />
+          </nav>
         </header>
 
         <main class="w-full">
