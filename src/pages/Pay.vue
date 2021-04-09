@@ -283,8 +283,8 @@ import { eventDataRepo } from 'src/dataRepositories';
 import { requiredRule } from 'src/composables/useInputRules';
 import { extractTextFromHTML } from 'shared/utils/dom';
 import type { QStepper, QField, QForm } from 'quasar';
-import { Model } from 'shared/types/model';
-import { EventDonation } from 'shared/types/modelData';
+import type { Model } from 'shared/types/model';
+import type { EventDonation } from 'shared/types/modelData';
 
 interface Choice {
   title: string;

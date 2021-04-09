@@ -38,14 +38,19 @@
               <span class="font-bold text-positive">{{ toIdr(eventData._ui.progress.value, 0) }}</span>
               <span class="font-normal"> terkumpul</span>
             </div>
-            <span class="font-bold text-positive">{{ eventData.target ? toIdr(eventData.target, 0) : '∞' }}</span>
+            <span
+              v-if="eventData.target"
+              class="font-bold text-positive"
+            >{{ toIdr(eventData.target, 0) }}</span>
           </div>
 
-          <div class="flex flex-nowrap items-center gap-x-2">
+          <div
+            v-if="eventData.target"
+            class="flex flex-nowrap items-center gap-x-2"
+          >
             <q-linear-progress
-              v-if="eventData.target"
               :value="progressPercentage"
-              class="flex-grow"
+              class="w-full flex-grow"
             />
             <q-icon
               name="check_circle"
@@ -306,18 +311,18 @@ export default defineComponent({
       mdiTwitter,
     };
   },
-  preFetch: preFetch<Store<StateInterface>>(async ({ previousRoute, currentRoute, redirect }) => {
-    if (previousRoute.name) {
-      return undefined;
+  preFetch: preFetch<Store<StateInterface>>(async ({ currentRoute, ssrContext, redirect }) => {
+    if (ssrContext) {
+      Loading.show();
+      const eventId = currentRoute.params.programURL;
+      const isInitialized = await setupData.value.syncData(eventId);
+
+      Loading.hide();
+
+      return isInitialized ? undefined : redirect({ name: '404' });
     }
 
-    Loading.show();
-    const eventId = currentRoute.params.programURL;
-    const isInitialized = await setupData.value.syncData(eventId);
-
-    Loading.hide();
-
-    return isInitialized ? undefined : redirect({ name: '404' });
+    return undefined;
   }),
   data() {
     return {
