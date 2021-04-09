@@ -9,7 +9,10 @@
       </h3>
 
       <card-program
-        caption="Lorem ipsum dolor sit amet consectetur, adipisicing elit. Doloribus, voluptas."
+        :title="eventData.title"
+        :caption="extractTextFromHTML(eventData.description)"
+        :url="eventData.URL"
+        :loading="isDataLoading"
         no-action
       />
 
@@ -112,7 +115,7 @@
                 type="tel"
                 mask="(+62) ###-####-####"
                 fill-mask
-                hint="opsional"
+                hint="*opsional"
                 unmasked-value
               />
 
@@ -129,7 +132,7 @@
                   v-model="city"
                   name="city"
                   label="Kota"
-                  hint="opsional"
+                  hint="*opsional"
                   required
                 />
               </div>
@@ -139,7 +142,7 @@
                 name="message"
                 label="Pesan"
                 type="textarea"
-                hint="opsional"
+                hint="*opsional"
                 filled
                 required
                 autogrow
@@ -183,7 +186,7 @@
                       flat
                       round
                       class="mr-1"
-                      @click="copyPaymentURL"
+                      @click="copyURL(paymentURL)"
                     />
                     <span class="font-light text-xs">
                       {{ paymentURL }}
@@ -226,7 +229,7 @@
                 Terimakasih! ❤
               </h3>
 
-              <social-share :shared-url="paymentURL">
+              <social-share :shared-url="programFullURL">
                 <template #title>
                   <span class="mb-1 font-semibold text text-white">Ayo bagikan program ini ke yang lain!</span>
                 </template>
@@ -240,7 +243,7 @@
             <q-stepper-navigation>
               <div class="flex flex-row justify-end gap-x-4">
                 <q-btn
-                  v-if="step > 1"
+                  v-if="step > 1 && step < 4"
                   label="Sebelumnya"
                   color="primary"
                   :disable="isWaitingPayment"
@@ -260,6 +263,8 @@
               </div>
             </q-stepper-navigation>
           </template>
+
+          <q-inner-loading :showing="isDataLoading" />
         </q-stepper>
       </q-form>
     </q-page>
@@ -267,14 +272,19 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent, Ref } from '@vue/composition-api';
 import { copyToClipboard } from 'quasar';
 import { Money } from 'v-money';
 import MinimalistLayout from 'layouts/MinimalistLayout.vue';
 import CardProgram from 'components/CardProgram.vue';
 import SocialShare from 'components/SocialShare.vue';
+import { getEventByURL } from 'src/firestoreApis';
+import { eventDataRepo } from 'src/dataRepositories';
 import { requiredRule } from 'src/composables/useInputRules';
+import { extractTextFromHTML } from 'shared/utils/dom';
 import type { QStepper, QField, QForm } from 'quasar';
+import { Model } from 'shared/types/model';
+import { EventDonation } from 'shared/types/modelData';
 
 interface Choice {
   title: string;
@@ -306,10 +316,16 @@ const amountChoices: Choice[] = [
 
 export default defineComponent({
   name: 'PageDonate',
-  setup() {
+  setup(props, { root }) {
+    const programURL = root.$route.query.eventId as string;
+    const [eventData, isDataLoading] = getEventByURL.hooks(programURL, eventDataRepo.defaultDonationModelData());
+
     return {
+      eventData: eventData as Ref<Model<EventDonation>>,
+      isDataLoading,
       amountChoices,
       requiredRule,
+      extractTextFromHTML,
     };
   },
   data() {
@@ -338,13 +354,18 @@ export default defineComponent({
       },
     };
   },
-  components: {
-    MinimalistLayout,
-    CardProgram,
-    Money,
-    SocialShare,
-  },
   computed: {
+    programFullURL() {
+      // eslint-disable-next-line no-restricted-globals
+      const url = new URL(location?.href || 'http://localhost');
+      const { href } = this.$router.resolve({
+        name: 'Program',
+        params: { programURL: this.eventData.URL },
+      });
+
+      url.pathname = href;
+      return url.toString();
+    },
     paymentURL() {
       if (this.isWaitingPayment) {
         // eslint-disable-next-line no-restricted-globals
@@ -392,13 +413,19 @@ export default defineComponent({
           return this.nextStep();
         });
     },
-    copyPaymentURL() {
-      return copyToClipboard(this.paymentURL)
+    copyURL(text: string) {
+      return copyToClipboard(text)
         .then(() => alert?.('copied to clipboard!'));
     },
     toIdr(n: number) {
       return n.toLocaleString('id', { style: 'currency', currency: 'idr', maximumFractionDigits: 0 });
     },
+  },
+  components: {
+    MinimalistLayout,
+    CardProgram,
+    Money,
+    SocialShare,
   },
 });
 </script>

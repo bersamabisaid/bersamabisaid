@@ -152,10 +152,6 @@
                       <news-item v-bind="el" />
                     </q-timeline-entry>
                   </template>
-
-                  <q-timeline-entry heading>
-                    November, 2017
-                  </q-timeline-entry>
                 </q-timeline>
               </article>
             </q-tab-panel>
@@ -213,8 +209,8 @@ import { mdiFacebook, mdiWhatsapp, mdiTwitter } from '@quasar/extras/mdi-v5';
 import SocialShare from 'components/SocialShare.vue';
 import DonationItem, { DonationItemProps } from 'components/ui/Event/DonationItem.vue';
 import NewsItem from 'components/ui/Event/NewsItem.vue';
-import firestoreCollection from 'src/firestoreCollection';
 import { eventDataRepo } from 'src/dataRepositories';
+import { getEventByURL } from 'src/firestoreApis';
 import { storageRef } from 'src/services/firebaseService';
 import { getStorageFile } from 'src/composables/useStorage';
 import { Singleton } from 'shared/utils/pattern';
@@ -227,9 +223,8 @@ import type { Store } from 'vuex';
 import type { StateInterface } from 'src/store';
 import type { Model } from 'shared/types/model';
 
-const getEventByURL = async (programURL: string) => {
-  const query = firestoreCollection.Events.where('URL', '==', programURL).limit(1);
-  const { docs: [eventDoc] } = await query.get();
+const getEvent = async (programURL: string) => {
+  const eventDoc = await getEventByURL(programURL);
 
   if (eventDoc) {
     const docData = eventDoc.data();
@@ -254,7 +249,7 @@ const setupData = new Singleton(() => {
    */
   const syncData = async (programURL: string) => {
     called.value = true;
-    const eventData = await getEventByURL(programURL);
+    const eventData = await getEvent(programURL);
 
     if (eventData) {
       data.value = eventData.data;
