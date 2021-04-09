@@ -2,14 +2,26 @@
   <q-card class="card-program">
     <q-card-section tag="article">
       <div class="card-program__img-container">
+        <q-skeleton
+          v-if="loading"
+          class="w-full h-full rounded-xl"
+        />
         <q-img
+          v-else
           :src="imgURL"
           class="card-program__img"
         />
       </div>
 
       <div class="px-2 pt-6 flex flex-col items-start">
-        <dt class="card-program__title">
+        <q-skeleton
+          v-if="loading"
+          class="w-4/5 h-5 rounded-lg"
+        />
+        <dt
+          v-else
+          class="card-program__title"
+        >
           <router-link
             :to="toLocation"
             target="_blank"
@@ -18,7 +30,24 @@
           </router-link>
         </dt>
 
-        <dd class="card-program__description">
+        <div
+          v-if="loading"
+          class="mt-2 w-full"
+        >
+          <q-skeleton
+            type="text"
+            class="w-full rounded-lg"
+          />
+          <q-skeleton
+            type="text"
+            class="w-3/5 rounded-lg"
+          />
+        </div>
+
+        <dd
+          v-else
+          class="card-program__description"
+        >
           {{ caption }}
         </dd>
       </div>
@@ -49,6 +78,7 @@ export type CardProgramProps = {
   caption: string;
   actionLabel?: string;
   imgURL?: string;
+  loading?: boolean;
 } & (
   { url: string }
   | { to: RawLocation }
@@ -82,6 +112,10 @@ export default defineComponent({
       default: defaultImage,
     },
     noAction: {
+      type: Boolean,
+      default: false,
+    },
+    loading: {
       type: Boolean,
       default: false,
     },
