@@ -45,7 +45,7 @@
         </header>
 
         <main class="w-full">
-          <section class="h-auto">
+          <section class="py-4">
             <div class="absolute w-full h-screen bg-transparent" />
             <div class="container relative mx-auto px-4">
               <div class="flex justify-center q-pa-md">
@@ -61,6 +61,7 @@
 
               <div class="py-8 flex justify-center">
                 <vue-glide
+                  v-if="!isLoading"
                   type="carousel"
                   :per-view="4"
                   :breakpoints="{
@@ -71,7 +72,7 @@
                   class="px-2"
                 >
                   <vue-glide-slide
-                    v-for="(el, i) in events"
+                    v-for="(el, i) in eventCommonData"
                     :key="`${i}-${el.title}`"
                   >
                     <card-program
@@ -82,10 +83,8 @@
                       action-label="Lihat detail"
                     />
                   </vue-glide-slide>
-                  <template
-                    #control
-                    class="glide__arrows grid justify-items-stretch"
-                  >
+
+                  <template #control>
                     <button
                       data-glide-dir="<"
                       class="glide__arrow glide__arrow--left justify-self-start"
@@ -112,15 +111,16 @@
             </div>
           </section>
 
-          <section class="h-auto">
+          <section class="relative py-4">
             <img
               :src="require('assets/images/donasiPicture.png')"
-              class="absolute w-full h-screen object-cover"
+              class="absolute top-0 w-full h-full object-cover"
             >
             <div
-              class="absolute w-full h-screen"
+              class="absolute top-0 w-full h-full"
               style="background: linear-gradient(111.05deg, rgba(26, 41, 128, 0.79) -5.69%, rgba(38, 208, 206, 0.79) 97.93%);"
             />
+
             <div class="container relative mx-auto px-4">
               <div class="flex justify-center q-pa-md">
                 <div class="text-center">
@@ -134,6 +134,7 @@
               </div>
               <div class="py-8 flex justify-center">
                 <vue-glide
+                  v-if="!isLoading"
                   type="carousel"
                   :per-view="4"
                   focus-at="center"
@@ -145,7 +146,7 @@
                   class="px-2"
                 >
                   <vue-glide-slide
-                    v-for="(el, i) in events"
+                    v-for="(el, i) in eventDonationData"
                     :key="`${i}-${el.title}`"
                   >
                     <card-program
@@ -156,10 +157,8 @@
                       action-label="Lihat detail"
                     />
                   </vue-glide-slide>
-                  <template
-                    #control
-                    class="glide__arrows grid justify-items-stretch"
-                  >
+
+                  <template #control>
                     <button
                       data-glide-dir="<"
                       class="glide__arrow glide__arrow--left justify-self-start"
@@ -194,29 +193,61 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, ref, onMounted } from '@vue/composition-api';
 import { Glide, GlideSlide } from 'vue-glide-js';
 import BaseNavbar from 'components/BaseNavbar.vue';
 import BaseFooter from 'components/BaseFooter.vue';
 import CardProgram from 'components/CardProgram.vue';
 import firestoreCollection from 'src/firestoreCollection';
-import useCollection from 'src/composables/useCollection';
 import { extractTextFromHTML } from 'shared/utils/dom';
+import { Singleton } from 'shared/utils/pattern';
+import type { ModelInObject } from 'shared/types/model';
+import type { EventDonation, EventCommon } from 'shared/types/modelData';
+
+const setupData = new Singleton(() => {
+  const eventCommonData = [] as ModelInObject<EventCommon>[];
+  const eventDonationData = [] as ModelInObject<EventDonation>[];
+  const isLoading = ref(true);
+  const eventCommonQuery = firestoreCollection.Events.where('donation', '==', false);
+  const eventDonationQuery = firestoreCollection.Events.where('donation', '==', true);
+
+  const syncData = async () => {
+    isLoading.value = true;
+    const [commonData, donationData] = await Promise.all([eventCommonQuery.get(), eventDonationQuery.get()]);
+    eventCommonData.slice(eventCommonData.length);
+    eventDonationData.slice(eventDonationData.length);
+    eventCommonData.push(...commonData.docs.map((doc) => ({ ...doc.data(), _uid: doc.id } as ModelInObject<EventCommon>)));
+    eventDonationData.push(...donationData.docs.map((doc) => ({ ...doc.data(), _uid: doc.id } as ModelInObject<EventDonation>)));
+    isLoading.value = false;
+  };
+
+  return {
+    eventCommonData,
+    eventDonationData,
+    isLoading,
+    syncData,
+  };
+});
 
 export default defineComponent({
   name: 'PageHome',
-  setup(props, { root }) {
-    const isDonation = computed(() => root.$route.query.category === 'donasi');
-    const query = computed(() => (isDonation.value
-      ? firestoreCollection.Events.where('donation', '==', true)
-      : firestoreCollection.Events));
-    const [events, isDataLoading] = useCollection(query);
+  setup() {
+    const {
+      eventCommonData, eventDonationData, isLoading, syncData,
+    } = setupData.value;
+
+    onMounted(() => syncData());
 
     return {
-      events,
-      isDataLoading,
+      eventCommonData,
+      eventDonationData,
+      isLoading,
       extractTextFromHTML,
     };
+  },
+  preFetch() {
+    setupData.value.syncData()
+      .finally(null);
   },
   components: {
     BaseFooter,
@@ -231,7 +262,6 @@ export default defineComponent({
 <style lang="scss">
 @import '~@glidejs/glide/src/assets/sass/glide.core';
 @import '~@glidejs/glide/src/assets/sass/glide.theme';
-@import '~vue-glide-js/dist/vue-glide.css';
 
 @layer components {
   .card-program__grid {
