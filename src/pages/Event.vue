@@ -1,7 +1,7 @@
 <template>
   <q-page
     padding
-    class="pb-32 flex flex-col justify-center items-center"
+    class="page-event pb-32 flex flex-col justify-center items-center"
   >
     <q-card
       tag="article"
@@ -19,15 +19,32 @@
       </q-img>
 
       <q-card-section>
-        <h1 class="mt-2 mb-3 lg:m-2 pl-4 lg:pl-6 py-2 font-extrabold text-4xl text-primary border-l-4 border-positive">
-          <q-skeleton
+        <div class="mt-2 mb-3 lg:m-2 pl-4 lg:pl-6 py-2 border-l-4 border-positive">
+          <div
             v-if="isDataLoading"
-            class="w-full max-w-md h-9"
-          />
+            class="w-full max-w-md"
+          >
+            <q-skeleton class="h-9" />
+            <q-skeleton
+              type="text"
+              class="max-w-sm"
+            />
+          </div>
           <template v-else>
-            {{ eventData.title }}
+            <h1 class="font-extrabold text-4xl text-primary">
+              {{ eventData.title }}
+            </h1>
+            <div class="text-xs text-blue-gray-300">
+              <span>Penanggung jawab: </span>
+              <router-link
+                :to="{name: 'ProgramList', query: {organizer: eventData.organizer}}"
+                class="font-bold text-blue-gray-400 hover:underline"
+              >
+                {{ eventData.organizer }}
+              </router-link>
+            </div>
           </template>
-        </h1>
+        </div>
 
         <div
           v-if="eventData.donation"
@@ -41,7 +58,9 @@
             <span
               v-if="eventData.target"
               class="font-bold text-positive"
-            >{{ toIdr(eventData.target, 0) }}</span>
+            >
+              {{ toIdr(eventData.target, 0) }}
+            </span>
           </div>
 
           <div
@@ -148,14 +167,23 @@
                   </template>
 
                   <template v-else>
-                    <q-timeline-entry
-                      v-for="(el, i) in news"
-                      :key="`${i}-${el.title}`"
-                      :title="el.title"
-                      :subtitle="el.timestamp.toDate().toLocaleString()"
+                    <template v-if="news.length">
+                      <q-timeline-entry
+                        v-for="(el, i) in news"
+                        :key="`${i}-${el.title}`"
+                        :title="el.title"
+                        :subtitle="el.timestamp.toDate().toLocaleString()"
+                      >
+                        <news-item v-bind="el" />
+                      </q-timeline-entry>
+                    </template>
+
+                    <div
+                      v-else
+                      class="p-4 bg-white text-center text-gray-400 rounded-xl"
                     >
-                      <news-item v-bind="el" />
-                    </q-timeline-entry>
+                      Tidak ada berita untuk program ini
+                    </div>
                   </template>
                 </q-timeline>
               </article>
@@ -166,11 +194,28 @@
               name="donatur"
             >
               <q-list class="flex flex-col gap-y-4">
-                <donation-item
-                  v-for="(el, i) in donaturList"
-                  :key="`${i}-${el.name}`"
-                  v-bind="el"
-                />
+                <template v-if="donaturList.length">
+                  <donation-item
+                    v-for="(el, i) in donaturList"
+                    :key="`${i}-${el.name}`"
+                    v-bind="el"
+                  />
+                </template>
+
+                <div
+                  v-else
+                  class="p-4 bg-white text-center rounded-xl flex flex-col gap-y-2"
+                >
+                  <span class="text-gray-400">Belum ada donatur untuk sementara ini,</span>
+                  <span class="text-gray-400">Jadilah yang pertama sebagai donatur</span>
+                  <b class="text-lg text-primary">{{ eventData.title }}</b>
+                  <q-btn
+                    label="donasi sekarang"
+                    :to="donateActionURL"
+                    flat
+                    class="self-center bg-positive text-white rounded-lg"
+                  />
+                </div>
               </q-list>
             </q-tab-panel>
           </q-tab-panels>
@@ -431,19 +476,25 @@ export default defineComponent({
     }
   }
 
-  // quasar override
-  .q-timeline {
-    &__title {
-      @apply mb-2 font-semibold text-primary;
+  // scoping quasar override
+  .page-event {
+    .q-tab-panel {
+      min-height: theme('height.52');
     }
 
-    &__content {
-      @apply mb-4 py-4 px-6 bg-white rounded-2xl shadow-sm;
-    }
-  }
+    .q-timeline {
+      &__title {
+        @apply mb-2 font-semibold text-primary;
+      }
 
-  .q-skeleton {
-    @apply rounded-xl;
+      &__content {
+        @apply mb-4 py-4 px-6 bg-white rounded-2xl shadow-sm;
+      }
+    }
+
+    .q-skeleton {
+      @apply rounded-xl;
+    }
   }
 }
 </style>
