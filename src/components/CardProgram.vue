@@ -8,7 +8,7 @@
         />
         <q-img
           v-else
-          :src="imgURL"
+          :src="imgUrl"
           class="card-program__img"
         />
       </div>
@@ -77,7 +77,7 @@ export type CardProgramProps = {
   title: string;
   caption: string;
   actionLabel?: string;
-  imgURL?: string;
+  imgUrl?: string;
   loading?: boolean;
 } & (
   { url: string }
@@ -107,7 +107,7 @@ export default defineComponent({
       type: [String, Object] as PropType<RawLocation>,
       default: '',
     },
-    imgURL: {
+    imgUrl: {
       type: String,
       default: defaultImage,
     },
