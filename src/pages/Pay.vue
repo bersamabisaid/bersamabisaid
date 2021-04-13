@@ -13,6 +13,7 @@
         :caption="extractTextFromHTML(eventData.description)"
         :url="eventData.URL"
         :loading="isDataLoading"
+        :img-url="eventThumbnailSrc"
         no-action
       />
 
@@ -272,14 +273,18 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, Ref } from '@vue/composition-api';
+import {
+  defineComponent, Ref, watch, ref,
+} from '@vue/composition-api';
 import { copyToClipboard } from 'quasar';
 import { Money } from 'v-money';
 import MinimalistLayout from 'layouts/MinimalistLayout.vue';
 import CardProgram from 'components/CardProgram.vue';
 import SocialShare from 'components/SocialShare.vue';
+import { storageRef } from 'src/services/firebaseService';
 import { getEventByURL } from 'src/firestoreApis';
 import { eventDataRepo } from 'src/dataRepositories';
+import { getStorageFile } from 'src/composables/useStorage';
 import { requiredRule } from 'src/composables/useInputRules';
 import { extractTextFromHTML } from 'shared/utils/dom';
 import type { QStepper, QField, QForm } from 'quasar';
@@ -319,10 +324,22 @@ export default defineComponent({
   setup(props, { root }) {
     const programURL = root.$route.query.eventId as string;
     const [eventData, isDataLoading] = getEventByURL.hooks(programURL, eventDataRepo.defaultDonationModelData());
+    const eventThumbnailSrc = ref('');
+
+    watch(eventData, async ({ image }) => {
+      if (image) {
+        const { URL } = await getStorageFile(storageRef.root.child(image));
+
+        eventThumbnailSrc.value = URL;
+      } else {
+        eventThumbnailSrc.value = '';
+      }
+    }, { immediate: true });
 
     return {
       eventData: eventData as Ref<Model<EventDonation>>,
       isDataLoading,
+      eventThumbnailSrc,
       amountChoices,
       requiredRule,
       extractTextFromHTML,
@@ -358,12 +375,14 @@ export default defineComponent({
     programFullURL() {
       // eslint-disable-next-line no-restricted-globals
       const url = new URL(location?.href || 'http://localhost');
-      const { href } = this.$router.resolve({
-        name: 'Program',
-        params: { programURL: this.eventData.URL },
-      });
+      if (this.eventData.URL) {
+        const { href } = this.$router.resolve({
+          name: 'Program',
+          params: { programURL: this.eventData.URL },
+        });
 
-      url.pathname = href;
+        url.pathname = href;
+      }
       return url.toString();
     },
     paymentURL() {
