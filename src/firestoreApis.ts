@@ -1,6 +1,6 @@
+import { onMounted, ref } from '@vue/composition-api';
 import firestoreCollection from 'src/firestoreCollection';
 import type fb from 'firebase';
-import { onMounted, ref } from '@vue/composition-api';
 
 export const getDocumentByFactory = function <T = unknown, U extends keyof T = keyof T> (
   collectionReference: fb.firestore.CollectionReference<T>,
@@ -24,7 +24,7 @@ export const getDocumentByFactory = function <T = unknown, U extends keyof T = k
         isDataLoading.value = false;
       });
 
-      return [data, isDataLoading];
+      return [data, isDataLoading] as const;
     },
   });
 };
