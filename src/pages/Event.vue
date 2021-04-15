@@ -436,7 +436,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@layer components {
+// @layer components {
   .program {
     &__tab {
       @apply bg-warning bg-opacity-60 text-primary text-opacity-90;
@@ -496,5 +496,5 @@ export default defineComponent({
       @apply rounded-xl;
     }
   }
-}
+// }
 </style>

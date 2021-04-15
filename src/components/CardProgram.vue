@@ -133,7 +133,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@layer components {
+// @layer components {
   .card-program {
     @apply w-72 rounded-2xl border-t border-gray-100 shadow-lg flex flex-col transition-shadow;
 
@@ -173,5 +173,5 @@ export default defineComponent({
       }
     }
   }
-}
+// }
 </style>

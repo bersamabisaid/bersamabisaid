@@ -7,12 +7,10 @@ const defaultTheme = require('tailwindcss/defaultTheme');
 const colors = require('tailwindcss/colors');
 
 module.exports = {
+  mode: 'jit',
   important: true,
   purge: [
-    './src/**/*.html',
-    './src/**/*.vue',
-    './src/**/*.tsx',
-    './src/**/*.jsx',
+    './src/**/*.{js,jsx,ts,tsx,vue,html}',
   ],
   darkMode: false, // or 'media' or 'class'
   theme: {
