@@ -3,7 +3,9 @@ import collectionName from '../../shared/firestoreCollection';
 import { createSingleton } from '../../shared/utils/pattern';
 import { base64 } from '../../shared/utils/encoding';
 import type { Model, ModelUIData, TimestampedModel } from '../../shared/types/model';
-import type { Donation, Donator } from '../../shared/types/modelData';
+import type {
+  Donation, Donator, Event, Transaction, TransactionClient,
+} from '../../shared/types/modelData';
 
 const admin = createSingleton(() => {
   if (firebaseAdmin.apps.length) {
@@ -31,8 +33,11 @@ const fbs = Object.assign(admin, {
 };
 
 const collection = {
-  Donations: fbs.db().collection(collectionName.DONATIONS) as firebaseAdmin.firestore.CollectionReference<Model<Donation>>,
+  Donations: fbs.db().collection(collectionName.DONATIONS) as firebaseAdmin.firestore.CollectionReference<Model<Donation<true>>>,
   Donators: fbs.db().collection(collectionName.DONATORS) as firebaseAdmin.firestore.CollectionReference<Model<Donator>>,
+  Events: fbs.db().collection(collectionName.EVENTS) as firebaseAdmin.firestore.CollectionReference<Model<Event>>,
+  Transactions: fbs.db().collection(collectionName.TRANSACTIONS) as firebaseAdmin.firestore.CollectionReference<Model<Transaction<true>>>,
+  TransactionClients: fbs.db().collection(collectionName.TRANSACTION_CLIENTS) as firebaseAdmin.firestore.CollectionReference<Model<TransactionClient>>,
 };
 
 const uiDataFactory = <T = unknown> (

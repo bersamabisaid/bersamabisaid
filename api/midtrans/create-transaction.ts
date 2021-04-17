@@ -4,7 +4,7 @@ import apiMethod from '../_middleware/apiMethod';
 import allowCors from '../_middleware/allowCors';
 import midtrans from '../_services/midtrans';
 import { collection, proxy, uiDataFactory } from '../_services/firebase';
-import { CreateTransactionRequestBody, isCreateTransactionRequestBody } from '../../shared/types/backendRequest';
+import { PayDonationRequestBody, isPayDonationRequestBody } from '../../shared/types/backendRequest';
 import type { ApiResponse } from '../../shared/types/model';
 
 type SuccessResponse = ApiResponse<{
@@ -18,17 +18,24 @@ const buildUrl = ({ headers, url = '' }: VercelRequest) => {
   return `${proto}://${host}${url}`;
 };
 
-const storeToFirestore = async (data: CreateTransactionRequestBody, redirecUrl: string) => {
-  const donatorRef = await collection.Donators.add(proxy.create(data.donator));
+const storeToFirestore = async (data: PayDonationRequestBody, redirecUrl: string) => {
+  const eventRef = collection.Events.doc(data.eventId);
+  const transactionRef = collection.Transactions.doc();
+  const donatorRef = await collection.TransactionClients.add(proxy.create({
+    ...data.donator,
+    fullname: data.donator.fullName,
+  }));
   const donationRef = await collection.Donations.add(proxy.create({
-    eventId: data.eventId,
-    donatorId: donatorRef.id,
+    transaction: transactionRef,
+    event: eventRef,
+    donator: donatorRef,
     amount: data.amount,
     message: data.message,
+    hideDonator: data.hideDonator,
     _ui: {
-      donatorNickName: uiDataFactory({
+      donatorName: uiDataFactory({
         foreignKey: donatorRef.id,
-        data: data.donator.nickName,
+        data: data.donator.fullName,
       }),
       eventName: uiDataFactory({
         foreignKey: data.eventId,
@@ -43,7 +50,7 @@ const storeToFirestore = async (data: CreateTransactionRequestBody, redirecUrl: 
   return [donatorRef, donationRef] as const;
 };
 
-const handler = hasRequiredBody(isCreateTransactionRequestBody, async (req, res) => {
+const handler = hasRequiredBody(isPayDonationRequestBody, async (req, res) => {
   const { donator, ...data } = req.body;
 
   try {
@@ -62,7 +69,7 @@ const handler = hasRequiredBody(isCreateTransactionRequestBody, async (req, res)
           quantity: data.amount,
         },
         customer_details: {
-          first_name: donator.nickName,
+          first_name: donator.fullName,
           email: donator.email,
           phone: donator.phoneNumber,
         },
