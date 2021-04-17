@@ -4,19 +4,21 @@
 import { Donator, isDonator } from '../../shared/types/modelData';
 import type { GetStatusTransaction } from '../../shared/types/midtransApi';
 
-export interface CreateTransactionRequestBody {
+export interface PayDonationRequestBody {
   eventId: string;
   eventName: string;
   donator: Donator;
+  hideDonator: boolean;
   amount: number;
   message: string;
   finishPaymentRedirectURL?: string;
 }
 
-export const isCreateTransactionRequestBody = function (data: any): data is CreateTransactionRequestBody {
+export const isPayDonationRequestBody = function (data: any): data is PayDonationRequestBody {
   return typeof data?.eventId === 'string'
     && typeof data?.eventName === 'string'
     && isDonator(data?.donator)
+    && typeof data?.hideDonator === 'boolean'
     && typeof data?.amount === 'number'
     && typeof data?.message === 'string';
 };

@@ -27,7 +27,7 @@ export type ModelUIHasRelation<T> = {
   data: T;
 }
 
-export type ApiResponse<T = Record<string, unknown>> = {
+export type ApiResponse<T = Record<string, unknown> | undefined> = {
   success: boolean;
   message: string;
   data: T;
