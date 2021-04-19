@@ -81,20 +81,33 @@ export interface IDonationEvent<isNodeCtx = false> {
   }>;
 }
 
-export type Event = IBaseEvent & (
+export type Event<isNodeCtx = false> = IBaseEvent & (
   { donation: false }
-  | { donation: true } & IDonationEvent
+  | { donation: true } & IDonationEvent<isNodeCtx>
 );
 
 export type EventCommon = IBaseEvent & {
   donation: false;
 };
 
-export type EventDonation = IBaseEvent & IDonationEvent & {
+export type EventDonation<isNodeCtx = false> = IBaseEvent
+  & IDonationEvent<isNodeCtx> & {
   donation: true;
 };
 
-export const isEventDonation = (data: Event): data is EventDonation => data.donation;
+export const isEvent = function <isNodeCtx = false> (data: any): data is Event<isNodeCtx> {
+  return typeof data?.title === 'string'
+    && typeof data?.image === 'string'
+    && typeof data?.description === 'string'
+    && typeof data?.organizer === 'string'
+    && typeof data?.URL === 'string'
+    && typeof data?.donation === 'boolean';
+};
+
+export const isEventDonation = function (data: Event): data is EventDonation {
+  return isEvent(data)
+    && typeof data?.donation === 'boolean';
+};
 
 export interface EventNews<isNodeCtx = false> {
   title: string;
