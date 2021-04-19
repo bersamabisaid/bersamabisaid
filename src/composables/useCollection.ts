@@ -2,7 +2,8 @@ import {
   computed, ComputedRef, isRef, ref, watch,
 } from '@vue/composition-api';
 import type fb from 'firebase';
-import type { Model, ModelInObject } from 'shared/types/model';
+import { ModelInObject } from 'shared/types/model';
+import { modelToObject } from 'src/firestoreCollection';
 
 export default function useCollection<T = unknown>(
   collectionRef: fb.firestore.CollectionReference<T>
@@ -19,10 +20,7 @@ export default function useCollection<T = unknown>(
 
     try {
       const snapshot = await dbRef.value.get();
-      data.value = snapshot.docs.map((doc) => ({
-        ...(doc.data() as Model<T>),
-        _uid: doc.id,
-      }));
+      data.value = snapshot.docs.map(modelToObject);
     } catch (err) {
       // eslint-disable-next-line no-console
       console.log('%cuseCollection error!', 'color: red;');

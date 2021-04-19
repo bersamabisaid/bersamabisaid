@@ -1,7 +1,7 @@
 import fbs, { db } from 'src/services/firebaseService';
 import firestoreCollectionName from 'shared/firestoreCollection';
 import type {
-  Model, ModelUIData, TimestampedModel,
+  Model, ModelInObject, ModelUIData, TimestampedModel,
 } from 'shared/types/model';
 import type {
   Donation, Donator, Event, Transaction,
@@ -53,6 +53,11 @@ const modelUiDataFactory = <T = unknown>(value: T, expiration: ModelUIData<T>['e
   lastUpdate: fbs.firestore.Timestamp.now(),
 });
 
+const modelToObject = <T>(snapshot: fb.firestore.DocumentSnapshot<T> | fb.firestore.QueryDocumentSnapshot<T>) => ({
+  ...snapshot.data(),
+  _uid: snapshot.id,
+} as ModelInObject<T>);
+
 export default firestoreCollection;
 
 export {
@@ -61,4 +66,5 @@ export {
   updateAttrs,
   deleteAttrs,
   modelUiDataFactory,
+  modelToObject,
 };

@@ -79,6 +79,7 @@
                       :title="el.title"
                       :caption="extractTextFromHTML(el.description)"
                       :url="el.URL"
+                      :img-url="el.image.URL"
                       v-bind="el"
                       action-label="Lihat detail"
                     />
@@ -153,6 +154,7 @@
                       :title="el.title"
                       :caption="extractTextFromHTML(el.description)"
                       :url="el.URL"
+                      :img-url="el.image.URL"
                       v-bind="el"
                       action-label="Lihat detail"
                     />
@@ -193,32 +195,56 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from '@vue/composition-api';
+import {
+  defineComponent, ref, onMounted,
+} from '@vue/composition-api';
 import { Glide, GlideSlide } from 'vue-glide-js';
 import BaseNavbar from 'components/BaseNavbar.vue';
 import BaseFooter from 'components/BaseFooter.vue';
 import CardProgram from 'components/CardProgram.vue';
-import firestoreCollection from 'src/firestoreCollection';
+import firestoreCollection, { modelToObject } from 'src/firestoreCollection';
 import { extractTextFromHTML } from 'shared/utils/dom';
 import { Singleton } from 'shared/utils/pattern';
+import { StorageFileMetadata } from 'src/composables/useStorage';
 import type { ModelInObject } from 'shared/types/model';
 import type { EventDonation, EventCommon } from 'shared/types/modelData';
+import { resolveEventCollectionImage } from 'src/firestoreApis';
+
+type TeventCommonDataOri = ModelInObject<EventCommon>;
+type TeventDonationDataOri = ModelInObject<EventDonation>;
+
+interface IeventCommonData extends Omit<TeventCommonDataOri, 'image'> {
+  image: {
+    URL: string;
+    metadata: StorageFileMetadata;
+  }
+}
+
+interface IeventDonationData extends Omit<TeventDonationDataOri, 'image'> {
+  image: {
+    URL: string;
+    metadata: StorageFileMetadata;
+  }
+}
 
 const setupData = new Singleton(() => {
-  const eventCommonData = [] as ModelInObject<EventCommon>[];
-  const eventDonationData = [] as ModelInObject<EventDonation>[];
+  const eventCommonData = ref<IeventCommonData[]>([]);
+  const eventDonationData = ref<IeventDonationData[]>([]);
   const isLoading = ref(true);
-  const eventCommonQuery = firestoreCollection.Events.where('donation', '==', false);
+  const toggleLoading = (load = !isLoading.value) => {
+    isLoading.value = load;
+  };
+  const eventCommonQuery = firestoreCollection.Events;
   const eventDonationQuery = firestoreCollection.Events.where('donation', '==', true);
 
   const syncData = async () => {
-    isLoading.value = true;
+    toggleLoading(true);
     const [commonData, donationData] = await Promise.all([eventCommonQuery.get(), eventDonationQuery.get()]);
-    eventCommonData.slice(eventCommonData.length);
-    eventDonationData.slice(eventDonationData.length);
-    eventCommonData.push(...commonData.docs.map((doc) => ({ ...doc.data(), _uid: doc.id } as ModelInObject<EventCommon>)));
-    eventDonationData.push(...donationData.docs.map((doc) => ({ ...doc.data(), _uid: doc.id } as ModelInObject<EventDonation>)));
-    isLoading.value = false;
+    const commonDataInObj = commonData.docs.map(modelToObject) as TeventCommonDataOri[];
+    const donationDataInObj = donationData.docs.map(modelToObject) as TeventDonationDataOri[];
+    eventCommonData.value = await resolveEventCollectionImage(commonDataInObj);
+    eventDonationData.value = await resolveEventCollectionImage(donationDataInObj);
+    toggleLoading(false);
   };
 
   return {

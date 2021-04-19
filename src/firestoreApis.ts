@@ -2,6 +2,9 @@ import { onMounted, ref } from '@vue/composition-api';
 import firestoreCollection from 'src/firestoreCollection';
 import type fb from 'firebase';
 import type { Model, ModelInObject } from 'shared/types/model';
+import { Event } from 'shared/types/modelData';
+import { getStorageFile } from 'src/composables/useStorage';
+import { storageRef } from 'src/services/firebaseService';
 
 export const getDocumentByFactory = function <T = unknown, U extends keyof T = keyof T> (
   collectionReference: fb.firestore.CollectionReference<T>,
@@ -36,3 +39,14 @@ export const getDocumentByFactory = function <T = unknown, U extends keyof T = k
 };
 
 export const getEventByURL = getDocumentByFactory(firestoreCollection.Events, 'URL');
+
+export const resolveEventImage = async function <T extends Event = Event> ({ image, ...data }: T) {
+  return {
+    ...data,
+    image: await getStorageFile(storageRef.root.child(image)),
+  };
+};
+
+export const resolveEventCollectionImage = async function <T extends Event = Event> (data: T[]) {
+  return Promise.all(data.map(resolveEventImage));
+};

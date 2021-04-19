@@ -28,12 +28,12 @@ import CardProgram from 'components/CardProgram.vue';
 import firestoreCollection from 'src/firestoreCollection';
 import useCollection from 'src/composables/useCollection';
 import { extractTextFromHTML } from 'shared/utils/dom';
-import { getStorageFile, StorageFileMetadata } from 'src/composables/useStorage';
-import { storageRef } from 'src/services/firebaseService';
-import { Model } from 'shared/types/model';
+import { StorageFileMetadata } from 'src/composables/useStorage';
+import { Model, ModelInObject } from 'shared/types/model';
 import { Event } from 'shared/types/modelData';
+import { resolveEventCollectionImage } from 'src/firestoreApis';
 
-interface IEventData extends Omit<Model<Event>, 'image'> {
+interface IEventData extends Omit<ModelInObject<Model<Event>>, 'image'> {
   image: {
     URL: string;
     metadata: StorageFileMetadata;
@@ -51,12 +51,7 @@ export default defineComponent({
     const eventData = ref<IEventData[]>([]);
 
     watch(events, async () => {
-      eventData.value = await Promise.all(
-        events.value.map(async ({ image, ...event }) => ({
-          ...event,
-          image: await getStorageFile(storageRef.root.child(image)),
-        })),
-      ) as typeof eventData['value'];
+      eventData.value = await resolveEventCollectionImage(events.value);
     });
 
     return {
