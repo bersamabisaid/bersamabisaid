@@ -1,6 +1,6 @@
 import type fb from 'firebase';
 
-type StorageFileMetadata<TcustomMetadata = Record<string, unknown>> = {
+export type StorageFileMetadata<TcustomMetadata = Record<string, unknown>> = {
   readonly bucket: string;
   readonly generation: string;
   readonly metageneration: string;
