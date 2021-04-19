@@ -2,6 +2,7 @@ import * as functions from 'firebase-functions';
 import firestoreCollection, { firestoreProxy, uiDataFactory } from '../service/firestoreCollection';
 import { createTransaction } from '../createTransaction';
 import { isPayDonationRequestBody, PayDonationRequestBody } from '../../../shared/types/backendRequest';
+import { PayDonationResponse } from '../../../shared/types/backendResponse';
 import type { ApiResponse } from '../../../shared/types/model';
 
 export const pay = async ({ donator, ...data }: Required<PayDonationRequestBody>) => {
@@ -59,7 +60,7 @@ export const pay = async ({ donator, ...data }: Required<PayDonationRequestBody>
   };
 };
 
-const callablePay = functions.https.onCall(async (payload, ctx): Promise<ApiResponse> => {
+const callablePay = functions.https.onCall(async (payload, ctx) => {
   functions.logger.log(payload);
   if (isPayDonationRequestBody(payload)) {
     const finishPaymentRedirectURL = payload.finishPaymentRedirectURL || ctx.rawRequest.url;
@@ -72,17 +73,18 @@ const callablePay = functions.https.onCall(async (payload, ctx): Promise<ApiResp
       success: true,
       message: 'Please use this given link to go to the payment page',
       data: {
-        donationId: donationRef.id,
+        // because donationId will be always same to transactionId
+        transactionId: donationRef.id,
         redirectURL: transactionAction.redirect_url,
       },
-    };
+    } as ApiResponse<PayDonationResponse>;
   }
 
   return {
     success: false,
     message: 'Missing required arguments!',
     data: undefined,
-  };
+  } as ApiResponse;
 });
 
 export default callablePay;
