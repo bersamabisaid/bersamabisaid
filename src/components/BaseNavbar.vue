@@ -38,8 +38,7 @@
     </q-toolbar-title>
 
     <div
-      class="w-full bg-white md:hidden"
-      :class="{'hidden': !showMenu, 'block': showMenu}"
+      :class="['w-full bg-white md:hidden', !showMenu && 'hidden']"
     >
       <ul class="list-none">
         <li
