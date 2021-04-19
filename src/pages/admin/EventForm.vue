@@ -349,7 +349,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-// @layer components {
+@layer components {
   .event-form {
     $root: &;
 
@@ -363,5 +363,5 @@ export default defineComponent({
       }
     }
   }
-// }
+}
 </style>

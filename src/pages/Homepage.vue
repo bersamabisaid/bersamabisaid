@@ -289,7 +289,7 @@ export default defineComponent({
 @import '~@glidejs/glide/src/assets/sass/glide.core';
 @import '~@glidejs/glide/src/assets/sass/glide.theme';
 
-// @layer components {
+@layer components {
   .card-program__grid {
     @apply flex grid-flow-col auto-cols-min object-contain gap-0;
 
@@ -305,5 +305,5 @@ export default defineComponent({
       }
     }
   }
-// }
+}
 </style>

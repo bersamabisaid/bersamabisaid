@@ -231,7 +231,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-// @layer components {
+@layer components {
   .event-index {
     thead tr th {
       @apply sticky top-0 z-10;
@@ -241,5 +241,5 @@ export default defineComponent({
       max-height: 70vh;
     }
   }
-// }
+}
 </style>
