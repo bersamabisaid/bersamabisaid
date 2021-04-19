@@ -22,6 +22,9 @@ export const getFinishRedirectUrl = async (transactionId: string) => {
     const { _system } = donationSnapshot.data();
     const url = new URL(_system.finishPaymentRedirectURL);
 
+    url.searchParams.forEach((val, key) => url
+      .searchParams.delete(key));
+
     url.searchParams.append('donationId', donationDoc.id);
 
     return url.toString();
