@@ -24,6 +24,7 @@ export default function useCollection<T = unknown>(
         _uid: doc.id,
       }));
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.log('%cuseCollection error!', 'color: red;');
       error.value = err as fb.firestore.FirestoreError;
     }

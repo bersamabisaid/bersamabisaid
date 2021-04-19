@@ -11,6 +11,7 @@ export default function useCollectionRealtime<T = unknown>(collectionRef: fb.fir
       data.value = snapshots.docs.map((doc) => doc.data());
     },
     (err) => {
+      // eslint-disable-next-line no-console
       console.log('%cuseCollectionRealtime error!', 'color: red;');
       error.value = err;
     },

@@ -7,7 +7,8 @@ type Options = fb.firestore.GetOptions & {
 }
 
 export default function useDocument<T = unknown>(
-  docRef: fb.firestore.DocumentReference<T> | ComputedRef<fb.firestore.DocumentReference<T>>,
+  docRef: fb.firestore.DocumentReference<T>
+    | ComputedRef<fb.firestore.DocumentReference<T>>,
   initialValue: T | null = null,
   { ...getOptions }: Options = {},
 ) {
@@ -22,6 +23,7 @@ export default function useDocument<T = unknown>(
       const docSnapshot = await dbRef.value.get(getOptions);
       data.value = (docSnapshot.data() || initialValue) as typeof data['value'];
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.log('%cuseDocument error!', 'color: red;');
       error.value = err as fb.firestore.FirestoreError;
     }
