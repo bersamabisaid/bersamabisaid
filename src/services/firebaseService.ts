@@ -3,7 +3,9 @@ import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
 import 'firebase/storage';
+import 'firebase/functions';
 import storageReferencePathName from 'shared/storageReference';
+import { emulators } from 'app/firebase.json';
 
 const service = new Singleton(() => {
   if (firebase.apps.length) {
@@ -32,6 +34,14 @@ export const db = fbs.firestore();
 export const storage = fbs.storage().ref();
 
 export const auth = fbs.auth();
+
+export const fns = fbs.functions();
+
+if (process.env.NODE_ENV !== 'production') {
+  const DEV_HOST = 'localhost';
+
+  fns.useEmulator(DEV_HOST, emulators.functions.port);
+}
 
 export const storageRef = Object.assign(storage, {
   Events: storage.child(storageReferencePathName.EVENTS),
