@@ -1,4 +1,4 @@
-import firebaseAdmin, { ServiceAccount } from 'firebase-admin';
+import fbAdmin, { ServiceAccount } from 'firebase-admin';
 import collectionName from '../../shared/firestoreCollection';
 import { createSingleton } from '../../shared/utils/pattern';
 import { base64 } from '../../shared/utils/encoding';
@@ -8,8 +8,8 @@ import type {
 } from '../../shared/types/modelData';
 
 const admin = createSingleton(() => {
-  if (firebaseAdmin.apps.length) {
-    firebaseAdmin.app();
+  if (fbAdmin.apps.length) {
+    fbAdmin.app();
   } else {
     const credential = JSON.parse(
       process.env.NODE_ENV === 'development'
@@ -17,12 +17,12 @@ const admin = createSingleton(() => {
         : base64.decode(process.env.GCLOUD_CREDENTIALS!),
     ) as ServiceAccount;
 
-    firebaseAdmin.initializeApp({
-      credential: firebaseAdmin.credential.cert(credential),
+    fbAdmin.initializeApp({
+      credential: fbAdmin.credential.cert(credential),
     });
   }
 
-  return firebaseAdmin;
+  return fbAdmin;
 });
 
 const db = () => admin().firestore();
@@ -33,11 +33,11 @@ const fbs = Object.assign(admin, {
 };
 
 const collection = {
-  Donations: fbs.db().collection(collectionName.DONATIONS) as firebaseAdmin.firestore.CollectionReference<Model<Donation<true>>>,
-  Donators: fbs.db().collection(collectionName.DONATORS) as firebaseAdmin.firestore.CollectionReference<Model<Donator>>,
-  Events: fbs.db().collection(collectionName.EVENTS) as firebaseAdmin.firestore.CollectionReference<Model<Event>>,
-  Transactions: fbs.db().collection(collectionName.TRANSACTIONS) as firebaseAdmin.firestore.CollectionReference<Model<Transaction<true>>>,
-  TransactionClients: fbs.db().collection(collectionName.TRANSACTION_CLIENTS) as firebaseAdmin.firestore.CollectionReference<Model<TransactionClient>>,
+  Donations: fbs.db().collection(collectionName.DONATIONS) as fbAdmin.firestore.CollectionReference<Model<Donation<true>>>,
+  Donators: fbs.db().collection(collectionName.DONATORS) as fbAdmin.firestore.CollectionReference<Model<Donator>>,
+  Events: fbs.db().collection(collectionName.EVENTS) as fbAdmin.firestore.CollectionReference<Model<Event>>,
+  Transactions: fbs.db().collection(collectionName.TRANSACTIONS) as fbAdmin.firestore.CollectionReference<Model<Transaction<true>>>,
+  TransactionClients: fbs.db().collection(collectionName.TRANSACTION_CLIENTS) as fbAdmin.firestore.CollectionReference<Model<TransactionClient>>,
 };
 
 const uiDataFactory = <T = unknown> (
