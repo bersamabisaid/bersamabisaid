@@ -3,14 +3,18 @@ import firestoreCollectionName from 'shared/firestoreCollection';
 import type {
   Model, ModelUIData, TimestampedModel,
 } from 'shared/types/model';
-import type { Event } from 'shared/types/modelData';
+import type {
+  Donation, Donator, Event, Transaction,
+} from 'shared/types/modelData';
 import type fb from 'firebase';
 
 type ModelCollectionReference<T> = fb.firestore.CollectionReference<Model<T>>;
 
 const firestoreCollection = {
   Events: db.collection(firestoreCollectionName.EVENTS) as ModelCollectionReference<Event>,
-
+  Donators: db.collection(firestoreCollectionName.DONATORS) as ModelCollectionReference<Donator>,
+  Donations: db.collection(firestoreCollectionName.DONATIONS) as ModelCollectionReference<Donation>,
+  Transactions: db.collection(firestoreCollectionName.TRANSACTIONS) as ModelCollectionReference<Transaction>,
 };
 
 const isSnapshotExists = <T = unknown>(

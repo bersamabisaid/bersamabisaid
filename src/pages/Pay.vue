@@ -28,6 +28,7 @@
           animated
           vertical
           class="w-full rounded-xl"
+          @transition="onStepTransition"
         >
           <q-step
             :name="1"
@@ -167,7 +168,30 @@
           >
             <div class="w-full max-w-prose mx-auto p-6 flex flex-col justify-center items-center">
               <template v-if="isWaitingPayment && isDisableFinish">
-                <div class="flex flex-col items-center gap-y-6">
+                <div class="flex flex-col items-center gap-y-10">
+                  <div
+                    v-if="paymentRedirectURL"
+                    class="px-5 py-3 bg-blue-gray-300 rounded-xl flex flex-col items-center gap-y-3"
+                  >
+                    <span class="font-semibold text-center text-primary">
+                      Anda akan otomatis dialihkan ke halaman pembayaran dalam {{ redirectCounter }}
+                    </span>
+
+                    <span class="text-sm">atau klik tombol dibawah berikut jika tidak teralihkan otomatis</span>
+
+                    <q-btn
+                      label="Menuju ke halaman pembayaran"
+                      icon-right="open_in_new"
+                      type="a"
+                      :href="paymentRedirectURL"
+                      target="_blank"
+                      :disable="!!redirectCounter"
+                      unelevated
+                      no-caps
+                      class="mt-2 bg-positive text-white rounded-lg"
+                    />
+                  </div>
+
                   <span class="font-medium">Menunggu Pembayaran</span>
 
                   <q-circular-progress
@@ -177,8 +201,8 @@
                   />
                 </div>
 
-                <div class="mt-20 flex flex-col items-center gap-y-1">
-                  <span class="mt-4 font-medium text-sm text-primary text-opacity-60">Silahkan copy URL berikut untuk kembali ke halaman ini</span>
+                <div class="mt-10 flex flex-col items-center gap-y-1">
+                  <span class="mt-4 font-medium text-sm text-primary text-opacity-60">Silahkan salin URL berikut untuk kembali ke halaman ini</span>
 
                   <div class="select-all truncate w-60 px-2 py-1 bg-blue-gray-300 rounded-xl">
                     <q-btn
@@ -244,7 +268,7 @@
             <q-stepper-navigation>
               <div class="flex flex-row justify-end gap-x-4">
                 <q-btn
-                  v-if="step > 1 && step < 4"
+                  v-if="step > 1 && !donationData && step < 4"
                   label="Sebelumnya"
                   color="primary"
                   :disable="isWaitingPayment"
@@ -274,7 +298,7 @@
 
 <script lang="ts">
 import {
-  defineComponent, Ref, watch, ref,
+  defineComponent, watch, ref, computed,
 } from '@vue/composition-api';
 import { copyToClipboard } from 'quasar';
 import { Money } from 'v-money';
@@ -282,18 +306,32 @@ import MinimalistLayout from 'layouts/MinimalistLayout.vue';
 import CardProgram from 'components/CardProgram.vue';
 import SocialShare from 'components/SocialShare.vue';
 import { storageRef } from 'src/services/firebaseService';
+import firestoreCollection, { isSnapshotExists } from 'src/firestoreCollection';
 import { getEventByURL } from 'src/firestoreApis';
+import { payDonation } from 'src/firebaseFunctions';
 import { eventDataRepo } from 'src/dataRepositories';
 import { getStorageFile } from 'src/composables/useStorage';
+import { notifyError } from 'src/composables/useNotification';
 import { requiredRule } from 'src/composables/useInputRules';
+import useCountdown from 'src/composables/useCountdown';
+import { toIdr } from 'shared/utils/formatter';
 import { extractTextFromHTML } from 'shared/utils/dom';
+import {
+  Donation, EventDonation, isEventDonation,
+} from 'shared/types/modelData';
+import type { Route } from 'vue-router';
 import type { QStepper, QField, QForm } from 'quasar';
-import type { Model } from 'shared/types/model';
-import type { EventDonation } from 'shared/types/modelData';
+import type { ModelInObject, Model } from 'shared/types/model';
+import useDocumentRealtime from 'src/composables/useDocumentRealtime';
 
 interface Choice {
   title: string;
   amount: number;
+}
+
+type PossiblePageQuery = Route['query'] & {
+  eventId?: string;
+  donationId?: string;
 }
 
 const amountChoices: Choice[] = [
@@ -322,9 +360,58 @@ const amountChoices: Choice[] = [
 export default defineComponent({
   name: 'PageDonate',
   setup(props, { root }) {
-    const programURL = root.$route.query.eventId as string;
-    const [eventData, isDataLoading] = getEventByURL.hooks(programURL, eventDataRepo.defaultDonationModelData());
+    const pageQuery = computed(() => root.$route.query as PossiblePageQuery);
+    const donationId = computed({
+      get: () => pageQuery.value.donationId,
+      set: (val) => root.$router.replace({ query: { donationId: val } }),
+    });
+    const eventData = ref<ModelInObject<EventDonation>>({ ...eventDataRepo.defaultDonationModelData(), _uid: '' });
+    const donationData = ref<ModelInObject<Donation>>();
+    const transactionRef = computed(() => donationData.value?.transaction || firestoreCollection.Transactions.doc());
+    const [transactionData] = useDocumentRealtime(transactionRef);
+    const isDataLoading = ref(true);
     const eventThumbnailSrc = ref('');
+    const paymentRedirectURL = ref('');
+    const [redirectCounter, redirectCounterStart] = useCountdown();
+
+    const updateEventData = async (id: string) => {
+      const eventSnapshot = await getEventByURL(id) || await firestoreCollection.Events.doc(id).get();
+
+      if (eventSnapshot && isSnapshotExists(eventSnapshot)) {
+        eventData.value = { ...eventSnapshot.data() as Model<EventDonation>, _uid: eventSnapshot.id };
+      }
+    };
+    const updateDonationData = async (id: string) => {
+      const donationSnapshot = await firestoreCollection.Donations.doc(id).get();
+
+      if (isSnapshotExists(donationSnapshot)) {
+        donationData.value = { ...donationSnapshot.data(), _uid: donationSnapshot.id };
+
+        await updateEventData(donationData.value.event.id);
+      }
+    };
+
+    watch(pageQuery, async (newVal, oldVal) => {
+      isDataLoading.value = true;
+
+      try {
+        // prior to get data from donationId then watch the diff
+        if ((newVal.donationId !== oldVal?.donationId) && newVal.donationId) {
+          await updateDonationData(newVal.donationId);
+        } else if ((newVal.eventId !== oldVal?.eventId) && newVal.eventId) {
+          await updateEventData(newVal.eventId);
+        }
+      } catch (err) {
+        notifyError(err);
+      } finally {
+        isDataLoading.value = false;
+        // if eventData is exists
+        if (!(isEventDonation(eventData.value) && eventData.value._uid)) {
+          root.$router.push({ name: '404' })
+            .finally(() => notifyError('invalid arguments!'));
+        }
+      }
+    }, { immediate: true });
 
     watch(eventData, async ({ image }) => {
       if (image) {
@@ -337,18 +424,26 @@ export default defineComponent({
     }, { immediate: true });
 
     return {
-      eventData: eventData as Ref<Model<EventDonation>>,
+      donationId,
+      eventData,
+      donationData,
+      transactionData,
       isDataLoading,
       eventThumbnailSrc,
+      paymentRedirectURL,
+
+      redirectCounter,
+      redirectCounterStart,
+
       amountChoices,
       requiredRule,
+      toIdr,
       extractTextFromHTML,
     };
   },
   data() {
     return {
       amount: 0,
-      nickName: '',
       fullName: '',
       email: '',
       streetAddress: '',
@@ -386,14 +481,20 @@ export default defineComponent({
       return url.toString();
     },
     paymentURL() {
-      if (this.isWaitingPayment) {
-        // eslint-disable-next-line no-restricted-globals
-        const url = new URL(location?.href || 'http://localhost');
-        url.pathname = this.$route.fullPath;
-        return url.toString();
+      // eslint-disable-next-line no-restricted-globals
+      const url = new URL(location?.href || 'http://localhost');
+      const { href } = this.$router.resolve({ name: 'Payment' });
+
+      url.searchParams.forEach((v, k) => url
+        .searchParams.delete(k));
+
+      url.pathname = href;
+
+      if (this.donationData) {
+        url.searchParams.append('donationId', this.donationData._uid);
       }
 
-      return '';
+      return url.toString();
     },
   },
   methods: {
@@ -402,7 +503,7 @@ export default defineComponent({
 
       switch (this.step) {
         case 1:
-          return (this.$refs.inputAmount as QField).validate() && next();
+          return await (this.$refs.inputAmount as QField).validate() && next();
 
         case 2:
           return await (this.$refs.form as QForm).validate() && next();
@@ -415,29 +516,96 @@ export default defineComponent({
       }
     },
     previousStep() {
-      (this.$refs.stepper as QStepper).previous();
+      return (this.$refs.stepper as QStepper).previous();
     },
-    simulatePayment() {
-      return new Promise((resolve) => {
-        setTimeout(() => resolve(), 3000);
+    onStepTransition(newVal: string | number) {
+      switch (newVal) {
+        default:
+          break;
+      }
+    },
+    getPaymentRedirectURL() {
+      return payDonation({
+        eventId: this.eventData._uid,
+        eventName: this.eventData.title,
+        amount: this.amount,
+        message: this.message,
+        donator: {
+          fullName: this.fullName,
+          email: this.email,
+          phoneNumber: this.phoneNumber,
+          address: {
+            country: 'Indonesia',
+            province: this.province,
+            city: this.city,
+            streetAddress: '',
+            zipCode: 0,
+          },
+        },
+        hideDonator: this.hidden,
+        finishPaymentRedirectURL: this.paymentURL,
       });
     },
-    pay() {
+    async pay() {
       this.isWaitingPayment = true;
-      // send data to api here...
-      return this.simulatePayment()
-        .then(() => {
-          this.isWaitingPayment = false;
-          this.isDisableFinish = false;
-          return this.nextStep();
-        });
+
+      try {
+        if (!this.donationData && !this.paymentRedirectURL) {
+          const { data: { redirectURL, donationId } } = await this.getPaymentRedirectURL();
+          this.paymentRedirectURL = redirectURL;
+          this.donationId = donationId;
+        }
+
+        this.redirectCounterStart(3000)
+          .finally(() => {
+            this.redirectCounter = 0;
+            window.open(this.paymentRedirectURL);
+          });
+      } catch (err) {
+        notifyError(err);
+        this.isWaitingPayment = false;
+      }
+    },
+    syncDonationData() {
+      if (this.donationData) {
+        this.amount = this.donationData.amount;
+        // this.fullName = this.donationData.
+        this.message = this.donationData.message;
+        this.hidden = this.donationData.hideDonator;
+        this.donationId = this.donationData._uid;
+
+        this.isWaitingPayment = true;
+        this.step = 3;
+      }
     },
     copyURL(text: string) {
       return copyToClipboard(text)
         .then(() => alert?.('copied to clipboard!'));
     },
-    toIdr(n: number) {
-      return n.toLocaleString('id', { style: 'currency', currency: 'idr', maximumFractionDigits: 0 });
+  },
+  watch: {
+    donationData: {
+      handler() {
+        this.syncDonationData();
+      },
+      immediate: true,
+    },
+    transactionData: {
+      handler() {
+        switch (this.transactionData?.paymentStatus?.status) {
+          case 'accepted':
+            this.isWaitingPayment = false;
+            this.isDisableFinish = false;
+
+            // eslint-disable-next-line @typescript-eslint/no-floating-promises
+            this.nextStep();
+            break;
+
+          default:
+            break;
+        }
+      },
+      immediate: true,
     },
   },
   components: {
