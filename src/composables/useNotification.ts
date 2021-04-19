@@ -9,7 +9,10 @@ const errorBaseOpts: Parameters<typeof Notify['create']>[0] = {
 };
 
 export const notifyError = (err: NonNullable<unknown>) => {
-  console.log(err);
+  if (process.env.NODE_ENV !== 'production') {
+    // eslint-disable-next-line no-console
+    console.log(err);
+  }
 
   if (typeof err === 'string') {
     return Notify.create({
