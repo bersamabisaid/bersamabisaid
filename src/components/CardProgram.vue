@@ -10,6 +10,7 @@
           v-else
           :src="imgUrl"
           class="card-program__img"
+          :ratio="4/3"
         />
       </div>
 
@@ -142,7 +143,7 @@ export default defineComponent({
     }
 
     &__img-container {
-      @apply relative w-full h-60;
+      @apply relative w-full;
     }
 
     &__img {
