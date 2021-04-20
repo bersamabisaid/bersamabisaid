@@ -363,8 +363,9 @@ export default defineComponent({
     const pageQuery = computed(() => root.$route.query as PossiblePageQuery);
     const donationId = computed({
       get: () => pageQuery.value.donationId,
-      set: (val) => root.$router.replace({ query: { donationId: val } }),
+      set: (val) => root.$router.push({ query: { ...root.$route.query, donationId: val } }),
     });
+    const eventRef = computed(() => firestoreCollection.Events.doc(pageQuery.value.eventId));
     const eventData = ref<ModelInObject<EventDonation>>({ ...eventDataRepo.defaultDonationModelData(), _uid: '' });
     const donationData = ref<ModelInObject<Donation>>();
     const transactionRef = computed(() => donationData.value?.transaction || firestoreCollection.Transactions.doc());
@@ -375,14 +376,16 @@ export default defineComponent({
     const [redirectCounter, redirectCounterStart] = useCountdown();
 
     const updateEventData = async (id: string) => {
-      const eventSnapshot = await getEventByURL(id) || await firestoreCollection.Events.doc(id).get();
+      const eventSnapshot = await getEventByURL(id) || await eventRef.value.get();
+      console.log(eventSnapshot);
 
       if (eventSnapshot && isSnapshotExists(eventSnapshot)) {
         eventData.value = { ...eventSnapshot.data() as Model<EventDonation>, _uid: eventSnapshot.id };
       }
     };
     const updateDonationData = async (id: string) => {
-      const donationSnapshot = await firestoreCollection.Donations.doc(id).get();
+      const donationSnapshot = await firestoreCollection.Donations(eventRef.value)
+        .doc(id).get();
 
       if (isSnapshotExists(donationSnapshot)) {
         donationData.value = { ...donationSnapshot.data(), _uid: donationSnapshot.id };
@@ -422,6 +425,8 @@ export default defineComponent({
         eventThumbnailSrc.value = '';
       }
     }, { immediate: true });
+
+    watch(donationId, () => donationId.value && updateDonationData(donationId.value));
 
     return {
       donationId,
@@ -559,7 +564,7 @@ export default defineComponent({
         this.redirectCounterStart(3000)
           .finally(() => {
             this.redirectCounter = 0;
-            window.open(this.paymentRedirectURL);
+            window.open(this.paymentRedirectURL, '_self');
           });
       } catch (err) {
         notifyError(err);

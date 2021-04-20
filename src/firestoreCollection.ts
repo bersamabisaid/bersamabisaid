@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-namespace */
 import fbs, { db } from 'src/services/firebaseService';
 import firestoreCollectionName from 'shared/firestoreCollection';
 import type {
@@ -9,11 +10,17 @@ import type {
 import type fb from 'firebase';
 
 type ModelCollectionReference<T> = fb.firestore.CollectionReference<Model<T>>;
+type ModelDocumentReference<T> = fb.firestore.DocumentReference<Model<T>>;
+
+export namespace DocRef {
+  export type ModelEvent = ModelDocumentReference<Event>;
+}
 
 const firestoreCollection = {
   Events: db.collection(firestoreCollectionName.EVENTS) as ModelCollectionReference<Event>,
   Donators: db.collection(firestoreCollectionName.DONATORS) as ModelCollectionReference<Donator>,
-  Donations: db.collection(firestoreCollectionName.DONATIONS) as ModelCollectionReference<Donation>,
+  Donations: (eventRef: DocRef.ModelEvent) => eventRef
+    .collection(firestoreCollectionName.DONATIONS) as ModelCollectionReference<Donation>,
   Transactions: db.collection(firestoreCollectionName.TRANSACTIONS) as ModelCollectionReference<Transaction>,
 };
 
