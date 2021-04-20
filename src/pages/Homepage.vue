@@ -138,7 +138,6 @@
                   v-if="!isLoading"
                   type="carousel"
                   :per-view="4"
-                  focus-at="center"
                   :breakpoints="{
                     640: { perView: 1 },
                     1023: { perView: 2 },
