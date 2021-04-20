@@ -29,8 +29,8 @@ export const pay = async ({ donator, ...data }: Required<PayDonationRequestBody>
       name: donator.fullName,
     },
   });
-  const donationRef = firestoreCollection.Donations.doc(transactionRef.id);
 
+  const donationRef = firestoreCollection.Donations(eventRef).doc(transactionRef.id);
   await donationRef.set(firestoreProxy.create({
     event: eventRef,
     transaction: transactionRef,

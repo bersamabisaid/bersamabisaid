@@ -1,42 +1,55 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import * as functions from 'firebase-functions';
-import firestoreCollection, { isSnapshotExists } from '../service/firestoreCollection';
-import { FinishPaymentRedirectQuery } from '../../../shared/types/midtransApi';
+import { db } from '../service/firebaseAdmin';
+import firestoreCollection, { DocRef, isSnapshotExists } from '../service/firestoreCollection';
 import hasRequiredQuery from '../middleware/hasRequiredQuery';
 import apiMethod from '../middleware/apiMethod';
+import { FinishPaymentRedirectQuery } from '../../../shared/types/midtransApi';
 
-/* eslint-disable camelcase */
+/* eslint-disable camelcase, @typescript-eslint/no-unsafe-member-access */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isFinishPaymentRedirectQuery = function (data: any): data is FinishPaymentRedirectQuery {
-  return Boolean(
-    data?.order_id,
-  );
+  return typeof data?.order_id === 'string';
 };
-/* eslint-enable @typescript-eslint/no-unsafe-member-access */
-/* eslint-enable camelcase */
+/* eslint-enable camelcase, @typescript-eslint/no-unsafe-member-access */
 
-export const getFinishRedirectUrl = async (transactionId: string) => {
-  const donationDoc = firestoreCollection.Donations.doc(transactionId);
-  const donationSnapshot = await donationDoc.get();
+const buildFinishRedirectUrl = (baseUrl: string, eventId: string, donationId: string) => {
+  const url = new URL(baseUrl);
 
-  if (isSnapshotExists(donationSnapshot)) {
-    const { _system } = donationSnapshot.data();
-    const url = new URL(_system.finishPaymentRedirectURL);
+  url.searchParams.forEach((val, key) => url
+    .searchParams.delete(key));
 
-    url.searchParams.forEach((val, key) => url
-      .searchParams.delete(key));
+  url.searchParams.append('donationId', donationId);
+  url.searchParams.append('eventId', eventId);
 
-    url.searchParams.append('donationId', donationDoc.id);
-
-    return url.toString();
-  }
-
-  return undefined;
+  return url.toString();
 };
+
+export const getFinishRedirectUrl = async (transactionId: string) => db
+  .runTransaction(async (fbt) => {
+    const transactionSnapshot = await fbt.get(firestoreCollection.Transactions.doc(transactionId));
+
+    if (isSnapshotExists(transactionSnapshot)) {
+      const { items: [eventItem] } = transactionSnapshot.data();
+
+      if (eventItem) {
+        const eventRef = eventItem.ref as DocRef.EventModel;
+        const donationRef = firestoreCollection.Donations(eventRef).doc(transactionId);
+        const donationSnapshot = await donationRef.get();
+
+        if (isSnapshotExists(donationSnapshot)) {
+          const { _system: { finishPaymentRedirectURL } } = donationSnapshot.data();
+
+          return buildFinishRedirectUrl(finishPaymentRedirectURL, eventRef.id, donationRef.id);
+        }
+      }
+    }
+
+    return undefined;
+  });
 
 const paymentFinishRequestHandler = apiMethod.get(hasRequiredQuery(
   isFinishPaymentRedirectQuery,
   async ({ query }, res) => {
-    // if (isFinishPaymentRedirectQuery(query)) {
     const finishRedirectUrl = await getFinishRedirectUrl(query.order_id);
 
     if (finishRedirectUrl) {
