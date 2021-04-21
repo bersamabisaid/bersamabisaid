@@ -20,13 +20,14 @@ const getTransactionStatusSummary = ({ transactionStatus, fraudStatus }: payment
   let paymentSummary: PaymentStatus['status'] = 'pending';
 
   if (transactionStatus === 'capture') {
-    if (fraudStatus === 'accept') {
-      paymentSummary = 'accepted';
-    } else if (fraudStatus === 'challenge') {
-      paymentSummary = 'need_action';
-    } else {
-      paymentSummary = 'fail';
+    if (fraudStatus) {
+      if (fraudStatus === 'deny') {
+        paymentSummary = 'fail';
+      } else if (fraudStatus === 'challenge') {
+        paymentSummary = 'need_action';
+      }
     }
+    paymentSummary = 'accepted';
   } else if (transactionStatus === 'settlement') {
     paymentSummary = 'accepted';
   } else if (

@@ -30,6 +30,5 @@ export const isPaymentWebhookRequestBody = function (data: any): data is Payment
   return typeof data?.order_id === 'string'
     && typeof data?.transaction_id === 'string'
     && typeof data?.transaction_status === 'string'
-    && typeof data?.fraud_status === 'string'
     && typeof data?.signature_key === 'string';
 };

@@ -18,7 +18,7 @@ export interface GetStatusTransaction {
   payment_type: string;
   transaction_time: string; // timestamp
   transaction_status: 'capture' | 'settlement' | 'pending' | 'deny' | 'cancel' | 'expire' | 'refund';
-  fraud_status: 'accept' | 'challenge' | 'deny';
+  fraud_status?: 'accept' | 'challenge' | 'deny';
   status_code: string;
   status_message: string;
   signature_key: string;
