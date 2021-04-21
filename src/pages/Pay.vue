@@ -201,7 +201,10 @@
                   />
                 </div>
 
-                <div class="mt-10 flex flex-col items-center gap-y-1">
+                <div
+                  v-if="donationData"
+                  class="mt-10 flex flex-col items-center gap-y-1"
+                >
                   <span class="mt-4 font-medium text-sm text-primary text-opacity-60">Silahkan salin URL berikut untuk kembali ke halaman ini</span>
 
                   <div class="select-all truncate w-60 px-2 py-1 bg-blue-gray-300 rounded-xl">
@@ -250,9 +253,37 @@
             :done="step > 4"
           >
             <div class="py-8 flex flex-col items-center gap-y-10">
-              <h3 class="font-extrabold text-3xl text-accent">
-                Terimakasih! ❤
-              </h3>
+              <h5
+                v-if="paymentStatus === 'accepted'"
+                class="font-extrabold text-3xl text-accent"
+              >
+                {{ finishMessage[paymentStatus] }}
+              </h5>
+
+              <template
+                v-else
+                class="p-4 flex flex-col items-center"
+              >
+                <h5 class="font-extrabold text-2xl text-negative">
+                  {{ finishMessage[paymentStatus] }}
+                </h5>
+
+                <div class="py-2 flex gap-x-2">
+                  <q-btn
+                    v-if="['fail', 'expire'].includes(paymentStatus)"
+                    label="Laporkan kesalahan"
+                    unelevated
+                    no-caps
+                    class="text-primary rounded-lg"
+                  />
+                  <q-btn
+                    label="Ulangi transaksi"
+                    unelevated
+                    no-caps
+                    class="bg-secondary text-white rounded-lg"
+                  />
+                </div>
+              </template>
 
               <social-share :shared-url="programFullURL">
                 <template #title>
@@ -318,7 +349,7 @@ import useDocumentRealtime from 'src/composables/useDocumentRealtime';
 import { toIdr } from 'shared/utils/formatter';
 import { extractTextFromHTML } from 'shared/utils/dom';
 import {
-  Donation, ProgramDonation, isProgramDonation,
+  Donation, ProgramDonation, isProgramDonation, PaymentStatus,
 } from 'shared/types/modelData';
 import type { Route } from 'vue-router';
 import type { QStepper, QField, QForm } from 'quasar';
@@ -357,13 +388,24 @@ const amountChoices: Choice[] = [
   },
 ];
 
+const finishMessage: Record<PaymentStatus['status'], string> = {
+  accepted: 'Terimakasih! ❤',
+  fail: 'Mohon maaf, transaksi gagal! 🙏',
+  pending: 'Menunggu transaksi...',
+  cancel: 'Transaksi dibatalkan 😥',
+  expire: 'Transaksi hangus ☹',
+  need_action: 'Butuh penindakan ⚠',
+  refund: 'Transaksi dikembalikan 😔 ',
+};
+
 export default defineComponent({
   name: 'PageDonate',
   setup(props, { root }) {
     const pageQuery = computed(() => root.$route.query as PossiblePageQuery);
     const donationId = computed({
       get: () => pageQuery.value.donationId,
-      set: (val) => root.$router.push({ query: { ...root.$route.query, donationId: val } }),
+      set: (val) => root.$router.replace({ query: { ...root.$route.query, donationId: val } })
+        .catch(notifyError),
     });
     const programRef = computed(() => firestoreCollection.Programs.doc(pageQuery.value.programId));
     const programData = ref<ModelInObject<ProgramDonation>>({ ...programDataRepo.defaultDonationModelData(), _uid: '' });
@@ -377,7 +419,6 @@ export default defineComponent({
 
     const updateProgramData = async (id: string) => {
       const programSnapshot = await getProgramByURL(id) || await programRef.value.get();
-      console.log(programSnapshot);
 
       if (programSnapshot && isSnapshotExists(programSnapshot)) {
         programData.value = { ...programSnapshot.data() as Model<ProgramDonation>, _uid: programSnapshot.id };
@@ -436,7 +477,9 @@ export default defineComponent({
       isDataLoading,
       programThumbnailSrc,
       paymentRedirectURL,
+      paymentStatus: computed(() => transactionData.value?.paymentStatus?.status || 'pending'),
 
+      finishMessage,
       redirectCounter,
       redirectCounterStart,
 
@@ -595,10 +638,18 @@ export default defineComponent({
       },
       immediate: true,
     },
-    transactionData: {
+    paymentStatus: {
       handler() {
-        switch (this.transactionData?.paymentStatus?.status) {
+        switch (this.paymentStatus) {
           case 'accepted':
+            this.isWaitingPayment = false;
+            this.isDisableFinish = false;
+
+            // eslint-disable-next-line @typescript-eslint/no-floating-promises
+            this.nextStep();
+            break;
+
+          case 'fail':
             this.isWaitingPayment = false;
             this.isDisableFinish = false;
 
