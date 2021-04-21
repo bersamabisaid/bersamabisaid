@@ -168,7 +168,7 @@ export default defineComponent({
 
     &__description {
       @apply flex-grow pt-1.5 text-sm text-secondary line-clamp-3;
-      min-height: calc(theme('padding[1.5]') + theme('height.8') * 3);
+      min-height: calc(theme('padding[1.5]') + theme('height.5') * 3);
     }
 
     .q-card {

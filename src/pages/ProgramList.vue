@@ -25,7 +25,7 @@ import {
   defineComponent, computed, watch, ref,
 } from '@vue/composition-api';
 import CardProgram from 'components/CardProgram.vue';
-import firestoreCollection from 'src/firestoreCollection';
+import firestoreCollection, { modelToObject } from 'src/firestoreCollection';
 import { resolveProgramCollectionImage } from 'src/firestoreApis';
 import useCollection from 'src/composables/useCollection';
 import { StorageFileMetadata } from 'src/composables/useStorage';
@@ -46,8 +46,8 @@ export default defineComponent({
     const isDonation = computed(() => root.$route.query.category === 'donasi');
     const query = computed(() => (isDonation.value
       ? firestoreCollection.Programs.where('donation', '==', true)
-      : firestoreCollection.Programs));
-    const [programs, isDataLoading] = useCollection(query);
+      : firestoreCollection.Programs).limit(10));
+    const [programs, isDataLoading] = useCollection(query, { mapper: modelToObject });
     const programData = ref<IProgramData[]>([]);
 
     watch(programs, async () => {

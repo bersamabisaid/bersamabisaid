@@ -214,10 +214,10 @@ export default defineComponent({
       },
     },
     finalProgramURL(): string {
-      if (this.programURL || this.programTitle) {
+      if (this.maskedProgramURL) {
         const { href } = this.$router.resolve({
           name: 'Program',
-          params: { programURL: this.programURL },
+          params: { programURL: this.maskedProgramURL },
         });
 
         return href;
@@ -250,7 +250,7 @@ export default defineComponent({
         title: this.programTitle,
         description: this.programDescription,
         organizer: this.programOrganizer,
-        URL: this.programURL,
+        URL: this.maskedProgramURL,
         ...(newFilePathRef && { image: newFilePathRef }),
       };
 
@@ -273,7 +273,7 @@ export default defineComponent({
           image: filePathRef,
           description: this.programDescription,
           organizer: this.programOrganizer,
-          URL: this.programURL,
+          URL: this.maskedProgramURL,
         };
 
         const data: Program = this.donation ? {

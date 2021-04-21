@@ -61,7 +61,7 @@
 
               <div class="py-8 flex justify-center">
                 <vue-glide
-                  v-if="!isLoading && programCommonData.length"
+                  v-if="!isLoading && allProgramData.length"
                   type="carousel"
                   :per-view="4"
                   :breakpoints="{
@@ -72,7 +72,7 @@
                   class="px-2"
                 >
                   <vue-glide-slide
-                    v-for="(el, i) in programCommonData"
+                    v-for="(el, i) in allProgramData"
                     :key="`${i}-${el.title}`"
                   >
                     <card-program
@@ -279,7 +279,7 @@
 
 <script lang="ts">
 import {
-  defineComponent, ref, onMounted,
+  defineComponent, ref, computed, watch,
 } from '@vue/composition-api';
 import { Glide, GlideSlide } from 'vue-glide-js';
 import BaseNavbar from 'components/BaseNavbar.vue';
@@ -287,16 +287,17 @@ import BaseFooter from 'components/BaseFooter.vue';
 import CardProgram from 'components/CardProgram.vue';
 import firestoreCollection, { modelToObject } from 'src/firestoreCollection';
 import { resolveProgramCollectionImage } from 'src/firestoreApis';
-import { StorageFileMetadata } from 'src/composables/useStorage';
+import useCollection from 'src/composables/useCollection';
 import { extractTextFromHTML } from 'shared/utils/dom';
 import { Singleton } from 'shared/utils/pattern';
+import type { StorageFileMetadata } from 'src/composables/useStorage';
 import type { ModelInObject } from 'shared/types/model';
-import type { ProgramDonation, ProgramCommon } from 'shared/types/modelData';
+import type { ProgramDonation, Program } from 'shared/types/modelData';
 
-type TprogramCommonDataOri = ModelInObject<ProgramCommon>;
+type TallProgramDataOri = ModelInObject<Program>;
 type TprogramDonationDataOri = ModelInObject<ProgramDonation>;
 
-interface IprogramCommonData extends Omit<TprogramCommonDataOri, 'image'> {
+interface IallProgramData extends Omit<TallProgramDataOri, 'image'> {
   image: {
     URL: string;
     metadata: StorageFileMetadata;
@@ -311,30 +312,28 @@ interface IprogramDonationData extends Omit<TprogramDonationDataOri, 'image'> {
 }
 
 const setupData = new Singleton(() => {
-  const programCommonData = ref<IprogramCommonData[]>([]);
-  const programDonationData = ref<IprogramDonationData[]>([]);
-  const isLoading = ref(true);
+  const [programData, isLoading, , updateProgramData] = useCollection(
+    firestoreCollection.Programs.limit(8),
+    { mapper: modelToObject },
+  );
+  const allProgramData = ref<IallProgramData[]>([]);
+  const programDonationData = computed(() => allProgramData.value
+    .filter(({ donation }) => donation) as IprogramDonationData[]);
   const toggleLoading = (load = !isLoading.value) => {
     isLoading.value = load;
   };
-  const programCommonQuery = firestoreCollection.Programs;
-  const programDonationQuery = firestoreCollection.Programs.where('donation', '==', true);
 
-  const syncData = async () => {
+  watch(programData, async () => {
     toggleLoading(true);
-    const [commonData, donationData] = await Promise.all([programCommonQuery.get(), programDonationQuery.get()]);
-    const commonDataInObj = commonData.docs.map(modelToObject) as TprogramCommonDataOri[];
-    const donationDataInObj = donationData.docs.map(modelToObject) as TprogramDonationDataOri[];
-    programCommonData.value = await resolveProgramCollectionImage(commonDataInObj);
-    programDonationData.value = await resolveProgramCollectionImage(donationDataInObj);
+    allProgramData.value = await resolveProgramCollectionImage(programData.value);
     toggleLoading(false);
-  };
+  });
 
   return {
-    programCommonData,
+    allProgramData,
     programDonationData,
     isLoading,
-    syncData,
+    updateProgramData,
   };
 });
 
@@ -342,20 +341,18 @@ export default defineComponent({
   name: 'PageHome',
   setup() {
     const {
-      programCommonData, programDonationData, isLoading, syncData,
+      allProgramData, programDonationData, isLoading,
     } = setupData.value;
 
-    onMounted(() => syncData());
-
     return {
-      programCommonData,
+      allProgramData,
       programDonationData,
       isLoading,
       extractTextFromHTML,
     };
   },
   preFetch() {
-    setupData.value.syncData()
+    setupData.value.updateProgramData()
       .finally(null);
   },
   components: {
