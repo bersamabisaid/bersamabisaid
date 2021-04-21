@@ -3,11 +3,10 @@
 import { GetStatusTransaction } from 'shared/types/midtransApi';
 import type fb from 'firebase';
 import type fbNode from 'firebase-admin';
-import type { Model, ModelUI, ModelUIHasRelation } from 'shared/types/model';
-
-export type TfbTimestamp<isNodeCtx = false> = isNodeCtx extends true
-  ? fbNode.firestore.Timestamp
-  : fb.firestore.Timestamp;
+import type {
+  Model, ModelUI, ModelUIHasRelation, TfbTimestamp,
+} from 'shared/types/model';
+import type { DocRef } from 'shared/firestoreCollection';
 
 export interface Content {
   title: string;
@@ -56,11 +55,11 @@ export interface Transaction<isNodeCtx = false> {
   grossAmount: number;
   items: TransactionItem<isNodeCtx>[];
   client: isNodeCtx extends true
-    ? fbNode.firestore.DocumentReference<Model<TransactionClient>>
-    : fb.firestore.DocumentReference<Model<TransactionClient>>;
+    ? fbNode.firestore.DocumentReference<Model<TransactionClient, isNodeCtx>>
+    : fb.firestore.DocumentReference<Model<TransactionClient, isNodeCtx>>;
   _ui: ModelUI<{
     clientName: string;
-  }>;
+  }, isNodeCtx>;
   paymentStatus?: PaymentStatus;
 }
 
@@ -77,8 +76,9 @@ export interface IDonationEvent<isNodeCtx = false> {
   deadline: TfbTimestamp<isNodeCtx> | null;
   _ui: ModelUI<{
     progress: number;
-    recentDonations: ModelUIHasRelation<DonationUI>[];
-  }>;
+    numOfDonations: number;
+    recentDonations: ModelUIHasRelation<DonationUI<isNodeCtx>, isNodeCtx, Model<Donation<true>, true>>[];
+  }, isNodeCtx>;
 }
 
 export type Event<isNodeCtx = false> = IBaseEvent & (
@@ -104,8 +104,8 @@ export const isEvent = function <isNodeCtx = false> (data: any): data is Event<i
     && typeof data?.donation === 'boolean';
 };
 
-export const isEventDonation = function (data: Event): data is EventDonation {
-  return isEvent(data)
+export const isEventDonation = function <isNodeCtx = false> (data: Event<isNodeCtx>): data is EventDonation<isNodeCtx> {
+  return isEvent<isNodeCtx>(data)
     && typeof data?.donation === 'boolean';
 };
 
@@ -140,22 +140,16 @@ export interface PaymentStatus {
 }
 
 export interface Donation<isNodeCtx = false> {
-  event: isNodeCtx extends true
-    ? fbNode.firestore.DocumentReference<Model<Event>>
-    : fb.firestore.DocumentReference<Model<Event>>;
-  transaction: isNodeCtx extends true
-    ? fbNode.firestore.DocumentReference<Model<Transaction<true>>>
-    : fb.firestore.DocumentReference<Model<Transaction>>;
-  donator: isNodeCtx extends true
-    ? fbNode.firestore.DocumentReference<Model<TransactionClient>>
-    : fb.firestore.DocumentReference<Model<TransactionClient>>;
+  event: DocRef.EventDonationModel<isNodeCtx>;
+  transaction: DocRef.TransactionModel<isNodeCtx>;
+  donator: DocRef.TransactionClientModel<isNodeCtx>;
   amount: number;
   message: string;
   hideDonator: boolean;
   _ui: ModelUI<{
-    donatorName: ModelUIHasRelation<string>;
-    eventName: ModelUIHasRelation<string>;
-  }>;
+    donatorName: ModelUIHasRelation<string, isNodeCtx>;
+    eventName: ModelUIHasRelation<string, isNodeCtx>;
+  }, isNodeCtx>;
   _system: {
     finishPaymentRedirectURL: string;
   };
