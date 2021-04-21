@@ -2,10 +2,13 @@
   <q-card class="card-program">
     <q-card-section tag="article">
       <div class="card-program__img-container">
-        <q-skeleton
+        <q-responsive
           v-if="loading"
-          class="w-full h-full rounded-xl"
-        />
+          :ratio="4/3"
+        >
+          <q-skeleton class="w-full h-full rounded-xl" />
+        </q-responsive>
+
         <q-img
           v-else
           :src="imgUrl"
@@ -165,7 +168,7 @@ export default defineComponent({
 
     &__description {
       @apply flex-grow pt-1.5 text-sm text-secondary line-clamp-3;
-      min-height: calc(theme('padding[1.5]') + theme('height.4') * 3);
+      min-height: calc(theme('padding[1.5]') + theme('height.8') * 3);
     }
 
     .q-card {

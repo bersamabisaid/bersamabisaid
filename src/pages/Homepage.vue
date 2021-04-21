@@ -108,6 +108,48 @@
                     </button>
                   </template>
                 </vue-glide>
+
+                <vue-glide
+                  v-else
+                  type="carousel"
+                  :per-view="4"
+                  :breakpoints="{
+                    640: { perView: 1 },
+                    1023: { perView: 2 },
+                    1280: { perView: 3 }
+                  }"
+                  class="px-2"
+                >
+                  <vue-glide-slide
+                    v-for="i in 4"
+                    :key="i"
+                  >
+                    <card-program loading />
+                  </vue-glide-slide>
+
+                  <template #control>
+                    <button
+                      data-glide-dir="<"
+                      class="glide__arrow glide__arrow--left justify-self-start"
+                    >
+                      <q-icon
+                        name="keyboard_arrow_left"
+                        size="lg"
+                        color="white"
+                      />
+                    </button>
+                    <button
+                      data-glide-dir=">"
+                      class="glide__arrow glide__arrow--right"
+                    >
+                      <q-icon
+                        name="keyboard_arrow_right"
+                        size="lg"
+                        color="white"
+                      />
+                    </button>
+                  </template>
+                </vue-glide>
               </div>
             </div>
           </section>
@@ -157,6 +199,48 @@
                       v-bind="el"
                       action-label="Lihat detail"
                     />
+                  </vue-glide-slide>
+
+                  <template #control>
+                    <button
+                      data-glide-dir="<"
+                      class="glide__arrow glide__arrow--left justify-self-start"
+                    >
+                      <q-icon
+                        name="keyboard_arrow_left"
+                        size="lg"
+                        color="white"
+                      />
+                    </button>
+                    <button
+                      data-glide-dir=">"
+                      class="glide__arrow glide__arrow--right"
+                    >
+                      <q-icon
+                        name="keyboard_arrow_right"
+                        size="lg"
+                        color="white"
+                      />
+                    </button>
+                  </template>
+                </vue-glide>
+
+                <vue-glide
+                  v-else
+                  type="carousel"
+                  :per-view="4"
+                  :breakpoints="{
+                    640: { perView: 1 },
+                    1023: { perView: 2 },
+                    1280: { perView: 3 }
+                  }"
+                  class="px-2"
+                >
+                  <vue-glide-slide
+                    v-for="i in 4"
+                    :key="i"
+                  >
+                    <card-program loading />
                   </vue-glide-slide>
 
                   <template #control>
