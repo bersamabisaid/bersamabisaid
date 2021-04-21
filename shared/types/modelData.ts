@@ -63,7 +63,7 @@ export interface Transaction<isNodeCtx = false> {
   paymentStatus?: PaymentStatus;
 }
 
-export interface IBaseEvent {
+export interface IBaseProgram {
   title: string;
   image: string;
   description: string;
@@ -71,7 +71,7 @@ export interface IBaseEvent {
   URL: string;
 }
 
-export interface IDonationEvent<isNodeCtx = false> {
+export interface IDonationProgram<isNodeCtx = false> {
   target: number | null;
   deadline: TfbTimestamp<isNodeCtx> | null;
   _ui: ModelUI<{
@@ -81,21 +81,21 @@ export interface IDonationEvent<isNodeCtx = false> {
   }, isNodeCtx>;
 }
 
-export type Event<isNodeCtx = false> = IBaseEvent & (
+export type Program<isNodeCtx = false> = IBaseProgram & (
   { donation: false }
-  | { donation: true } & IDonationEvent<isNodeCtx>
+  | { donation: true } & IDonationProgram<isNodeCtx>
 );
 
-export type EventCommon = IBaseEvent & {
+export type ProgramCommon = IBaseProgram & {
   donation: false;
 };
 
-export type EventDonation<isNodeCtx = false> = IBaseEvent
-  & IDonationEvent<isNodeCtx> & {
+export type ProgramDonation<isNodeCtx = false> = IBaseProgram
+  & IDonationProgram<isNodeCtx> & {
   donation: true;
 };
 
-export const isEvent = function <isNodeCtx = false> (data: any): data is Event<isNodeCtx> {
+export const isProgram = function <isNodeCtx = false> (data: any): data is Program<isNodeCtx> {
   return typeof data?.title === 'string'
     && typeof data?.image === 'string'
     && typeof data?.description === 'string'
@@ -104,12 +104,12 @@ export const isEvent = function <isNodeCtx = false> (data: any): data is Event<i
     && typeof data?.donation === 'boolean';
 };
 
-export const isEventDonation = function <isNodeCtx = false> (data: Event<isNodeCtx>): data is EventDonation<isNodeCtx> {
-  return isEvent<isNodeCtx>(data)
+export const isProgramDonation = function <isNodeCtx = false> (data: Program<isNodeCtx>): data is ProgramDonation<isNodeCtx> {
+  return isProgram<isNodeCtx>(data)
     && typeof data?.donation === 'boolean';
 };
 
-export interface EventNews<isNodeCtx = false> {
+export interface ProgramNews<isNodeCtx = false> {
   title: string;
   /**
    * max 200 characters
@@ -140,7 +140,7 @@ export interface PaymentStatus {
 }
 
 export interface Donation<isNodeCtx = false> {
-  event: DocRef.EventDonationModel<isNodeCtx>;
+  program: DocRef.ProgramDonationModel<isNodeCtx>;
   transaction: DocRef.TransactionModel<isNodeCtx>;
   donator: DocRef.TransactionClientModel<isNodeCtx>;
   amount: number;
@@ -148,7 +148,7 @@ export interface Donation<isNodeCtx = false> {
   hideDonator: boolean;
   _ui: ModelUI<{
     donatorName: ModelUIHasRelation<string, isNodeCtx>;
-    eventName: ModelUIHasRelation<string, isNodeCtx>;
+    programName: ModelUIHasRelation<string, isNodeCtx>;
   }, isNodeCtx>;
   _system: {
     finishPaymentRedirectURL: string;

@@ -1,24 +1,80 @@
-import * as functions from 'firebase-functions';
 import { db } from '../service/firebaseAdmin';
-import { isSnapshotExists, uiDataFactory } from '../service/firestoreCollection';
+import firestoreCollection, { firestoreProxy, isSnapshotExists, uiDataFactory } from '../service/firestoreCollection';
+import { createTransaction } from '../createTransaction';
 import { Queue } from '../../../shared/utils/dataStructures';
-import type { EventDonation } from '../../../shared/types/modelData';
+import type { PayDonationRequestBody } from '../../../shared/types/backendRequest';
+import type { ProgramDonation } from '../../../shared/types/modelData';
 import type { DocRef } from '../../../shared/firestoreCollection';
 
-type inferRecentDonationItem = EventDonation<true>['_ui']['recentDonations']['value'][number];
+export const pay = async ({ donator, ...data }: Required<PayDonationRequestBody>) => {
+  const programRef = firestoreCollection.Programs.doc(data.programId) as DocRef.ProgramDonationModel<true>;
+  const donatorAsClient = await firestoreCollection.TransactionClients.add(firestoreProxy.create({
+    fullname: donator.fullName,
+    email: donator.email,
+    phoneNumber: donator.phoneNumber,
+    address: donator.address,
+  }));
+  const [transactionAction, transactionRef] = await createTransaction({
+    transaction_details: {
+      gross_amount: data.amount,
+    },
+    item_details: [{
+      id: data.programId,
+      name: data.programName,
+      price: data.amount,
+      quantity: 1,
+      ref: programRef,
+    }],
+    client: {
+      ref: donatorAsClient,
+      name: donator.fullName,
+    },
+  });
 
-export const addEventDonationProgress = (donationRef: DocRef.DonationModel<true>) => db
+  const donationRef = firestoreCollection.Donations(programRef).doc(transactionRef.id);
+  await donationRef.set(firestoreProxy.create({
+    program: programRef,
+    transaction: transactionRef,
+    donator: donatorAsClient,
+    hideDonator: data.hideDonator,
+    amount: data.amount,
+    message: data.message,
+    _ui: {
+      donatorName: uiDataFactory({
+        foreignKey: donatorAsClient,
+        data: donator.fullName,
+      }),
+      programName: uiDataFactory({
+        foreignKey: programRef,
+        data: data.programName,
+      }),
+    },
+    _system: { finishPaymentRedirectURL: data.finishPaymentRedirectURL },
+  }));
+
+  return {
+    programRef,
+    donatorRef: donatorAsClient,
+    donationRef,
+    transactionRef,
+    transactionAction,
+  };
+};
+
+type inferRecentDonationItem = ProgramDonation<true>['_ui']['recentDonations']['value'][number];
+
+export const addProgramDonationProgress = (donationRef: DocRef.DonationModel<true>) => db
   .runTransaction(async (fbt) => {
     const donation = await fbt.get(donationRef);
 
     if (isSnapshotExists(donation)) {
       const {
-        _ui: { donatorName }, amount, message, event: eventRef,
+        _ui: { donatorName }, amount, message, program: programRef,
       } = donation.data();
-      const event = await fbt.get(eventRef);
+      const program = await fbt.get(programRef);
 
-      if (isSnapshotExists(event)) {
-        const { _ui: { recentDonations, progress, numOfDonations } } = event.data();
+      if (isSnapshotExists(program)) {
+        const { _ui: { recentDonations, progress, numOfDonations } } = program.data();
         const visibleDonation = new Queue<inferRecentDonationItem>({ maxSize: 5, initialValue: recentDonations.value });
 
         visibleDonation.append({
@@ -34,9 +90,7 @@ export const addEventDonationProgress = (donationRef: DocRef.DonationModel<true>
         const newProgress = progress.value + amount;
         const newNumOfDonations = numOfDonations.value + 1;
 
-        functions.logger.log({ newProgress, newNumOfDonations, recentDonations: visibleDonation.get() });
-
-        fbt.update(eventRef, {
+        fbt.update(programRef, {
           '_ui.progress': uiDataFactory(newProgress),
           '_ui.numOfDonations': uiDataFactory(newNumOfDonations),
           '_ui.recentDonations': uiDataFactory(visibleDonation.get()),

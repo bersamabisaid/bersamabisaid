@@ -44,6 +44,6 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 export const storageRef = Object.assign(storage, {
-  Events: storage.child(storageReferencePathName.EVENTS),
+  Programs: storage.child(storageReferencePathName.PROGRAMS),
 
 });

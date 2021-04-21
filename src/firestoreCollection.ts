@@ -7,9 +7,9 @@ import type {
 import type fb from 'firebase';
 
 const firestoreCollection = {
-  Events: db.collection(firestoreCollectionName.EVENTS) as CollectionRef.EventModel,
+  Programs: db.collection(firestoreCollectionName.PROGRAMS) as CollectionRef.ProgramModel,
   Donators: db.collection(firestoreCollectionName.DONATORS) as CollectionRef.DonatorModel,
-  Donations: (eventRef: DocRef.EventModel) => eventRef
+  Donations: (programRef: DocRef.ProgramModel) => programRef
     .collection(firestoreCollectionName.DONATIONS) as CollectionRef.DonationModel,
   Transactions: db.collection(firestoreCollectionName.TRANSACTIONS) as CollectionRef.TransactionModel,
 };

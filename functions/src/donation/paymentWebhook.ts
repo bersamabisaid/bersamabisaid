@@ -1,15 +1,15 @@
 import * as functions from 'firebase-functions';
+import { db } from '../service/firebaseAdmin';
 import midtrans from '../service/midtrans';
 import firestoreCollection, { getItemRefsFromTransactionRef } from '../service/firestoreCollection';
+import { addProgramDonationProgress } from './donation';
 import hasRequiredBody from '../middleware/hasRequiredBody';
 import apiMethod from '../middleware/apiMethod';
 import allowCors from '../middleware/allowCors';
 import { isPaymentWebhookRequestBody } from '../../../shared/types/backendRequest';
-import { GetStatusTransaction } from '../../../shared/types/midtransApi';
-import { PaymentStatus } from '../../../shared/types/modelData';
-import { addEventDonationProgress } from './donation';
-import { DocRef } from '../../../shared/firestoreCollection';
-import { db } from '../service/firebaseAdmin';
+import type { DocRef } from '../../../shared/firestoreCollection';
+import type { GetStatusTransaction } from '../../../shared/types/midtransApi';
+import type { PaymentStatus } from '../../../shared/types/modelData';
 
 interface paymentSummaryPayload {
   transactionStatus: GetStatusTransaction['transaction_status'];
@@ -63,10 +63,10 @@ const donationPaymentWebhookHandler = apiMethod.post(hasRequiredBody(
 
       await db.runTransaction(async (fbt) => {
         if (paymentSummary.status === 'accepted') {
-          const [eventRef] = await getItemRefsFromTransactionRef(transactionRef) as DocRef.EventDonationModel<true>[];
-          const donationRef = firestoreCollection.Donations(eventRef).doc(order_id);
+          const [programRef] = await getItemRefsFromTransactionRef(transactionRef) as DocRef.ProgramDonationModel<true>[];
+          const donationRef = firestoreCollection.Donations(programRef).doc(order_id);
 
-          await addEventDonationProgress(donationRef);
+          await addProgramDonationProgress(donationRef);
         }
 
         fbt.update(transactionRef, { paymentStatus: paymentSummary });

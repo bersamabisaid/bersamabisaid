@@ -61,7 +61,7 @@
 
               <div class="py-8 flex justify-center">
                 <vue-glide
-                  v-if="!isLoading"
+                  v-if="!isLoading && programCommonData.length"
                   type="carousel"
                   :per-view="4"
                   :breakpoints="{
@@ -72,7 +72,7 @@
                   class="px-2"
                 >
                   <vue-glide-slide
-                    v-for="(el, i) in eventCommonData"
+                    v-for="(el, i) in programCommonData"
                     :key="`${i}-${el.title}`"
                   >
                     <card-program
@@ -135,7 +135,7 @@
               </div>
               <div class="py-8 flex justify-center">
                 <vue-glide
-                  v-if="!isLoading"
+                  v-if="!isLoading && programDonationData.length"
                   type="carousel"
                   :per-view="4"
                   :breakpoints="{
@@ -146,7 +146,7 @@
                   class="px-2"
                 >
                   <vue-glide-slide
-                    v-for="(el, i) in eventDonationData"
+                    v-for="(el, i) in programDonationData"
                     :key="`${i}-${el.title}`"
                   >
                     <card-program
@@ -202,24 +202,24 @@ import BaseNavbar from 'components/BaseNavbar.vue';
 import BaseFooter from 'components/BaseFooter.vue';
 import CardProgram from 'components/CardProgram.vue';
 import firestoreCollection, { modelToObject } from 'src/firestoreCollection';
+import { resolveProgramCollectionImage } from 'src/firestoreApis';
+import { StorageFileMetadata } from 'src/composables/useStorage';
 import { extractTextFromHTML } from 'shared/utils/dom';
 import { Singleton } from 'shared/utils/pattern';
-import { StorageFileMetadata } from 'src/composables/useStorage';
 import type { ModelInObject } from 'shared/types/model';
-import type { EventDonation, EventCommon } from 'shared/types/modelData';
-import { resolveEventCollectionImage } from 'src/firestoreApis';
+import type { ProgramDonation, ProgramCommon } from 'shared/types/modelData';
 
-type TeventCommonDataOri = ModelInObject<EventCommon>;
-type TeventDonationDataOri = ModelInObject<EventDonation>;
+type TprogramCommonDataOri = ModelInObject<ProgramCommon>;
+type TprogramDonationDataOri = ModelInObject<ProgramDonation>;
 
-interface IeventCommonData extends Omit<TeventCommonDataOri, 'image'> {
+interface IprogramCommonData extends Omit<TprogramCommonDataOri, 'image'> {
   image: {
     URL: string;
     metadata: StorageFileMetadata;
   }
 }
 
-interface IeventDonationData extends Omit<TeventDonationDataOri, 'image'> {
+interface IprogramDonationData extends Omit<TprogramDonationDataOri, 'image'> {
   image: {
     URL: string;
     metadata: StorageFileMetadata;
@@ -227,28 +227,28 @@ interface IeventDonationData extends Omit<TeventDonationDataOri, 'image'> {
 }
 
 const setupData = new Singleton(() => {
-  const eventCommonData = ref<IeventCommonData[]>([]);
-  const eventDonationData = ref<IeventDonationData[]>([]);
+  const programCommonData = ref<IprogramCommonData[]>([]);
+  const programDonationData = ref<IprogramDonationData[]>([]);
   const isLoading = ref(true);
   const toggleLoading = (load = !isLoading.value) => {
     isLoading.value = load;
   };
-  const eventCommonQuery = firestoreCollection.Events;
-  const eventDonationQuery = firestoreCollection.Events.where('donation', '==', true);
+  const programCommonQuery = firestoreCollection.Programs;
+  const programDonationQuery = firestoreCollection.Programs.where('donation', '==', true);
 
   const syncData = async () => {
     toggleLoading(true);
-    const [commonData, donationData] = await Promise.all([eventCommonQuery.get(), eventDonationQuery.get()]);
-    const commonDataInObj = commonData.docs.map(modelToObject) as TeventCommonDataOri[];
-    const donationDataInObj = donationData.docs.map(modelToObject) as TeventDonationDataOri[];
-    eventCommonData.value = await resolveEventCollectionImage(commonDataInObj);
-    eventDonationData.value = await resolveEventCollectionImage(donationDataInObj);
+    const [commonData, donationData] = await Promise.all([programCommonQuery.get(), programDonationQuery.get()]);
+    const commonDataInObj = commonData.docs.map(modelToObject) as TprogramCommonDataOri[];
+    const donationDataInObj = donationData.docs.map(modelToObject) as TprogramDonationDataOri[];
+    programCommonData.value = await resolveProgramCollectionImage(commonDataInObj);
+    programDonationData.value = await resolveProgramCollectionImage(donationDataInObj);
     toggleLoading(false);
   };
 
   return {
-    eventCommonData,
-    eventDonationData,
+    programCommonData,
+    programDonationData,
     isLoading,
     syncData,
   };
@@ -258,14 +258,14 @@ export default defineComponent({
   name: 'PageHome',
   setup() {
     const {
-      eventCommonData, eventDonationData, isLoading, syncData,
+      programCommonData, programDonationData, isLoading, syncData,
     } = setupData.value;
 
     onMounted(() => syncData());
 
     return {
-      eventCommonData,
-      eventDonationData,
+      programCommonData,
+      programDonationData,
       isLoading,
       extractTextFromHTML,
     };

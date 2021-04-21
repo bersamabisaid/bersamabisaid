@@ -5,8 +5,8 @@ import { Donator, isDonator } from '../../shared/types/modelData';
 import type { GetStatusTransaction } from '../../shared/types/midtransApi';
 
 export interface PayDonationRequestBody {
-  eventId: string;
-  eventName: string;
+  programId: string;
+  programName: string;
   donator: Donator;
   hideDonator: boolean;
   amount: number;
@@ -15,8 +15,8 @@ export interface PayDonationRequestBody {
 }
 
 export const isPayDonationRequestBody = function (data: any): data is PayDonationRequestBody {
-  return typeof data?.eventId === 'string'
-    && typeof data?.eventName === 'string'
+  return typeof data?.programId === 'string'
+    && typeof data?.programName === 'string'
     && isDonator(data?.donator)
     && typeof data?.hideDonator === 'boolean'
     && typeof data?.amount === 'number'

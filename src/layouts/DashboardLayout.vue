@@ -134,13 +134,13 @@ const drawerItems: NavItem[] = [
   {
     label: 'Program',
     icon: roundEvent,
-    to: { name: 'AdminEventIndex' },
+    to: { name: 'AdminProgramIndex' },
     exact: true,
     children: [
       {
         label: 'Program donasi',
         icon: 'attach_money',
-        to: { name: 'AdminEventDonation' },
+        to: { name: 'AdminProgramDonation' },
         exact: true,
       },
     ],

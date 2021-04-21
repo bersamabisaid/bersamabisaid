@@ -9,11 +9,11 @@
       </h3>
 
       <card-program
-        :title="eventData.title"
-        :caption="extractTextFromHTML(eventData.description)"
-        :url="eventData.URL"
+        :title="programData.title"
+        :caption="extractTextFromHTML(programData.description)"
+        :url="programData.URL"
         :loading="isDataLoading"
-        :img-url="eventThumbnailSrc"
+        :img-url="programThumbnailSrc"
         no-action
       />
 
@@ -307,22 +307,22 @@ import CardProgram from 'components/CardProgram.vue';
 import SocialShare from 'components/SocialShare.vue';
 import { storageRef } from 'src/services/firebaseService';
 import firestoreCollection, { isSnapshotExists } from 'src/firestoreCollection';
-import { getEventByURL } from 'src/firestoreApis';
+import { getProgramByURL } from 'src/firestoreApis';
 import { payDonation } from 'src/firebaseFunctions';
-import { eventDataRepo } from 'src/dataRepositories';
+import { programDataRepo } from 'src/dataRepositories';
 import { getStorageFile } from 'src/composables/useStorage';
 import { notifyError } from 'src/composables/useNotification';
 import { requiredRule } from 'src/composables/useInputRules';
 import useCountdown from 'src/composables/useCountdown';
+import useDocumentRealtime from 'src/composables/useDocumentRealtime';
 import { toIdr } from 'shared/utils/formatter';
 import { extractTextFromHTML } from 'shared/utils/dom';
 import {
-  Donation, EventDonation, isEventDonation,
+  Donation, ProgramDonation, isProgramDonation,
 } from 'shared/types/modelData';
 import type { Route } from 'vue-router';
 import type { QStepper, QField, QForm } from 'quasar';
 import type { ModelInObject, Model } from 'shared/types/model';
-import useDocumentRealtime from 'src/composables/useDocumentRealtime';
 
 interface Choice {
   title: string;
@@ -330,7 +330,7 @@ interface Choice {
 }
 
 type PossiblePageQuery = Route['query'] & {
-  eventId?: string;
+  programId?: string;
   donationId?: string;
 }
 
@@ -365,32 +365,32 @@ export default defineComponent({
       get: () => pageQuery.value.donationId,
       set: (val) => root.$router.push({ query: { ...root.$route.query, donationId: val } }),
     });
-    const eventRef = computed(() => firestoreCollection.Events.doc(pageQuery.value.eventId));
-    const eventData = ref<ModelInObject<EventDonation>>({ ...eventDataRepo.defaultDonationModelData(), _uid: '' });
+    const programRef = computed(() => firestoreCollection.Programs.doc(pageQuery.value.programId));
+    const programData = ref<ModelInObject<ProgramDonation>>({ ...programDataRepo.defaultDonationModelData(), _uid: '' });
     const donationData = ref<ModelInObject<Donation>>();
     const transactionRef = computed(() => donationData.value?.transaction || firestoreCollection.Transactions.doc());
     const [transactionData] = useDocumentRealtime(transactionRef);
     const isDataLoading = ref(true);
-    const eventThumbnailSrc = ref('');
+    const programThumbnailSrc = ref('');
     const paymentRedirectURL = ref('');
     const [redirectCounter, redirectCounterStart] = useCountdown();
 
-    const updateEventData = async (id: string) => {
-      const eventSnapshot = await getEventByURL(id) || await eventRef.value.get();
-      console.log(eventSnapshot);
+    const updateProgramData = async (id: string) => {
+      const programSnapshot = await getProgramByURL(id) || await programRef.value.get();
+      console.log(programSnapshot);
 
-      if (eventSnapshot && isSnapshotExists(eventSnapshot)) {
-        eventData.value = { ...eventSnapshot.data() as Model<EventDonation>, _uid: eventSnapshot.id };
+      if (programSnapshot && isSnapshotExists(programSnapshot)) {
+        programData.value = { ...programSnapshot.data() as Model<ProgramDonation>, _uid: programSnapshot.id };
       }
     };
     const updateDonationData = async (id: string) => {
-      const donationSnapshot = await firestoreCollection.Donations(eventRef.value)
+      const donationSnapshot = await firestoreCollection.Donations(programRef.value)
         .doc(id).get();
 
       if (isSnapshotExists(donationSnapshot)) {
         donationData.value = { ...donationSnapshot.data(), _uid: donationSnapshot.id };
 
-        await updateEventData(donationData.value.event.id);
+        await updateProgramData(donationData.value.program.id);
       }
     };
 
@@ -401,28 +401,28 @@ export default defineComponent({
         // prior to get data from donationId then watch the diff
         if ((newVal.donationId !== oldVal?.donationId) && newVal.donationId) {
           await updateDonationData(newVal.donationId);
-        } else if ((newVal.eventId !== oldVal?.eventId) && newVal.eventId) {
-          await updateEventData(newVal.eventId);
+        } else if ((newVal.programId !== oldVal?.programId) && newVal.programId) {
+          await updateProgramData(newVal.programId);
         }
       } catch (err) {
         notifyError(err);
       } finally {
         isDataLoading.value = false;
-        // if eventData is exists
-        if (!(isEventDonation(eventData.value) && eventData.value._uid)) {
+        // if programData is exists
+        if (!(isProgramDonation(programData.value) && programData.value._uid)) {
           root.$router.push({ name: '404' })
             .finally(() => notifyError('invalid arguments!'));
         }
       }
     }, { immediate: true });
 
-    watch(eventData, async ({ image }) => {
+    watch(programData, async ({ image }) => {
       if (image) {
         const { URL } = await getStorageFile(storageRef.root.child(image));
 
-        eventThumbnailSrc.value = URL;
+        programThumbnailSrc.value = URL;
       } else {
-        eventThumbnailSrc.value = '';
+        programThumbnailSrc.value = '';
       }
     }, { immediate: true });
 
@@ -430,11 +430,11 @@ export default defineComponent({
 
     return {
       donationId,
-      eventData,
+      programData,
       donationData,
       transactionData,
       isDataLoading,
-      eventThumbnailSrc,
+      programThumbnailSrc,
       paymentRedirectURL,
 
       redirectCounter,
@@ -475,10 +475,10 @@ export default defineComponent({
     programFullURL() {
       // eslint-disable-next-line no-restricted-globals
       const url = new URL(location?.href || 'http://localhost');
-      if (this.eventData.URL) {
+      if (this.programData.URL) {
         const { href } = this.$router.resolve({
           name: 'Program',
-          params: { programURL: this.eventData.URL },
+          params: { programURL: this.programData.URL },
         });
 
         url.pathname = href;
@@ -531,8 +531,8 @@ export default defineComponent({
     },
     getPaymentRedirectURL() {
       return payDonation({
-        eventId: this.eventData._uid,
-        eventName: this.eventData.title,
+        programId: this.programData._uid,
+        programName: this.programData.title,
         amount: this.amount,
         message: this.message,
         donator: {

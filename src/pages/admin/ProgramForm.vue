@@ -1,11 +1,11 @@
 <template>
   <q-page
     padding
-    class="event-form bg-blue-50 flex flex-col flex-wrap gap-y-4"
+    class="program-form bg-blue-50 flex flex-col flex-wrap gap-y-4"
   >
     <div class="text-dark flex items-center gap-x-4">
       <q-btn
-        v-go-back="{ name: 'AdminEventIndex' }"
+        v-go-back="{ name: 'AdminProgramIndex' }"
         icon="arrow_back"
         round
         flat
@@ -18,7 +18,7 @@
     </div>
 
     <q-form
-      ref="formEvent"
+      ref="formProgram"
       :class="[
         'self-center flex-grow relative w-full max-w-prose bg-white border-b-4 border-primary rounded-lg ring-1 ring-gray-200 shadow-md',
         'flex flex-col gap-y-4'
@@ -27,7 +27,7 @@
       @reset="onFormReset"
     >
       <q-img
-        :src="eventThumbnail"
+        :src="programThumbnail"
         :ratio="16/9"
         class="bg-blue-gray-200 rounded-t-lg"
       >
@@ -45,28 +45,28 @@
 
       <div class="px-6 pb-4 flex flex-col gap-y-4">
         <q-input
-          v-model="eventTitle"
+          v-model="programTitle"
           label="Nama program"
           dense
           :rules="[requiredRule]"
         />
 
         <q-input
-          v-model="eventOrganizer"
+          v-model="programOrganizer"
           label="Nama penyelenggara"
           dense
           :rules="[requiredRule]"
         />
 
         <q-input
-          v-model="programURL"
+          v-model="maskedProgramURL"
           label="Link program"
-          :hint="finalEventURL"
+          :hint="finalProgramURL"
           dense
         />
 
         <q-editor
-          v-model="eventDescription"
+          v-model="programDescription"
           placeholder="Deskripsi program..."
           :toolbar="[]"
           class="mt-2"
@@ -93,7 +93,7 @@
             </template>
           </q-field>
 
-          <span class="event-form__input-label mt-2">Batas waktu (opsional)</span>
+          <span class="program-form__input-label mt-2">Batas waktu (opsional)</span>
 
           <q-date
             v-model="donationDeadline"
@@ -136,13 +136,13 @@ import _kebabCase from 'lodash/kebabCase';
 import { requiredRule } from 'src/composables/useInputRules';
 import fbs, { storageRef } from 'src/services/firebaseService';
 import firestoreCollection, { modelUiDataFactory, createAttrs, updateAttrs } from 'src/firestoreCollection';
-import { eventDataRepo } from 'src/dataRepositories';
+import { programDataRepo } from 'src/dataRepositories';
 import useStorageUpload from 'src/composables/useStorageUpload';
 import useDocument from 'src/composables/useDocument';
 import { notifyError, notifySuccess } from 'src/composables/useNotification';
 import { getStorageFile } from 'src/composables/useStorage';
 import { dateToDateString, dateStringToDate } from 'shared/utils/formatter';
-import type { Event, IBaseEvent } from 'shared/types/modelData';
+import type { Program, IBaseProgram } from 'shared/types/modelData';
 
 const createFileInput = (accept = '*') => {
   const el = document.createElement('input');
@@ -153,7 +153,7 @@ const createFileInput = (accept = '*') => {
 };
 
 export default defineComponent({
-  name: 'PageAdminEventForm',
+  name: 'PageAdminProgramForm',
   props: {
     donation: {
       default: false,
@@ -164,12 +164,12 @@ export default defineComponent({
     },
   },
   setup(props, { root }) {
-    const { tasks, state, upload } = useStorageUpload(storageRef.Events);
+    const { tasks, state, upload } = useStorageUpload(storageRef.Programs);
     const docId = computed<string | undefined>(() => root.$route.params.programURL);
-    const docRef = computed(() => firestoreCollection.Events.doc(docId.value));
+    const docRef = computed(() => firestoreCollection.Programs.doc(docId.value));
     const [dbData, isLoading] = useDocument(docRef, props.donation
-      ? eventDataRepo.defaultDonationModelData()
-      : eventDataRepo.defaultCommonModelData());
+      ? programDataRepo.defaultDonationModelData()
+      : programDataRepo.defaultCommonModelData());
     const isNewDoc = computed(() => !docId.value);
 
     return {
@@ -185,11 +185,11 @@ export default defineComponent({
   },
   data() {
     return {
-      eventTitle: '',
-      eventOrganizer: '',
-      eventDescription: '',
-      eventThumbnail: '',
-      eventURL: '',
+      programTitle: '',
+      programOrganizer: '',
+      programDescription: '',
+      programThumbnail: '',
+      programURL: '',
       donationTarget: 0,
       donationDeadline: dateToDateString(Date.now()),
 
@@ -205,16 +205,16 @@ export default defineComponent({
     };
   },
   computed: {
-    programURL: {
+    maskedProgramURL: {
       get(): string {
-        return this.eventURL || _kebabCase(this.eventTitle).toLowerCase();
+        return this.programURL || _kebabCase(this.programTitle).toLowerCase();
       },
       set(val: string) {
-        this.eventURL = _kebabCase(val).toString();
+        this.programURL = _kebabCase(val).toString();
       },
     },
-    finalEventURL(): string {
-      if (this.eventURL || this.eventTitle) {
+    finalProgramURL(): string {
+      if (this.programURL || this.programTitle) {
         const { href } = this.$router.resolve({
           name: 'Program',
           params: { programURL: this.programURL },
@@ -236,7 +236,7 @@ export default defineComponent({
 
         this.isLoading = false;
         notifySuccess(this.isNewDoc ? 'Berhasil ditambahkan!' : 'Berhasil diperbarui!');
-        (this.$refs.formEvent as QForm).reset();
+        (this.$refs.formProgram as QForm).reset();
         this.$router.back();
       } catch (err) {
         this.isLoading = false;
@@ -246,20 +246,20 @@ export default defineComponent({
     async update() {
       const newFilePathRef = this.fileSelected && await this.uploadFile(this.fileSelected, this.docRef.id);
 
-      const baseEventData: Partial<IBaseEvent> = {
-        title: this.eventTitle,
-        description: this.eventDescription,
-        organizer: this.eventOrganizer,
+      const baseProgramData: Partial<IBaseProgram> = {
+        title: this.programTitle,
+        description: this.programDescription,
+        organizer: this.programOrganizer,
         URL: this.programURL,
         ...(newFilePathRef && { image: newFilePathRef }),
       };
 
-      const data: Partial<Event> = this.donation ? {
-        ...baseEventData,
+      const data: Partial<Program> = this.donation ? {
+        ...baseProgramData,
         target: this.donationTarget || null,
         deadline: fbs.firestore.Timestamp.fromDate(dateStringToDate(this.donationDeadline)),
       } : {
-        ...baseEventData,
+        ...baseProgramData,
       };
 
       await this.docRef.set({ ...data, ...updateAttrs() }, { merge: true });
@@ -268,25 +268,26 @@ export default defineComponent({
       if (this.fileSelected) {
         const filePathRef = await this.uploadFile(this.fileSelected, this.docRef.id);
 
-        const baseEventData: IBaseEvent = {
-          title: this.eventTitle,
+        const baseProgramData: IBaseProgram = {
+          title: this.programTitle,
           image: filePathRef,
-          description: this.eventDescription,
-          organizer: this.eventOrganizer,
+          description: this.programDescription,
+          organizer: this.programOrganizer,
           URL: this.programURL,
         };
 
-        const data: Event = this.donation ? {
-          ...baseEventData,
+        const data: Program = this.donation ? {
+          ...baseProgramData,
           donation: this.donation,
           target: this.donationTarget || null,
           deadline: fbs.firestore.Timestamp.fromDate(dateStringToDate(this.donationDeadline)),
           _ui: {
             progress: modelUiDataFactory(0),
+            numOfDonations: modelUiDataFactory(0),
             recentDonations: modelUiDataFactory([]),
           },
         } : {
-          ...baseEventData,
+          ...baseProgramData,
           donation: this.donation,
         };
 
@@ -297,11 +298,11 @@ export default defineComponent({
     },
     syncForm() {
       this.isLoading = true;
-      this.eventTitle = this.dbData.title;
-      this.eventOrganizer = this.dbData.organizer;
-      this.eventDescription = this.dbData.description;
-      this.eventThumbnail = this.dbData.image;
-      this.eventURL = this.dbData.URL;
+      this.programTitle = this.dbData.title;
+      this.programOrganizer = this.dbData.organizer;
+      this.programDescription = this.dbData.description;
+      this.programThumbnail = this.dbData.image;
+      this.programURL = this.dbData.URL;
 
       if (this.dbData.donation) {
         this.donationTarget = this.dbData.target || 0;
@@ -312,17 +313,17 @@ export default defineComponent({
 
       getStorageFile(thumbnailPathRef)
         .then(({ URL }) => {
-          this.eventThumbnail = URL;
+          this.programThumbnail = URL;
         }).finally(() => {
           this.isLoading = false;
         });
     },
     onFormReset() {
-      this.eventTitle = '';
-      this.eventOrganizer = '';
-      this.eventDescription = '';
-      this.eventThumbnail = '';
-      this.eventURL = '';
+      this.programTitle = '';
+      this.programOrganizer = '';
+      this.programDescription = '';
+      this.programThumbnail = '';
+      this.programURL = '';
       this.donationTarget = 0;
       this.donationDeadline = dateToDateString(Date.now());
       this.fileSelected = null;
@@ -331,7 +332,7 @@ export default defineComponent({
       const [file] = Array.from(this.vFileInput.files || []);
 
       this.fileSelected = file || null;
-      this.eventThumbnail = URL.createObjectURL(this.fileSelected);
+      this.programThumbnail = URL.createObjectURL(this.fileSelected);
     },
   },
   created() {
@@ -350,7 +351,7 @@ export default defineComponent({
 
 <style lang="scss">
 @layer components {
-  .event-form {
+  .program-form {
     $root: &;
 
     &__input-label {

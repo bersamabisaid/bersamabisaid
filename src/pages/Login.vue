@@ -52,10 +52,10 @@
 import { defineComponent } from '@vue/composition-api';
 import MinimalistLayout from 'layouts/MinimalistLayout.vue';
 import { auth } from 'src/services/firebaseService';
-import type { QForm } from 'quasar';
 import { requiredRule } from 'src/composables/useInputRules';
 import useAuth from 'src/composables/useAuth';
 import useGuardGuestOnly from 'src/composables/useGuardGuestOnly';
+import type { QForm } from 'quasar';
 
 export default defineComponent({
   name: 'PageLogin',

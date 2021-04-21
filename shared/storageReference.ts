@@ -1,5 +1,5 @@
 const storageReferencePathName = {
-  EVENTS: 'Events',
+  PROGRAMS: 'PROGRAMS',
 };
 
 export default storageReferencePathName;

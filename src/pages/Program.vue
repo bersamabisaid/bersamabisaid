@@ -1,7 +1,7 @@
 <template>
   <q-page
     padding
-    class="page-event pb-32 flex flex-col justify-center items-center"
+    class="page-program pb-32 flex flex-col justify-center items-center"
   >
     <q-card
       tag="article"
@@ -32,39 +32,39 @@
           </div>
           <template v-else>
             <h1 class="font-extrabold text-4xl text-primary">
-              {{ eventData.title }}
+              {{ programData.title }}
             </h1>
             <div class="text-xs text-blue-gray-300">
               <span>Penanggung jawab: </span>
               <router-link
-                :to="{name: 'ProgramList', query: {organizer: eventData.organizer}}"
+                :to="{name: 'ProgramList', query: {organizer: programData.organizer}}"
                 class="font-bold text-blue-gray-400 hover:underline"
               >
-                {{ eventData.organizer }}
+                {{ programData.organizer }}
               </router-link>
             </div>
           </template>
         </div>
 
         <div
-          v-if="eventData.donation"
+          v-if="programData.donation"
           class="w-full px-4 pt-3 lg:pt-2 flex flex-col"
         >
           <div class="pb-2 flex justify-between">
             <div>
-              <span class="font-bold text-positive">{{ toIdr(eventData._ui.progress.value, 0) }}</span>
+              <span class="font-bold text-positive">{{ toIdr(programData._ui.progress.value, 0) }}</span>
               <span class="font-normal"> terkumpul</span>
             </div>
             <span
-              v-if="eventData.target"
+              v-if="programData.target"
               class="font-bold text-positive"
             >
-              {{ toIdr(eventData.target, 0) }}
+              {{ toIdr(programData.target, 0) }}
             </span>
           </div>
 
           <div
-            v-if="eventData.target"
+            v-if="programData.target"
             class="flex flex-nowrap items-center gap-x-2"
           >
             <q-linear-progress
@@ -103,7 +103,7 @@
               class="program__tab"
             />
             <q-tab
-              v-if="eventData.donation"
+              v-if="programData.donation"
               name="donatur"
               :label="`Donatur (${donaturList.length})`"
               class="program__tab"
@@ -136,7 +136,7 @@
               <!-- eslint-disable vue/no-v-html -->
               <article
                 v-else
-                v-html="eventData.description"
+                v-html="programData.description"
               />
               <!-- eslint-enable vue/no-v-html -->
             </q-tab-panel>
@@ -190,7 +190,7 @@
             </q-tab-panel>
 
             <q-tab-panel
-              v-if="eventData.donation"
+              v-if="programData.donation"
               name="donatur"
             >
               <q-list class="flex flex-col gap-y-4">
@@ -208,7 +208,7 @@
                 >
                   <span class="text-gray-400">Belum ada donatur untuk sementara ini,</span>
                   <span class="text-gray-400">Jadilah yang pertama sebagai donatur</span>
-                  <b class="text-lg text-primary">{{ eventData.title }}</b>
+                  <b class="text-lg text-primary">{{ programData.title }}</b>
                   <q-btn
                     label="donasi sekarang"
                     :to="donateActionURL"
@@ -257,27 +257,27 @@ import { Loading, date } from 'quasar';
 import { preFetch } from 'quasar/wrappers';
 import { mdiFacebook, mdiWhatsapp, mdiTwitter } from '@quasar/extras/mdi-v5';
 import SocialShare from 'components/SocialShare.vue';
-import DonationItem, { DonationItemProps } from 'components/ui/Event/DonationItem.vue';
-import NewsItem from 'components/ui/Event/NewsItem.vue';
-import { eventDataRepo } from 'src/dataRepositories';
-import { getEventByURL } from 'src/firestoreApis';
+import DonationItem, { DonationItemProps } from 'components/ui/Program/DonationItem.vue';
+import NewsItem from 'components/ui/Program/NewsItem.vue';
+import { programDataRepo } from 'src/dataRepositories';
+import { getProgramByURL } from 'src/firestoreApis';
 import { storageRef } from 'src/services/firebaseService';
 import { getStorageFile } from 'src/composables/useStorage';
 import { Singleton } from 'shared/utils/pattern';
 import { toIdr } from 'shared/utils/formatter';
 import {
-  Event, EventDonation, EventNews, isEventDonation,
+  Program, ProgramDonation, ProgramNews, isProgramDonation,
 } from 'shared/types/modelData';
 import type { RawLocation } from 'vue-router';
 import type { Store } from 'vuex';
 import type { StateInterface } from 'src/store';
 import type { Model } from 'shared/types/model';
 
-const getEvent = async (programURL: string) => {
-  const eventDoc = await getEventByURL(programURL);
+const getProgram = async (programURL: string) => {
+  const programDoc = await getProgramByURL(programURL);
 
-  if (eventDoc) {
-    const docData = eventDoc.data();
+  if (programDoc) {
+    const docData = programDoc.data();
     const { URL } = await getStorageFile(storageRef.root.child(docData.image));
 
     return {
@@ -291,7 +291,7 @@ const getEvent = async (programURL: string) => {
 
 const setupData = new Singleton(() => {
   const called = ref(false);
-  const data = ref<Model<Event>>(eventDataRepo.defaultCommonModelData());
+  const data = ref<Model<Program>>(programDataRepo.defaultCommonModelData());
   const imgURL = ref('');
 
   /**
@@ -299,11 +299,11 @@ const setupData = new Singleton(() => {
    */
   const syncData = async (programURL: string) => {
     called.value = true;
-    const eventData = await getEvent(programURL);
+    const programData = await getProgram(programURL);
 
-    if (eventData) {
-      data.value = eventData.data;
-      imgURL.value = eventData.imgURL;
+    if (programData) {
+      data.value = programData.data;
+      imgURL.value = programData.imgURL;
 
       return true;
     }
@@ -318,12 +318,12 @@ const setupData = new Singleton(() => {
   };
 });
 
-const news: EventNews[] = [];
+const news: ProgramNews[] = [];
 
 const donaturList: DonationItemProps[] = [];
 
 export default defineComponent({
-  name: 'PageEventDetail',
+  name: 'PageProgramDetail',
   setup(props, { root }) {
     const {
       data, imgURL, syncData, called,
@@ -344,7 +344,7 @@ export default defineComponent({
     });
 
     return {
-      eventData: data,
+      programData: data,
       imgURL,
       toIdr,
       news,
@@ -359,8 +359,8 @@ export default defineComponent({
   preFetch: preFetch<Store<StateInterface>>(async ({ currentRoute, ssrContext, redirect }) => {
     if (ssrContext) {
       Loading.show();
-      const eventId = currentRoute.params.programURL;
-      const isInitialized = await setupData.value.syncData(eventId);
+      const programId = currentRoute.params.programURL;
+      const isInitialized = await setupData.value.syncData(programId);
 
       Loading.hide();
 
@@ -388,13 +388,13 @@ export default defineComponent({
       return {
         name: 'Payment',
         query: {
-          eventId: this.programURL,
+          programId: this.programURL,
         },
       };
     },
     dayRemaining(): number {
-      if ((this.eventData as EventDonation).deadline) {
-        const deadlineDate = (this.eventData as EventDonation).deadline!.toDate();
+      if ((this.programData as ProgramDonation).deadline) {
+        const deadlineDate = (this.programData as ProgramDonation).deadline!.toDate();
         const diff = date.getDateDiff(deadlineDate, new Date(), 'days');
 
         return diff;
@@ -408,9 +408,9 @@ export default defineComponent({
         : `tersisa ${this.dayRemaining} hari lagi`;
     },
     progressPercentage(): number {
-      if (isEventDonation(this.eventData)) {
-        const progress = this.eventData._ui.progress.value || this.eventData.target || 0;
-        const target = this.eventData.target || 1;
+      if (isProgramDonation(this.programData)) {
+        const progress = this.programData._ui.progress.value || this.programData.target || 0;
+        const target = this.programData.target || 1;
 
         return (progress / target) * 100;
       }
@@ -477,7 +477,7 @@ export default defineComponent({
   }
 
   // scoping quasar override
-  .page-event {
+  .page-program {
     .q-tab-panel {
       min-height: theme('height.52');
     }

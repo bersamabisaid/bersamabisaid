@@ -1,9 +1,9 @@
 import fbs from 'src/services/firebaseService';
 import { createAttrs, modelUiDataFactory } from 'src/firestoreCollection';
 import type { Model } from 'shared/types/model';
-import type { EventCommon, EventDonation, IBaseEvent } from 'shared/types/modelData';
+import type { ProgramCommon, ProgramDonation, IBaseProgram } from 'shared/types/modelData';
 
-const defaultEventBaseModelData: Model<IBaseEvent> = {
+const defaultProgramBaseModelData: Model<IBaseProgram> = {
   title: '',
   organizer: '',
   description: '',
@@ -12,22 +12,23 @@ const defaultEventBaseModelData: Model<IBaseEvent> = {
   ...createAttrs(),
 };
 
-export const eventDataRepo = {
-  defaultBaseModelData: () => defaultEventBaseModelData,
+export const programDataRepo = {
+  defaultBaseModelData: () => defaultProgramBaseModelData,
 
   defaultCommonModelData: () => ({
-    ...defaultEventBaseModelData,
+    ...defaultProgramBaseModelData,
     donation: false,
-  }) as Model<EventCommon>,
+  }) as Model<ProgramCommon>,
 
   defaultDonationModelData: () => ({
-    ...defaultEventBaseModelData,
+    ...defaultProgramBaseModelData,
     donation: true,
     deadline: fbs.firestore.Timestamp.now(),
     target: null,
     _ui: {
       progress: modelUiDataFactory(0),
+      numOfDonations: modelUiDataFactory(0),
       recentDonations: modelUiDataFactory([]),
     },
-  }) as Model<EventDonation>,
+  }) as Model<ProgramDonation>,
 };

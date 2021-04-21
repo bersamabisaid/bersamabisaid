@@ -5,11 +5,11 @@ import firestoreCollectionName, { DocRef, CollectionRef } from '../../../shared/
 import type { Model, ModelUIData, TimestampedModel } from '../../../shared/types/model';
 
 const firestoreCollection = {
-  Events: db.collection(firestoreCollectionName.EVENTS) as CollectionRef.EventModel<true>,
+  Programs: db.collection(firestoreCollectionName.PROGRAMS) as CollectionRef.ProgramModel<true>,
   Transactions: db.collection(firestoreCollectionName.TRANSACTIONS) as CollectionRef.TransactionModel<true>,
   TransactionClients: db.collection(firestoreCollectionName.TRANSACTION_CLIENTS) as CollectionRef.TransactionClientModel<true>,
   Donators: db.collection(firestoreCollectionName.DONATORS) as CollectionRef.DonatorModel<true>,
-  Donations: (eventRef: DocRef.EventModel<true>) => eventRef
+  Donations: (programRef: DocRef.ProgramModel<true>) => programRef
     .collection(firestoreCollectionName.DONATIONS) as CollectionRef.DonationModel<true>,
 };
 

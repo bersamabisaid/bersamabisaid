@@ -5,7 +5,7 @@
   >
     <section class="relative flex flex-col sm:flex-row sm:justify-center items-stretch gap-6 sm:gap-12">
       <card-program
-        v-for="(el, i) in eventData"
+        v-for="(el, i) in programData"
         :key="`${i}-${el.title}`"
         :title="el.title"
         :caption="extractTextFromHTML(el.description)"
@@ -26,14 +26,14 @@ import {
 } from '@vue/composition-api';
 import CardProgram from 'components/CardProgram.vue';
 import firestoreCollection from 'src/firestoreCollection';
+import { resolveProgramCollectionImage } from 'src/firestoreApis';
 import useCollection from 'src/composables/useCollection';
-import { extractTextFromHTML } from 'shared/utils/dom';
 import { StorageFileMetadata } from 'src/composables/useStorage';
-import { Model, ModelInObject } from 'shared/types/model';
-import { Event } from 'shared/types/modelData';
-import { resolveEventCollectionImage } from 'src/firestoreApis';
+import { extractTextFromHTML } from 'shared/utils/dom';
+import type { Model, ModelInObject } from 'shared/types/model';
+import type { Program } from 'shared/types/modelData';
 
-interface IEventData extends Omit<ModelInObject<Model<Event>>, 'image'> {
+interface IProgramData extends Omit<ModelInObject<Model<Program>>, 'image'> {
   image: {
     URL: string;
     metadata: StorageFileMetadata;
@@ -41,21 +41,21 @@ interface IEventData extends Omit<ModelInObject<Model<Event>>, 'image'> {
 }
 
 export default defineComponent({
-  name: 'PageEventList',
+  name: 'PageProgramList',
   setup(props, { root }) {
     const isDonation = computed(() => root.$route.query.category === 'donasi');
     const query = computed(() => (isDonation.value
-      ? firestoreCollection.Events.where('donation', '==', true)
-      : firestoreCollection.Events));
-    const [events, isDataLoading] = useCollection(query);
-    const eventData = ref<IEventData[]>([]);
+      ? firestoreCollection.Programs.where('donation', '==', true)
+      : firestoreCollection.Programs));
+    const [programs, isDataLoading] = useCollection(query);
+    const programData = ref<IProgramData[]>([]);
 
-    watch(events, async () => {
-      eventData.value = await resolveEventCollectionImage(events.value);
+    watch(programs, async () => {
+      programData.value = await resolveProgramCollectionImage(programs.value);
     });
 
     return {
-      eventData,
+      programData,
       isDataLoading,
       extractTextFromHTML,
     };

@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import type fb from 'firebase';
 import type fbNode from 'firebase-admin';
-import { Model } from 'shared/types/model';
-import {
-  Event, EventDonation, EventCommon, Transaction, TransactionClient, Donation, Donator,
+import type { Model } from 'shared/types/model';
+import type {
+  Program, ProgramDonation, ProgramCommon, Transaction, TransactionClient, Donation, Donator,
 } from 'shared/types/modelData';
 
 const firestoreCollectionName = {
   CONTENTS: 'Contents',
   DONATIONS: 'Donations',
   DONATORS: 'Donators',
-  EVENTS: 'Events',
+  PROGRAMS: 'Programs',
   TRANSACTIONS: 'Transactions',
   TRANSACTION_CLIENTS: 'TransactionClients',
 };
@@ -19,9 +19,9 @@ export namespace DocRef {
   export type base<T, isNodeCtx = false> = isNodeCtx extends true
     ? fbNode.firestore.DocumentReference<Model<T, isNodeCtx>>
     : fb.firestore.DocumentReference<Model<T, isNodeCtx>>;
-  export type EventModel<isNodeCtx = false> = base<Event<isNodeCtx>, isNodeCtx>;
-  export type EventDonationModel<isNodeCtx = false> = base<EventDonation<isNodeCtx>, isNodeCtx>;
-  export type EventCommonModel<isNodeCtx = false> = base<EventCommon, isNodeCtx>;
+  export type ProgramModel<isNodeCtx = false> = base<Program<isNodeCtx>, isNodeCtx>;
+  export type ProgramDonationModel<isNodeCtx = false> = base<ProgramDonation<isNodeCtx>, isNodeCtx>;
+  export type ProgramCommonModel<isNodeCtx = false> = base<ProgramCommon, isNodeCtx>;
   export type TransactionModel<isNodeCtx = false> = base<Transaction<isNodeCtx>, isNodeCtx>;
   export type TransactionClientModel<isNodeCtx = false> = base<TransactionClient, isNodeCtx>;
   export type DonationModel<isNodeCtx = false> = base<Donation<isNodeCtx>, isNodeCtx>;
@@ -32,9 +32,9 @@ export namespace CollectionRef {
   export type base<T, isNodeCtx = false> = isNodeCtx extends true
     ? fbNode.firestore.CollectionReference<Model<T, isNodeCtx>>
     : fb.firestore.CollectionReference<Model<T, isNodeCtx>>;
-  export type EventModel<isNodeCtx = false> = base<Event<isNodeCtx>, isNodeCtx>;
-  export type EventDonationModel<isNodeCtx = false> = base<EventDonation<isNodeCtx>, isNodeCtx>;
-  export type EventCommonModel<isNodeCtx = false> = base<EventCommon, isNodeCtx>;
+  export type ProgramModel<isNodeCtx = false> = base<Program<isNodeCtx>, isNodeCtx>;
+  export type ProgramDonationModel<isNodeCtx = false> = base<ProgramDonation<isNodeCtx>, isNodeCtx>;
+  export type ProgramCommonModel<isNodeCtx = false> = base<ProgramCommon, isNodeCtx>;
   export type TransactionModel<isNodeCtx = false> = base<Transaction<isNodeCtx>, isNodeCtx>;
   export type TransactionClientModel<isNodeCtx = false> = base<TransactionClient, isNodeCtx>;
   export type DonationModel<isNodeCtx = false> = base<Donation<isNodeCtx>, isNodeCtx>;

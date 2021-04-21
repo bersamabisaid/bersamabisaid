@@ -1,5 +1,5 @@
 <template>
-  <q-page class="event-index bg-blue-50 flex">
+  <q-page class="program-index bg-blue-50 flex">
     <q-scroll-area class="self-stretch w-full px-4 py-6">
       <div class=" flex flex-col gap-y-4">
         <div class="px-6 flex justify-between">
@@ -40,7 +40,7 @@
               key="Tambah program"
               label="Tambah program"
               icon="add"
-              :to="{name: donation ? 'AdminEventAddDonation' : 'AdminEventAdd'}"
+              :to="{name: donation ? 'AdminProgramAddDonation' : 'AdminProgramAdd'}"
               flat
               rounded
               class="bg-green-100 text-dark"
@@ -92,7 +92,7 @@
                     label="Edit"
                     :icon="roundEdit"
                     :to="{
-                      name: donation ? 'AdminEventDonationEdit' : 'AdminEventEdit',
+                      name: donation ? 'AdminProgramDonationEdit' : 'AdminProgramEdit',
                       params: {programURL: props.row._uid}
                     }"
                     flat
@@ -131,7 +131,7 @@ import useCollection from 'src/composables/useCollection';
 import { notifyError } from 'src/composables/useNotification';
 import type { QTable } from 'quasar';
 import type fb from 'firebase';
-import type { Event, EventDonation } from 'shared/types/modelData';
+import type { Program, ProgramDonation } from 'shared/types/modelData';
 import type { Model } from 'shared/types/model';
 
 type ColumnDefinition<T = Record<string, unknown>> = Omit<
@@ -177,7 +177,7 @@ const baseColumnDefinition = [
     format: (val) => (val as fb.firestore.Timestamp).toDate().toLocaleString(),
     sortable: true,
   },
-] as ColumnDefinition<Model<Event>>[];
+] as ColumnDefinition<Model<Program>>[];
 
 const donationPageColumnDefinition = [
   {
@@ -188,10 +188,10 @@ const donationPageColumnDefinition = [
     field: (row) => `${row?._ui?.progress.value || 0}%`,
     sortable: true,
   },
-] as ColumnDefinition<Model<EventDonation>>[];
+] as ColumnDefinition<Model<ProgramDonation>>[];
 
 export default defineComponent({
-  name: 'PageAdminEventIndex',
+  name: 'PageAdminProgramIndex',
   props: {
     donation: {
       type: Boolean,
@@ -199,7 +199,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const dbRef = computed(() => firestoreCollection.Events.where('donation', '==', props.donation));
+    const dbRef = computed(() => firestoreCollection.Programs.where('donation', '==', props.donation));
     const [data, isDataLoading, error] = useCollection(dbRef);
     const columnDefinition = computed(() => (props.donation
       ? [...baseColumnDefinition, ...donationPageColumnDefinition]
@@ -232,7 +232,7 @@ export default defineComponent({
 
 <style lang="scss">
 @layer components {
-  .event-index {
+  .program-index {
     thead tr th {
       @apply sticky top-0 z-10;
     }
