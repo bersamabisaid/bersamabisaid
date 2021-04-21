@@ -1,27 +1,17 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import fbs, { db } from 'src/services/firebaseService';
-import firestoreCollectionName from 'shared/firestoreCollection';
+import firestoreCollectionName, { CollectionRef, DocRef } from 'shared/firestoreCollection';
 import type {
-  Model, ModelInObject, ModelUIData, TimestampedModel,
+  ModelInObject, ModelUIData, TimestampedModel,
 } from 'shared/types/model';
-import type {
-  Donation, Donator, Event, Transaction,
-} from 'shared/types/modelData';
 import type fb from 'firebase';
 
-type ModelCollectionReference<T> = fb.firestore.CollectionReference<Model<T>>;
-type ModelDocumentReference<T> = fb.firestore.DocumentReference<Model<T>>;
-
-export namespace DocRef {
-  export type ModelEvent = ModelDocumentReference<Event>;
-}
-
 const firestoreCollection = {
-  Events: db.collection(firestoreCollectionName.EVENTS) as ModelCollectionReference<Event>,
-  Donators: db.collection(firestoreCollectionName.DONATORS) as ModelCollectionReference<Donator>,
-  Donations: (eventRef: DocRef.ModelEvent) => eventRef
-    .collection(firestoreCollectionName.DONATIONS) as ModelCollectionReference<Donation>,
-  Transactions: db.collection(firestoreCollectionName.TRANSACTIONS) as ModelCollectionReference<Transaction>,
+  Events: db.collection(firestoreCollectionName.EVENTS) as CollectionRef.EventModel,
+  Donators: db.collection(firestoreCollectionName.DONATORS) as CollectionRef.DonatorModel,
+  Donations: (eventRef: DocRef.EventModel) => eventRef
+    .collection(firestoreCollectionName.DONATIONS) as CollectionRef.DonationModel,
+  Transactions: db.collection(firestoreCollectionName.TRANSACTIONS) as CollectionRef.TransactionModel,
 };
 
 const isSnapshotExists = <T = unknown>(

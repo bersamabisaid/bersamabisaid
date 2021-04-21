@@ -1,40 +1,33 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import type * as fb from 'firebase-admin';
 import firebaseAdmin, { db } from './firebaseAdmin';
-import firestoreCollectionName from '../../../shared/firestoreCollection';
+import firestoreCollectionName, { DocRef, CollectionRef } from '../../../shared/firestoreCollection';
 import type { Model, ModelUIData, TimestampedModel } from '../../../shared/types/model';
-import type {
-  Donation, Donator, Event, Transaction, TransactionClient,
-} from '../../../shared/types/modelData';
-
-export namespace DocRef {
-  export type EventModel = fb.firestore.DocumentReference<Model<Event<true>>>;
-}
 
 const firestoreCollection = {
-  Events: db.collection(firestoreCollectionName.EVENTS) as fb.firestore.CollectionReference<Model<Event<true>>>,
-  TransactionClients: db.collection(firestoreCollectionName.TRANSACTION_CLIENTS) as fb.firestore.CollectionReference<Model<TransactionClient>>,
-  Transactions: db.collection(firestoreCollectionName.TRANSACTIONS) as fb.firestore.CollectionReference<Model<Transaction<true>>>,
-  Donators: db.collection(firestoreCollectionName.DONATORS) as fb.firestore.CollectionReference<Model<Donator>>,
-  Donations: (eventRef: DocRef.EventModel) => eventRef
-    .collection(firestoreCollectionName.DONATIONS) as fb.firestore.CollectionReference<Model<Donation<true>>>,
+  Events: db.collection(firestoreCollectionName.EVENTS) as CollectionRef.EventModel<true>,
+  Transactions: db.collection(firestoreCollectionName.TRANSACTIONS) as CollectionRef.TransactionModel<true>,
+  TransactionClients: db.collection(firestoreCollectionName.TRANSACTION_CLIENTS) as CollectionRef.TransactionClientModel<true>,
+  Donators: db.collection(firestoreCollectionName.DONATORS) as CollectionRef.DonatorModel<true>,
+  Donations: (eventRef: DocRef.EventModel<true>) => eventRef
+    .collection(firestoreCollectionName.DONATIONS) as CollectionRef.DonationModel<true>,
 };
 
 const uiDataFactory = <T = unknown> (
   data: T,
   expiration: ModelUIData<T>['expiration'] = null,
-) => ({
-  value: data,
-  lastUpdate: firebaseAdmin.firestore.Timestamp.now(),
-  expiration,
-}) as ModelUIData<T>;
+): ModelUIData<T, true> => ({
+    value: data,
+    lastUpdate: firebaseAdmin.firestore.Timestamp.now(),
+    expiration,
+  });
 
 const isSnapshotExists = <T = unknown>(
   snapshot: fb.firestore.DocumentSnapshot<T>,
 ): snapshot is fb.firestore.QueryDocumentSnapshot<T> => snapshot.exists;
 
 const firestoreProxy = {
-  create<T = unknown>(data: T): Model<T> {
+  create<T = unknown>(data: T): Model<T, true> {
     const now = firebaseAdmin.firestore.Timestamp.now();
 
     return {
@@ -45,7 +38,7 @@ const firestoreProxy = {
     };
   },
 
-  update<T extends TimestampedModel>(data: T): Model<T> {
+  update<T extends TimestampedModel>(data: T): Model<T, true> {
     const now = firebaseAdmin.firestore.Timestamp.now();
 
     return {
@@ -55,10 +48,24 @@ const firestoreProxy = {
   },
 };
 
+const getItemRefsFromTransactionRef = async (transactionRef: DocRef.TransactionModel<true>) => {
+  const snapshot = await transactionRef.get();
+
+  if (isSnapshotExists(snapshot)) {
+    const { items } = snapshot.data();
+
+    return items.map((el) => el.ref)
+      .filter(Boolean) as DocRef.base<unknown, true>[];
+  }
+
+  return [];
+};
+
 export default firestoreCollection;
 
 export {
   uiDataFactory,
   firestoreProxy,
   isSnapshotExists,
+  getItemRefsFromTransactionRef,
 };

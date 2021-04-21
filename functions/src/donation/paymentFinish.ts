@@ -1,9 +1,10 @@
 import * as functions from 'firebase-functions';
 import { db } from '../service/firebaseAdmin';
-import firestoreCollection, { DocRef, isSnapshotExists } from '../service/firestoreCollection';
+import firestoreCollection, { isSnapshotExists } from '../service/firestoreCollection';
 import hasRequiredQuery from '../middleware/hasRequiredQuery';
 import apiMethod from '../middleware/apiMethod';
 import { FinishPaymentRedirectQuery } from '../../../shared/types/midtransApi';
+import type { DocRef } from '../../../shared/firestoreCollection';
 
 /* eslint-disable camelcase, @typescript-eslint/no-unsafe-member-access */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -32,7 +33,7 @@ export const getFinishRedirectUrl = async (transactionId: string) => db
       const { items: [eventItem] } = transactionSnapshot.data();
 
       if (eventItem) {
-        const eventRef = eventItem.ref as DocRef.EventModel;
+        const eventRef = eventItem.ref as DocRef.EventModel<true>;
         const donationRef = firestoreCollection.Donations(eventRef).doc(transactionId);
         const donationSnapshot = await donationRef.get();
 

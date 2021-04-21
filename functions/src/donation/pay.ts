@@ -4,9 +4,10 @@ import { createTransaction } from '../createTransaction';
 import { isPayDonationRequestBody, PayDonationRequestBody } from '../../../shared/types/backendRequest';
 import { PayDonationResponse } from '../../../shared/types/backendResponse';
 import type { ApiResponse } from '../../../shared/types/model';
+import type { DocRef } from '../../../shared/firestoreCollection';
 
 export const pay = async ({ donator, ...data }: Required<PayDonationRequestBody>) => {
-  const eventRef = firestoreCollection.Events.doc(data.eventId);
+  const eventRef = firestoreCollection.Events.doc(data.eventId) as DocRef.EventDonationModel<true>;
   const donatorAsClient = await firestoreCollection.TransactionClients.add(firestoreProxy.create({
     fullname: donator.fullName,
     email: donator.email,
@@ -40,11 +41,11 @@ export const pay = async ({ donator, ...data }: Required<PayDonationRequestBody>
     message: data.message,
     _ui: {
       donatorName: uiDataFactory({
-        foreignKey: donatorAsClient.id,
+        foreignKey: donatorAsClient,
         data: donator.fullName,
       }),
       eventName: uiDataFactory({
-        foreignKey: eventRef.id,
+        foreignKey: eventRef,
         data: data.eventName,
       }),
     },
