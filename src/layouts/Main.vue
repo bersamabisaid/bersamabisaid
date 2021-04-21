@@ -43,20 +43,11 @@ export default defineComponent({
   },
   methods: {
     hideNavbar() {
-      console.log('hide');
+      //
     },
     showNavbar() {
-      console.log('show');
+      //
     },
   },
-  // created() {
-  //   this.$on('hide-navbar', () => {
-  //     console.log('hide');
-  //   });
-
-  //   this.$on('show-navbar', () => {
-  //     console.log('showed');
-  //   });
-  // },
 });
 </script>

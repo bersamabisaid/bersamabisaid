@@ -69,6 +69,7 @@
           >
             <q-linear-progress
               :value="progressPercentage"
+              rounded
               class="w-full flex-grow"
             />
             <q-icon
@@ -105,7 +106,7 @@
             <q-tab
               v-if="programData.donation"
               name="donatur"
-              :label="`Donatur (${donaturList.length})`"
+              :label="`Donatur (${programData._ui.numOfDonations.value})`"
               class="program__tab"
             />
           </q-tabs>
@@ -194,11 +195,11 @@
               name="donatur"
             >
               <q-list class="flex flex-col gap-y-4">
-                <template v-if="donaturList.length">
+                <template v-if="programData._ui.recentDonations.value.length">
                   <donation-item
-                    v-for="(el, i) in donaturList"
-                    :key="`${i}-${el.name}`"
-                    v-bind="el"
+                    v-for="({data}, i) in programData._ui.recentDonations.value"
+                    :key="`${i}-${data.name}`"
+                    v-bind="data"
                   />
                 </template>
 
@@ -257,7 +258,7 @@ import { Loading, date } from 'quasar';
 import { preFetch } from 'quasar/wrappers';
 import { mdiFacebook, mdiWhatsapp, mdiTwitter } from '@quasar/extras/mdi-v5';
 import SocialShare from 'components/SocialShare.vue';
-import DonationItem, { DonationItemProps } from 'components/ui/Program/DonationItem.vue';
+import DonationItem from 'components/ui/Program/DonationItem.vue';
 import NewsItem from 'components/ui/Program/NewsItem.vue';
 import { programDataRepo } from 'src/dataRepositories';
 import { getProgramByURL } from 'src/firestoreApis';
@@ -320,8 +321,6 @@ const setupData = new Singleton(() => {
 
 const news: ProgramNews[] = [];
 
-const donaturList: DonationItemProps[] = [];
-
 export default defineComponent({
   name: 'PageProgramDetail',
   setup(props, { root }) {
@@ -348,7 +347,6 @@ export default defineComponent({
       imgURL,
       toIdr,
       news,
-      donaturList,
       isDataLoading,
 
       mdiFacebook,
@@ -412,7 +410,7 @@ export default defineComponent({
         const progress = this.programData._ui.progress.value || this.programData.target || 0;
         const target = this.programData.target || 1;
 
-        return (progress / target) * 100;
+        return (progress / target);
       }
 
       return 0;
