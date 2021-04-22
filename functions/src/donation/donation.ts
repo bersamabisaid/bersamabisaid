@@ -1,3 +1,4 @@
+import * as functions from 'firebase-functions';
 import { db } from '../service/firebaseAdmin';
 import firestoreCollection, { firestoreProxy, isSnapshotExists, uiDataFactory } from '../service/firestoreCollection';
 import { createTransaction } from '../createTransaction';
@@ -69,7 +70,7 @@ export const addProgramDonationProgress = (donationRef: DocRef.DonationModel<tru
 
     if (isSnapshotExists(donation)) {
       const {
-        _ui: { donatorName }, amount, message, program: programRef,
+        _ui: { donatorName }, amount, message, hideDonator, program: programRef,
       } = donation.data();
       const program = await fbt.get(programRef);
 
@@ -77,9 +78,11 @@ export const addProgramDonationProgress = (donationRef: DocRef.DonationModel<tru
         const { _ui: { recentDonations, progress, numOfDonations } } = program.data();
         const visibleDonation = new Queue<inferRecentDonationItem>({ maxSize: 5, initialValue: recentDonations.value });
 
+        functions.logger.debug({ hideDonator, donatorName: donatorName.value.data, finalName: hideDonator ? 'Hamba Allah' : donatorName.value.data });
+
         visibleDonation.append({
           data: {
-            name: donatorName.value.data,
+            name: hideDonator ? 'Hamba Allah' : donatorName.value.data,
             amount,
             message,
             timestamp: donation.createTime,
