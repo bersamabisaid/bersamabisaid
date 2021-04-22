@@ -89,11 +89,16 @@ export const addProgramDonationProgress = (donationRef: DocRef.DonationModel<tru
 
         const newProgress = progress.value + amount;
         const newNumOfDonations = numOfDonations.value + 1;
+        const sortedRecentDonations = visibleDonation.get()
+          .sort((
+            { data: { timestamp: tt1 } },
+            { data: { timestamp: tt2 } },
+          ) => tt2.toMillis() - tt1.toMillis());
 
         fbt.update(programRef, {
           '_ui.progress': uiDataFactory(newProgress),
           '_ui.numOfDonations': uiDataFactory(newNumOfDonations),
-          '_ui.recentDonations': uiDataFactory(visibleDonation.get()),
+          '_ui.recentDonations': uiDataFactory(sortedRecentDonations),
         });
 
         return undefined as void;
