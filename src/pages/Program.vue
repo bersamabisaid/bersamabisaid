@@ -416,6 +416,35 @@ export default defineComponent({
       return 0;
     },
   },
+  meta() {
+    /* eslint-disable @typescript-eslint/no-unsafe-member-access */
+    const appTitle = this.programData.title as string;
+    const appDesc = this.programData.description as string;
+    const appKeywords = ['Donasi', 'Berbagi', 'Bersamabisa', appTitle].join();
+    const appThumbnail = this.imgURL as string;
+
+    return {
+      title: appTitle,
+      titleTemplate: (title: string) => `${title} | Program BersamaBisa.ID`,
+      meta: {
+        title: { name: 'title', content: appTitle },
+        description: { name: 'description', content: appDesc },
+        keywords: { name: 'keywords', content: appKeywords },
+        // Open Graph / Facebook
+        ogTitle: { name: 'og:title', content: appTitle },
+        ogDesc: { name: 'og:description', content: appDesc },
+        ogUrl: { name: 'og:url', content: this.$route.fullPath },
+        ogImg: { name: 'og:image', content: appThumbnail },
+        // Twitter
+        twtCard: { name: 'twitter:card', content: 'summary_large_image' },
+        twtTitle: { name: 'twitter:title', content: appTitle },
+        twtDesc: { name: 'twitter:description', content: appDesc },
+        twtUrl: { name: 'twitter:url', content: this.$route.fullPath },
+        twtImg: { name: 'twitter:image', content: appThumbnail },
+      },
+    };
+    /* eslint-enable @typescript-eslint/no-unsafe-member-access */
+  },
   mounted() {
     if (this.$route.query.tab) {
       this.tab = this.$route.query.tab as string;
@@ -431,6 +460,7 @@ export default defineComponent({
     NewsItem,
   },
 });
+
 </script>
 
 <style lang="scss">

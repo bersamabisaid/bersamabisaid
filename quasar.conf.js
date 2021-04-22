@@ -138,8 +138,8 @@ module.exports = configure((ctx) => ({
     workboxPluginMode: 'GenerateSW', // 'GenerateSW' or 'InjectManifest'
     workboxOptions: {}, // only for GenerateSW
     manifest: {
-      name: 'Bersamabisa App',
-      short_name: 'Bersamabisa App',
+      name: 'BersamaBisaID Official Website',
+      short_name: 'BersamabisaID',
       description: 'Bersamabisa main web',
       display: 'standalone',
       orientation: 'portrait',

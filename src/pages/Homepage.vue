@@ -322,12 +322,13 @@ const setupData = new Singleton(() => {
   const toggleLoading = (load = !isLoading.value) => {
     isLoading.value = load;
   };
-
-  watch(programData, async () => {
+  const getUpdatedImage = async () => {
     toggleLoading(true);
     allProgramData.value = await resolveProgramCollectionImage(programData.value);
     toggleLoading(false);
-  });
+  };
+
+  watch(programData, () => getUpdatedImage());
 
   return {
     allProgramData,
@@ -351,9 +352,12 @@ export default defineComponent({
       extractTextFromHTML,
     };
   },
-  preFetch() {
-    setupData.value.updateProgramData()
-      .finally(null);
+  preFetch({ ssrContext }) {
+    if (ssrContext) {
+      return setupData.value.updateProgramData();
+    }
+
+    return undefined;
   },
   components: {
     BaseFooter,

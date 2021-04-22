@@ -60,6 +60,11 @@ export default defineComponent({
       extractTextFromHTML,
     };
   },
+  meta() {
+    return {
+      title: 'Daftar Program BersamaBisa.ID',
+    };
+  },
   components: {
     CardProgram,
   },
