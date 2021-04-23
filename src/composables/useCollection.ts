@@ -1,15 +1,16 @@
 import {
-  computed, ComputedRef, isRef, ref, watch,
+  computed, isRef, ref, watch,
 } from '@vue/composition-api';
+import type { ComputedRef } from '@vue/composition-api';
 import type fb from 'firebase';
 
-type collectionMapper<T, U = unknown> = (value: T, index: number, array: T[]) => U;
+type collectionMapper<T, U> = (value: T, index: number, array: T[]) => U;
 
-interface useCollectionOptions<T, U> {
-  mapper?: collectionMapper<fb.firestore.QueryDocumentSnapshot<T>, U>
+export interface useCollectionOptions<T, U> {
+  mapper?: collectionMapper<fb.firestore.QueryDocumentSnapshot<T>, U> | null;
 }
 
-export default function useCollection<T, U>(
+export default function useCollection<T, U = T>(
   collectionRef: fb.firestore.CollectionReference<T>
     | fb.firestore.Query<T>
     | ComputedRef<fb.firestore.CollectionReference<T>>
@@ -26,6 +27,7 @@ export default function useCollection<T, U>(
 
     try {
       const snapshot = await dbRef.value.get();
+
       data.value = (mapper
         ? snapshot.docs.map(mapper)
         : snapshot.docs.map((doc) => doc.data())) as Tdata[];
