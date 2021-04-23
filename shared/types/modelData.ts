@@ -77,7 +77,6 @@ export interface IDonationProgram<isNodeCtx = false> {
   _ui: ModelUI<{
     progress: number;
     numOfDonations: number;
-    recentDonations: ModelUIHasRelation<DonationUI<isNodeCtx>, isNodeCtx, Model<Donation<true>, true>>[];
   }, isNodeCtx>;
 }
 

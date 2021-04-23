@@ -14,7 +14,7 @@ export class Queue<T> {
   }
 
   append(data: T) {
-    if (this.#value.length > this.maxSize) {
+    if (this.#value.length >= this.maxSize) {
       this.#value.shift();
     }
 

@@ -284,7 +284,6 @@ export default defineComponent({
           _ui: {
             progress: modelUiDataFactory(0),
             numOfDonations: modelUiDataFactory(0),
-            recentDonations: modelUiDataFactory([]),
           },
         } : {
           ...baseProgramData,

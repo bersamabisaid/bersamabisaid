@@ -15,12 +15,12 @@ const defaultProgramBaseModelData: Model<IBaseProgram> = {
 export const programDataRepo = {
   defaultBaseModelData: () => defaultProgramBaseModelData,
 
-  defaultCommonModelData: () => ({
+  defaultCommonModelData: (): Model<ProgramCommon> => ({
     ...defaultProgramBaseModelData,
     donation: false,
-  }) as Model<ProgramCommon>,
+  }),
 
-  defaultDonationModelData: () => ({
+  defaultDonationModelData: (): Model<ProgramDonation> => ({
     ...defaultProgramBaseModelData,
     donation: true,
     deadline: fbs.firestore.Timestamp.now(),
@@ -28,7 +28,6 @@ export const programDataRepo = {
     _ui: {
       progress: modelUiDataFactory(0),
       numOfDonations: modelUiDataFactory(0),
-      recentDonations: modelUiDataFactory([]),
     },
-  }) as Model<ProgramDonation>,
+  }),
 };
