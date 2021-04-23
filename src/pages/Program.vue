@@ -193,13 +193,14 @@
             <q-tab-panel
               v-if="programData.donation"
               name="donatur"
+              class="flex flex-col items-stretch gap-y-4"
             >
               <q-list class="flex flex-col gap-y-4">
-                <template v-if="programData._ui.recentDonations.value.length">
+                <template v-if="donationList.length">
                   <donation-item
-                    v-for="({data}, i) in programData._ui.recentDonations.value"
-                    :key="`${i}-${data.name}`"
-                    v-bind="data"
+                    v-for="(el, i) in donationList"
+                    :key="`${i}-${el.name}`"
+                    v-bind="el"
                   />
                 </template>
 
@@ -218,6 +219,16 @@
                   />
                 </div>
               </q-list>
+
+              <q-btn
+                v-if="!isMaximumReachedDonationList"
+                label="Lihat lebih banyak"
+                unelevated
+                class="self-center bg-primary text-white rounded-lg"
+                @click="onLoadMoreDonatur"
+              />
+
+              <q-inner-loading :showing="donationLoading" />
             </q-tab-panel>
           </q-tab-panels>
         </section>
@@ -235,6 +246,7 @@
         />
 
         <q-btn
+          v-if="programData.donation"
           label="Donasi sekarang"
           :to="donateActionURL"
           flat
@@ -252,7 +264,7 @@
 
 <script lang="ts">
 import {
-  defineComponent, ref, onMounted, computed,
+  defineComponent, ref, onMounted, computed, watch,
 } from '@vue/composition-api';
 import { Loading, date } from 'quasar';
 import { preFetch } from 'quasar/wrappers';
@@ -260,25 +272,27 @@ import { mdiFacebook, mdiWhatsapp, mdiTwitter } from '@quasar/extras/mdi-v5';
 import SocialShare from 'components/SocialShare.vue';
 import DonationItem from 'components/ui/Program/DonationItem.vue';
 import NewsItem from 'components/ui/Program/NewsItem.vue';
-import { programDataRepo } from 'src/dataRepositories';
+import firestoreCollection, { modelToObject } from 'src/firestoreCollection';
 import { getProgramByURL } from 'src/firestoreApis';
+import { programDataRepo } from 'src/dataRepositories';
 import { storageRef } from 'src/services/firebaseService';
 import { getStorageFile } from 'src/composables/useStorage';
+import useCollectionPaginated from 'src/composables/useCollectionPaginated';
 import { Singleton } from 'shared/utils/pattern';
 import { toIdr } from 'shared/utils/formatter';
 import {
-  Program, ProgramDonation, ProgramNews, isProgramDonation,
+  Program, ProgramDonation, ProgramNews, isProgramDonation, DonationUI,
 } from 'shared/types/modelData';
 import type { RawLocation } from 'vue-router';
 import type { Store } from 'vuex';
 import type { StateInterface } from 'src/store';
-import type { Model } from 'shared/types/model';
+import type { Model, ModelInObject } from 'shared/types/model';
 
 const getProgram = async (programURL: string) => {
-  const programDoc = await getProgramByURL(programURL);
+  const programSnapshot = await getProgramByURL(programURL);
 
-  if (programDoc) {
-    const docData = programDoc.data();
+  if (programSnapshot) {
+    const docData = modelToObject(programSnapshot);
     const { URL } = await getStorageFile(storageRef.root.child(docData.image));
 
     return {
@@ -292,7 +306,7 @@ const getProgram = async (programURL: string) => {
 
 const setupData = new Singleton(() => {
   const called = ref(false);
-  const data = ref<Model<Program>>(programDataRepo.defaultCommonModelData());
+  const data = ref<ModelInObject<Model<Program>>>({ ...programDataRepo.defaultCommonModelData(), _uid: '' });
   const imgURL = ref('');
 
   /**
@@ -328,6 +342,28 @@ export default defineComponent({
       data, imgURL, syncData, called,
     } = setupData.value;
     const isDataLoading = ref(true);
+    const programRef = computed(() => firestoreCollection.Programs.doc(data.value._uid || undefined));
+    const donationList = ref<DonationUI[]>([]);
+    const donationCollectionRef = computed(() => firestoreCollection.Donations(programRef.value));
+    const [
+      { data: donationDataList },
+      { isLoading: donationLoading, done: isMaximumReachedDonationList },
+      { next },
+    ] = useCollectionPaginated(donationCollectionRef, {
+      orderBy: '_created',
+      perPage: 5,
+      mapper(el) {
+        const {
+          _ui, amount, message, _created,
+        } = el.data();
+        return {
+          name: _ui.donatorName.value.data,
+          amount,
+          message,
+          timestamp: _created,
+        } as DonationUI;
+      },
+    });
 
     onMounted(async () => {
       isDataLoading.value = true;
@@ -342,12 +378,19 @@ export default defineComponent({
       isDataLoading.value = false;
     });
 
+    watch(donationDataList, (newVal) => donationList.value.push(...newVal));
+
     return {
       programData: data,
       imgURL,
-      toIdr,
       news,
+      donationList,
+      donationLoading,
+      isMaximumReachedDonationList,
       isDataLoading,
+      loadMoreDonaturList: next,
+
+      toIdr,
 
       mdiFacebook,
       mdiWhatsapp,
@@ -416,12 +459,12 @@ export default defineComponent({
       return 0;
     },
   },
-  meta() {
+  meta(this: Vue & {programData: Model<Program>, imgURL: string}) {
     /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-    const appTitle = this.programData.title as string;
-    const appDesc = this.programData.description as string;
+    const appTitle = this.programData?.title || 'Program Bersamabisa.ID';
+    const appDesc = this.programData?.description || 'Program Bersamabisa.ID';
     const appKeywords = ['Donasi', 'Berbagi', 'Bersamabisa', appTitle].join();
-    const appThumbnail = this.imgURL as string;
+    const appThumbnail = this.imgURL;
 
     return {
       title: appTitle,
@@ -444,6 +487,11 @@ export default defineComponent({
       },
     };
     /* eslint-enable @typescript-eslint/no-unsafe-member-access */
+  },
+  methods: {
+    onLoadMoreDonatur() {
+      this.loadMoreDonaturList();
+    },
   },
   mounted() {
     if (this.$route.query.tab) {
@@ -492,7 +540,7 @@ export default defineComponent({
   }
 
   .quick-action {
-    @apply w-screen max-w-screen-sm mx-2 px-4 pt-3 pb-1 bg-white flex gap-x-1;
+    @apply w-screen max-w-screen-sm mx-2 px-4 pt-3 pb-1 bg-white flex justify-end gap-x-1;
     @apply border-t-2 border-l border-r border-blue-gray-300 rounded-t-xl shadow-2xl;
 
     @screen lg {

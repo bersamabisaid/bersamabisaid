@@ -5,7 +5,6 @@
 </template>
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
-// import appBrandLogo from 'assets/logo/Bbid-logo.png';
 
 /* eslint-disable max-len */
 const appTitle = 'BersamaBisa.ID Community Official Website';

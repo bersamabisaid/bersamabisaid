@@ -28,7 +28,6 @@
           animated
           vertical
           class="w-full rounded-xl"
-          @transition="onStepTransition"
         >
           <q-step
             :name="1"
@@ -405,7 +404,12 @@ export default defineComponent({
     const donationId = computed({
       get: () => pageQuery.value.donationId,
       set: (val) => root.$router.replace({ query: { ...root.$route.query, donationId: val } })
-        .catch(notifyError),
+        .catch((err) => {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+          if (err?.name !== 'NavigationDuplicated') {
+            notifyError(err);
+          }
+        }),
     });
     const programRef = computed(() => firestoreCollection.Programs.doc(pageQuery.value.programId));
     const programData = ref<ModelInObject<ProgramDonation>>({ ...programDataRepo.defaultDonationModelData(), _uid: '' });
@@ -565,12 +569,6 @@ export default defineComponent({
     },
     previousStep() {
       return (this.$refs.stepper as QStepper).previous();
-    },
-    onStepTransition(newVal: string | number) {
-      switch (newVal) {
-        default:
-          break;
-      }
     },
     getPaymentRedirectURL() {
       return payDonation({
