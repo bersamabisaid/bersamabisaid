@@ -6,9 +6,9 @@ Bersamabisa main web
 - PageAdminProgramIndex: tambah fitur pagination
 - PageAdminProgramIndex: tabel list donatur
 - PageHome
-  - hapus slider program (ganti dengan redirect ke PageProgramList)
-  - fix bad whitespace
-  - Isi konten (Profil, deskripsi singkat section, kontak)
+  - hapus slider program (ganti dengan redirect ke PageProgramList) ✅
+  - fix bad whitespace ✅
+  - Isi konten (Profil, deskripsi singkat section, kontak) ✅
 - PageProgramList: tambah fitur pagination
 
 ## More Todo (sorted by needs & priority)
