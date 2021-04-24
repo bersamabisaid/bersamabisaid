@@ -14,27 +14,27 @@
 
           <div class="container relative mx-auto">
             <div class="text-white text-center justify-center">
-              <div class="grid gap-y-4 mx-2 md:z-0">
-                <span class="font-medium text-3xl md:text-4xl">
+              <div class="flex flex-col gap-y-2 mx-2 md:z-0">
+                <span class="font-semibold text-2xl md:text-4xl tracking-tighter">
                   #HADIR UNTUK KEBAIKAN
                 </span>
 
-                <div>
-                  <h1 class="font-extrabold text-4xl break-words md:text-7xl">
-                    BERSAMABISA.ID
-                  </h1>
-                </div>
+                <h1 class="font-extrabold text-5xl break-words md:text-7xl">
+                  BERSAMABISA.ID
+                </h1>
 
-                <div class="font-medium text-xl md:text-2xl">
-                  <p>BERSAMA HADIRKAN KEBAIKAN UNTUK</p>
-                  <p>INDONESIA YANG LEBIH BERDAYA</p>
+                <div class="font-medium text-xl md:text-2xl tracking-tighter">
+                  <p>Bersama hadirkan kebaikan untuk</p>
+                  <p>Indonesia yang lebih berdaya</p>
                 </div>
               </div>
+
               <q-btn
-                label="GET STARTED"
-                color="positive"
-                class="rounded-lg shadow mt-4"
+                label="Lihat program kami"
                 unelevated
+                class="mt-8 bg-positive rounded-lg shadow"
+                :to="{hash: '#programListSection'}"
+                @click="() => scrollToElement($refs.programListSection)"
               />
             </div>
           </div>
@@ -45,116 +45,71 @@
         </header>
 
         <main class="w-full">
-          <section class="py-4">
+          <section
+            id="programListSection"
+            ref="programListSection"
+            class="pt-8 pb-10"
+          >
             <div class="absolute w-full h-screen bg-transparent" />
-            <div class="container relative mx-auto px-4">
-              <div class="flex justify-center q-pa-md">
-                <div class="text-center">
-                  <h6 class="text-4xl font-bold text-blue-900">
-                    PROGRAM KAMI
-                  </h6>
-                  <span class="text-lg">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit
-                  </span>
-                </div>
+            <div class="container relative mx-auto px-4 flex flex-col">
+              <div class="flex justify-center pt-8">
+                <h6 class="text-4xl font-bold text-blue-900">
+                  PROGRAM KAMI
+                </h6>
               </div>
 
               <div class="py-8 flex justify-center">
-                <vue-glide
-                  v-if="!isLoading && allProgramData.length"
-                  type="carousel"
-                  :per-view="4"
-                  :breakpoints="{
-                    640: { perView: 1 },
-                    1023: { perView: 2 },
-                    1280: { perView: 3 }
-                  }"
-                  class="px-2"
+                <q-scroll-area
+                  horizontal
+                  class="card-program__grid__scroll-area"
                 >
-                  <vue-glide-slide
-                    v-for="(el, i) in allProgramData"
-                    :key="`${i}-${el.title}`"
-                  >
-                    <card-program
-                      :title="el.title"
-                      :caption="extractTextFromHTML(el.description)"
-                      :url="el.URL"
-                      :img-url="el.image.URL"
-                      v-bind="el"
-                      action-label="Lihat detail"
-                    />
-                  </vue-glide-slide>
+                  <div class="card-program__grid">
+                    <template v-if="!isLoading && allProgramData.length">
+                      <card-program
+                        v-for="(el, i) in allProgramData"
+                        :key="`${i}-${el.title}`"
+                        :title="el.title"
+                        :caption="extractTextFromHTML(el.description)"
+                        :url="el.URL"
+                        :img-url="el.image.URL"
+                        :action-label="el.donation ? 'Donasi sekarang' : 'Selengkapnya'"
+                      />
+                    </template>
 
-                  <template #control>
-                    <button
-                      data-glide-dir="<"
-                      class="glide__arrow glide__arrow--left justify-self-start"
-                    >
-                      <q-icon
-                        name="keyboard_arrow_left"
-                        size="lg"
-                        color="white"
+                    <template v-else>
+                      <card-program
+                        v-for="i in 8"
+                        :key="i"
+                        loading
                       />
-                    </button>
-                    <button
-                      data-glide-dir=">"
-                      class="glide__arrow glide__arrow--right"
-                    >
-                      <q-icon
-                        name="keyboard_arrow_right"
-                        size="lg"
-                        color="white"
-                      />
-                    </button>
-                  </template>
-                </vue-glide>
+                    </template>
 
-                <vue-glide
-                  v-else
-                  type="carousel"
-                  :per-view="4"
-                  :breakpoints="{
-                    640: { perView: 1 },
-                    1023: { perView: 2 },
-                    1280: { perView: 3 }
-                  }"
-                  class="px-2"
-                >
-                  <vue-glide-slide
-                    v-for="i in 4"
-                    :key="i"
-                  >
-                    <card-program loading />
-                  </vue-glide-slide>
-
-                  <template #control>
-                    <button
-                      data-glide-dir="<"
-                      class="glide__arrow glide__arrow--left justify-self-start"
+                    <q-card
+                      v-ripple
+                      class="card-program--more"
                     >
-                      <q-icon
-                        name="keyboard_arrow_left"
-                        size="lg"
-                        color="white"
-                      />
-                    </button>
-                    <button
-                      data-glide-dir=">"
-                      class="glide__arrow glide__arrow--right"
-                    >
-                      <q-icon
-                        name="keyboard_arrow_right"
-                        size="lg"
-                        color="white"
-                      />
-                    </button>
-                  </template>
-                </vue-glide>
+                      <router-link
+                        :to="{name: 'ProgramList'}"
+                        class="h-full flex flex-col justify-center items-center"
+                      >
+                        <q-btn
+                          label="Lihat program lainnya"
+                          flat
+                          :ripple="false"
+                          class="text-primary rounded-lg"
+                        />
+                      </router-link>
+                    </q-card>
+                  </div>
+                </q-scroll-area>
               </div>
             </div>
           </section>
 
-          <section class="relative py-4">
+          <section
+            id="donationProgramListSection"
+            class="relative pt-8 pb-10"
+          >
             <img
               :src="require('assets/images/donasiPicture.png')"
               class="absolute top-0 w-full h-full object-cover"
@@ -164,108 +119,57 @@
               style="background: linear-gradient(111.05deg, rgba(26, 41, 128, 0.79) -5.69%, rgba(38, 208, 206, 0.79) 97.93%);"
             />
 
-            <div class="container relative mx-auto px-4">
-              <div class="flex justify-center q-pa-md">
-                <div class="text-center">
-                  <h6 class="text-4xl text-white font-bold">
-                    DONASI
-                  </h6>
-                  <span class="text-lg text-white">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit
-                  </span>
-                </div>
+            <div class="container relative mx-auto px-4 flex flex-col">
+              <div class="flex justify-center pt-8">
+                <h6 class="text-4xl text-white font-bold">
+                  PROGRAM DONASI
+                </h6>
               </div>
-              <div class="py-8 flex justify-center">
-                <vue-glide
-                  v-if="!isLoading && programDonationData.length"
-                  type="carousel"
-                  :per-view="4"
-                  :breakpoints="{
-                    640: { perView: 1 },
-                    1023: { perView: 2 },
-                    1280: { perView: 3 }
-                  }"
-                  class="px-2"
+
+              <div class="py-9 flex justify-center">
+                <q-scroll-area
+                  horizontal
+                  class="card-program__grid__scroll-area"
                 >
-                  <vue-glide-slide
-                    v-for="(el, i) in programDonationData"
-                    :key="`${i}-${el.title}`"
-                  >
-                    <card-program
-                      :title="el.title"
-                      :caption="extractTextFromHTML(el.description)"
-                      :url="el.URL"
-                      :img-url="el.image.URL"
-                      v-bind="el"
-                      action-label="Lihat detail"
-                    />
-                  </vue-glide-slide>
+                  <div class="card-program__grid">
+                    <template v-if="!isLoading && programDonationData.length">
+                      <card-program
+                        v-for="(el, i) in programDonationData"
+                        :key="`${i}-${el.title}`"
+                        :title="el.title"
+                        :caption="extractTextFromHTML(el.description)"
+                        :url="el.URL"
+                        :img-url="el.image.URL"
+                        action-label="Donasi sekarang"
+                      />
+                    </template>
 
-                  <template #control>
-                    <button
-                      data-glide-dir="<"
-                      class="glide__arrow glide__arrow--left justify-self-start"
-                    >
-                      <q-icon
-                        name="keyboard_arrow_left"
-                        size="lg"
-                        color="white"
+                    <template v-else>
+                      <card-program
+                        v-for="i in 8"
+                        :key="i"
+                        loading
                       />
-                    </button>
-                    <button
-                      data-glide-dir=">"
-                      class="glide__arrow glide__arrow--right"
-                    >
-                      <q-icon
-                        name="keyboard_arrow_right"
-                        size="lg"
-                        color="white"
-                      />
-                    </button>
-                  </template>
-                </vue-glide>
+                    </template>
 
-                <vue-glide
-                  v-else
-                  type="carousel"
-                  :per-view="4"
-                  :breakpoints="{
-                    640: { perView: 1 },
-                    1023: { perView: 2 },
-                    1280: { perView: 3 }
-                  }"
-                  class="px-2"
-                >
-                  <vue-glide-slide
-                    v-for="i in 4"
-                    :key="i"
-                  >
-                    <card-program loading />
-                  </vue-glide-slide>
-
-                  <template #control>
-                    <button
-                      data-glide-dir="<"
-                      class="glide__arrow glide__arrow--left justify-self-start"
+                    <q-card
+                      v-ripple
+                      class="card-program--more border-t-0"
                     >
-                      <q-icon
-                        name="keyboard_arrow_left"
-                        size="lg"
-                        color="white"
-                      />
-                    </button>
-                    <button
-                      data-glide-dir=">"
-                      class="glide__arrow glide__arrow--right"
-                    >
-                      <q-icon
-                        name="keyboard_arrow_right"
-                        size="lg"
-                        color="white"
-                      />
-                    </button>
-                  </template>
-                </vue-glide>
+                      <router-link
+                        :to="{name: 'ProgramList', query: { category: 'donasi' } }"
+                        class="h-full flex flex-col justify-center items-center"
+                      >
+                        <q-btn
+                          label="Lihat program donasi lainnya"
+                          outline
+                          :ripple="false"
+                          class="w-3/5 text-white rounded-lg"
+                        />
+                      </router-link>
+                    </q-card>
+                  </div>
+                </q-scroll-area>
               </div>
             </div>
           </section>
@@ -281,7 +185,7 @@
 import {
   defineComponent, ref, computed, watch,
 } from '@vue/composition-api';
-import { Glide, GlideSlide } from 'vue-glide-js';
+import { scroll } from 'quasar';
 import BaseNavbar from 'components/BaseNavbar.vue';
 import BaseFooter from 'components/BaseFooter.vue';
 import CardProgram from 'components/CardProgram.vue';
@@ -338,6 +242,12 @@ const setupData = new Singleton(() => {
   };
 });
 
+const scrollToElement = (el: HTMLElement, duration = 350) => {
+  const target = scroll.getScrollTarget(el);
+  const offset = el.offsetTop;
+  scroll.setScrollPosition(target, offset, duration);
+};
+
 export default defineComponent({
   name: 'PageHome',
   setup() {
@@ -349,7 +259,9 @@ export default defineComponent({
       allProgramData,
       programDonationData,
       isLoading,
+
       extractTextFromHTML,
+      scrollToElement,
     };
   },
   preFetch({ ssrContext }) {
@@ -363,30 +275,39 @@ export default defineComponent({
     BaseFooter,
     BaseNavbar,
     CardProgram,
-    [Glide.name]: Glide,
-    [GlideSlide.name]: GlideSlide,
   },
 });
 </script>
 
 <style lang="scss">
-@import '~@glidejs/glide/src/assets/sass/glide.core';
-@import '~@glidejs/glide/src/assets/sass/glide.theme';
-
 @layer components {
   .card-program__grid {
-    @apply flex grid-flow-col auto-cols-min object-contain gap-0;
+    @apply px-8 py-8 flex grid-flow-col auto-cols-min object-contain gap-x-8;
 
-    > div:not(:first-child) {
-      @apply -ml-32;
+    &__scroll-area {
+      @apply w-full max-w-screen-xl;
+      height: theme('maxWidth.lg');
     }
 
     @screen sm {
-      @apply gap-5;
+      @apply pr-8 gap-x-14;
 
-      > div:not(:first-child) {
+      > div.card-program {
+        @apply shadow-lg;
+      }
+
+      > div.card-program:not(:first-child) {
         @apply m-0;
       }
+    }
+  }
+
+  .card-program--more {
+    @apply w-72 bg-white bg-opacity-25 rounded-2xl border-t border-gray-100 shadow-lg flex flex-col transition-shadow;
+    @apply backdrop-filter backdrop-blur-md;
+
+    &:hover {
+      @apply shadow-2xl;
     }
   }
 }

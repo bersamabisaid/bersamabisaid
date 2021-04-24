@@ -88,7 +88,7 @@ const navItems: NavItem[] = [
   },
   {
     title: 'KONTAK',
-    to: '/#',
+    to: { name: 'Home', hash: '#contact', replace: true },
   },
 ];
 

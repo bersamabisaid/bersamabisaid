@@ -59,6 +59,7 @@
 
     <q-card-actions
       v-if="!noAction"
+      align="right"
       class="px-6 pt-1 pb-6"
     >
       <q-btn
@@ -66,7 +67,7 @@
         no-caps
         unelevated
         :to="toLocation"
-        class="px-5 py-1 capitalize ring-1 ring-inset ring-gray-200 rounded-lg shadow-md"
+        class="px-5 py-1 capitalize ring-1 ring-inset ring-gray-200 rounded-lg shadow"
       />
     </q-card-actions>
   </q-card>

@@ -12,7 +12,7 @@
         :img-url="el.image.URL"
         :url="el.URL"
         v-bind="el"
-        action-label="Lihat detail"
+        :action-label="el.donation ? 'Donasi sekarang' : 'Selengkapnya'"
       />
     </section>
 
