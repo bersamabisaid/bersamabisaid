@@ -2,10 +2,21 @@
 
 Bersamabisa main web
 
-## Todo
-### Membuat api specs untuk transaksi pembayaran ✅
-### Membuat api sesuai api specs ✅
-### Membuat api Event (frontend)
+## Todo (this week)
+- PageAdminProgramIndex: tambah fitur pagination
+- PageAdminProgramIndex: tabel list donatur
+- PageHome
+  - hapus slider program (ganti dengan redirect ke PageProgramList)
+  - fix bad whitespace
+  - Isi konten (Profil, deskripsi singkat section, kontak)
+- PageProgramList: tambah fitur pagination
+
+## More Todo (sorted by needs & priority)
+- Implements SSR
+- PageAdminProgramForm: Implements firebase image resize extensions
+- Hapus prefix /program untuk setiap program
+  - Untuk validasi link menggunakan $router.resolve() + getProgramByURL
+- BBID Blogs
 
 ## API Specs
 - endpoint prefix: `api/`
