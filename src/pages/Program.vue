@@ -266,7 +266,7 @@
 import {
   defineComponent, ref, onMounted, computed, watch,
 } from '@vue/composition-api';
-import { Loading, date } from 'quasar';
+import { date } from 'quasar';
 import { preFetch } from 'quasar/wrappers';
 import { mdiFacebook, mdiWhatsapp, mdiTwitter } from '@quasar/extras/mdi-v5';
 import SocialShare from 'components/SocialShare.vue';
@@ -399,11 +399,8 @@ export default defineComponent({
   },
   preFetch: preFetch<Store<StateInterface>>(async ({ currentRoute, ssrContext, redirect }) => {
     if (ssrContext) {
-      Loading.show();
       const programId = currentRoute.params.programURL;
       const isInitialized = await setupData.value.syncData(programId);
-
-      Loading.hide();
 
       return isInitialized ? undefined : redirect({ name: '404' });
     }
