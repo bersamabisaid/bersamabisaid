@@ -107,7 +107,6 @@
             </q-card>
           </div>
         </div>
-        </div>
       </section>
     </main>
   </q-page>
