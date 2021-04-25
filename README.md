@@ -12,7 +12,8 @@ Bersamabisa main web
 - PageProgramList: tambah fitur pagination
 
 ## More Todo (sorted by needs & priority)
-- Implements SSR
+- Implements SSR, problem:
+  - vue ssr berada dalam konteks node, sehingga tidak bisa menggunakan firebase browser client
 - PageAdminProgramForm: Implements firebase image resize extensions
 - Hapus prefix /program untuk setiap program
   - Untuk validasi link menggunakan $router.resolve() + getProgramByURL
