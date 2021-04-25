@@ -60,11 +60,20 @@
 
               <div class="py-8 flex justify-center">
                 <q-scroll-area
+                  v-if="isLoading || allProgramData.length"
                   horizontal
                   class="card-program__grid__scroll-area"
                 >
                   <div class="card-program__grid">
-                    <template v-if="!isLoading && allProgramData.length">
+                    <template v-if="isLoading">
+                      <card-program
+                        v-for="i in 8"
+                        :key="i"
+                        loading
+                      />
+                    </template>
+
+                    <template v-else>
                       <card-program
                         v-for="(el, i) in allProgramData"
                         :key="`${i}-${el.title}`"
@@ -74,34 +83,40 @@
                         :img-url="el.image.URL"
                         :action-label="el.donation ? 'Donasi sekarang' : 'Selengkapnya'"
                       />
-                    </template>
 
-                    <template v-else>
-                      <card-program
-                        v-for="i in 8"
-                        :key="i"
-                        loading
-                      />
-                    </template>
-
-                    <q-card
-                      v-ripple
-                      class="card-program--more"
-                    >
-                      <router-link
-                        :to="{name: 'ProgramList'}"
-                        class="h-full flex flex-col justify-center items-center"
+                      <q-card
+                        v-ripple
+                        class="card-program--more"
                       >
-                        <q-btn
-                          label="Lihat program lainnya"
-                          flat
-                          :ripple="false"
-                          class="text-primary rounded-lg"
-                        />
-                      </router-link>
-                    </q-card>
+                        <router-link
+                          :to="{name: 'ProgramList'}"
+                          class="h-full flex flex-col justify-center items-center"
+                        >
+                          <q-btn
+                            label="Lihat program lainnya"
+                            flat
+                            :ripple="false"
+                            class="text-primary rounded-lg"
+                          />
+                        </router-link>
+                      </q-card>
+                    </template>
                   </div>
                 </q-scroll-area>
+
+                <div
+                  v-else
+                  class="w-full h-48 border-2 rounded-xl flex flex-col justify-center items-center"
+                >
+                  <span class="font-medium text-red-500">Tidak dapat menampilkan daftar 😥</span>
+                  <q-btn
+                    label="laporkan kesalahan"
+                    flat
+                    size="xs"
+                    class="text-primary"
+                    @click="reportUnloadedProgramList"
+                  />
+                </div>
               </div>
             </div>
           </section>
@@ -128,11 +143,20 @@
 
               <div class="py-9 flex justify-center">
                 <q-scroll-area
+                  v-if="isLoading || programDonationData.length"
                   horizontal
                   class="card-program__grid__scroll-area"
                 >
                   <div class="card-program__grid">
-                    <template v-if="!isLoading && programDonationData.length">
+                    <template v-if="isLoading">
+                      <card-program
+                        v-for="i in 8"
+                        :key="i"
+                        loading
+                      />
+                    </template>
+
+                    <template v-else>
                       <card-program
                         v-for="(el, i) in programDonationData"
                         :key="`${i}-${el.title}`"
@@ -141,14 +165,6 @@
                         :url="el.URL"
                         :img-url="el.image.URL"
                         action-label="Donasi sekarang"
-                      />
-                    </template>
-
-                    <template v-else>
-                      <card-program
-                        v-for="i in 8"
-                        :key="i"
-                        loading
                       />
                     </template>
 
@@ -170,6 +186,20 @@
                     </q-card>
                   </div>
                 </q-scroll-area>
+
+                <div
+                  v-else
+                  class="w-full h-48 border-2 rounded-xl flex flex-col justify-center items-center"
+                >
+                  <span class="font-medium text-red-500">Tidak dapat menampilkan daftar 😥</span>
+                  <q-btn
+                    label="laporkan kesalahan"
+                    flat
+                    size="xs"
+                    class="text-primary"
+                    @click="reportUnloadedProgramList"
+                  />
+                </div>
               </div>
             </div>
           </section>
@@ -270,6 +300,11 @@ export default defineComponent({
     }
 
     return undefined;
+  },
+  methods: {
+    reportUnloadedProgramList() {
+      window.open('http://wa.me/6285156348055');
+    },
   },
   components: {
     BaseFooter,
