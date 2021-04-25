@@ -4,7 +4,7 @@ Bersamabisa main web
 
 ## Todo (this week)
 - PageAdminProgramIndex: tambah fitur pagination
-- PageAdminProgramIndex: tabel list donatur
+- PageAdminProgramIndex: tabel list donatur ✅
 - PageHome
   - hapus slider program (ganti dengan redirect ke PageProgramList) ✅
   - fix bad whitespace ✅
