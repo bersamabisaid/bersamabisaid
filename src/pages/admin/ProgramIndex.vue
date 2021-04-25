@@ -148,14 +148,16 @@
 <script lang="ts">
 import { defineComponent, watch, computed } from '@vue/composition-api';
 import { roundOpenInNew, roundEdit, roundVisibility } from '@quasar/extras/material-icons-round';
-import firestoreCollection, { modelToObject } from 'src/firestoreCollection';
+import firestoreCollection, { modelToObject, deleteAttrs } from 'src/firestoreCollection';
 import useGuardAuth from 'src/composables/useGuardAuth';
 import useCollection from 'src/composables/useCollection';
-import { notifyError } from 'src/composables/useNotification';
+import { notifyError, notifySuccess } from 'src/composables/useNotification';
 import type fb from 'firebase';
 import type { qComponent } from 'src/models';
 import type { Program, ProgramDonation } from 'shared/types/modelData';
-import type { Model } from 'shared/types/model';
+import type { Model, ModelInObject } from 'shared/types/model';
+import { db } from 'src/services/firebaseService';
+import { notify } from 'app/src-ssr';
 
 const baseColumnDefinition = [
   {
@@ -217,8 +219,12 @@ export default defineComponent({
 
     const dbRef = computed(() => (props.donation
       ? firestoreCollection.Programs.where('donation', '==', true)
-      : firestoreCollection.Programs));
-    const [data, isDataLoading, error] = useCollection(dbRef, { mapper: modelToObject });
+      : firestoreCollection.Programs)
+      .where('_deleted', '==', null));
+    const [data, isDataLoading, error, updateData] = useCollection(
+      dbRef,
+      { mapper: modelToObject },
+    );
     const columnDefinition = computed(() => (props.donation
       ? [...baseColumnDefinition, ...donationPageColumnDefinition]
       : baseColumnDefinition));
@@ -233,6 +239,7 @@ export default defineComponent({
     return {
       data,
       isDataLoading,
+      updateData,
       columns: columnDefinition,
 
       roundOpenInNew,
@@ -246,12 +253,53 @@ export default defineComponent({
   data() {
     return {
       search: '',
-      selection: [],
+      selection: [] as ModelInObject<Model<Program>>[],
     };
   },
   methods: {
-    deleteSelected() {
-      console.log(this.selection);
+    async deleteSelected() {
+      const confirmedToDelete = await this.confirmDeleted();
+      const titleList = confirmedToDelete.map((el) => el.title).join(', ');
+      const batch = db.batch();
+
+      confirmedToDelete.forEach((el) => {
+        const docRef = firestoreCollection.Programs.doc(el._uid);
+        batch.update(docRef, deleteAttrs());
+      });
+
+      const progressDialog = this.$q.dialog({
+        message: `Menghapus ${titleList}`,
+        progress: true,
+        ok: false,
+        persistent: true,
+      });
+
+      return batch.commit()
+        .then(() => {
+          this.selection.splice(0, this.selection.length);
+          progressDialog.hide();
+          notifySuccess(`success deleted ${titleList}`);
+
+          return this.updateData();
+        });
+    },
+    async confirmDeleted() {
+      await Promise.all(this.selection.map((el, i) => new Promise<void>((resolveConfirmation) => {
+        this.$q.dialog({
+          title: 'Warning!',
+          message: `Apakah anda yakin untuk menghapus <b>${el.title}</b> ?`,
+          html: true,
+          cancel: true,
+          persistent: true,
+        })
+          .onOk(() => resolveConfirmation())
+          .onCancel(() => {
+            this.selection.splice(i, 1);
+            resolveConfirmation();
+          });
+      })));
+
+      return this.selection;
     },
   },
 });

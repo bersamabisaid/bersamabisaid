@@ -46,7 +46,9 @@ export default defineComponent({
     const isDonation = computed(() => root.$route.query.category === 'donasi');
     const query = computed(() => (isDonation.value
       ? firestoreCollection.Programs.where('donation', '==', true)
-      : firestoreCollection.Programs).limit(10));
+      : firestoreCollection.Programs)
+      .where('_deleted', '==', null)
+      .limit(10));
     const [programs, isDataLoading] = useCollection(query, { mapper: modelToObject });
     const programData = ref<IProgramData[]>([]);
 

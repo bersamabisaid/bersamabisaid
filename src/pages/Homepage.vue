@@ -108,7 +108,7 @@
                   v-else
                   class="w-full h-48 border-2 rounded-xl flex flex-col justify-center items-center"
                 >
-                  <span class="font-medium text-red-500">Tidak dapat menampilkan daftar 😥</span>
+                  <span class="font-medium text-dark">TIDAK DAPAT MENAMPILKAN DAFTAR 😥</span>
                   <q-btn
                     label="laporkan kesalahan"
                     flat
@@ -189,9 +189,9 @@
 
                 <div
                   v-else
-                  class="w-full h-48 border-2 rounded-xl flex flex-col justify-center items-center"
+                  class="w-full h-48 bg-white bg-opacity-30 border-2 rounded-xl backdrop-filter backdrop-blur-md flex flex-col justify-center items-center"
                 >
-                  <span class="font-medium text-red-500">Tidak dapat menampilkan daftar 😥</span>
+                  <span class="font-medium text-red-500">TIDAK DAPAT MENAMPILKAN DAFTAR 😥</span>
                   <q-btn
                     label="laporkan kesalahan"
                     flat
@@ -247,7 +247,9 @@ interface IprogramDonationData extends Omit<TprogramDonationDataOri, 'image'> {
 
 const setupData = new Singleton(() => {
   const [programData, isLoading, , updateProgramData] = useCollection(
-    firestoreCollection.Programs.limit(8),
+    firestoreCollection.Programs
+      .where('_deleted', '==', null)
+      .limit(8),
     { mapper: modelToObject },
   );
   const allProgramData = ref<IallProgramData[]>([]);

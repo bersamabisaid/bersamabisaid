@@ -10,10 +10,16 @@ export const getDocumentByFactory = function <T = unknown, U extends keyof T = k
   collectionReference: fb.firestore.CollectionReference<T>,
   columnName: U,
   opStr: fb.firestore.WhereFilterOp = '==',
+  includeDeleted = false,
 ) {
   const getter = async (condition: T[U]) => {
-    const query = collectionReference.where(columnName as string, opStr, condition).limit(1);
-    const { docs: [snapshot] } = await query.get();
+    const query = collectionReference
+      .where(columnName as string, opStr, condition)
+      .limit(1);
+
+    const { docs: [snapshot] } = await (includeDeleted
+      ? query : query.where('_deleted', '==', null))
+      .get();
 
     return snapshot as fb.firestore.QueryDocumentSnapshot<Model<T>> | undefined;
   };
