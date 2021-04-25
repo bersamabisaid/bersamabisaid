@@ -84,7 +84,7 @@ const navItems: NavItem[] = [
   },
   {
     title: 'PROFIL',
-    to: '/profil',
+    to: { name: 'Profile' },
   },
   {
     title: 'KONTAK',

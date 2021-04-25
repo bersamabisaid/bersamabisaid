@@ -25,6 +25,11 @@ const routes: RouteConfig[] = [
         name: 'Program',
         component: () => import('pages/Program.vue'),
       },
+      {
+        path: '/profil',
+        name: 'Profile',
+        component: () => import('pages/Profile.vue'),
+      },
     ],
   },
   {
@@ -86,17 +91,6 @@ const routes: RouteConfig[] = [
         name: 'AdminProgramDonationResult',
         component: () => import('pages/admin/ProgramDonationResult.vue'),
         meta: { transitionName: 'slideInRight' },
-      },
-    ],
-  },
-  {
-    path: '/',
-    component: () => import('layouts/Main.vue'),
-    children: [
-      {
-        path: '/profil',
-        name: 'Profil',
-        component: () => import('pages/Profil.vue'),
       },
     ],
   },
