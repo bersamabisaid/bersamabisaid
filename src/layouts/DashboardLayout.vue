@@ -109,9 +109,8 @@ import {
   roundHome, roundEvent, roundFeed, roundLogout,
 } from '@quasar/extras/material-icons-round';
 import MinimalistLayout from 'layouts/MinimalistLayout.vue';
-import type { QItem } from 'quasar';
-import useGuardAuth from 'src/composables/useGuardAuth';
 import { auth } from 'src/services/firebaseService';
+import type { QItem } from 'quasar';
 
 interface IRouteMeta {
   transitionName?: string;
@@ -159,8 +158,6 @@ const drawerItems: NavItem[] = [
 export default defineComponent({
   name: 'DashboardLayout',
   setup() {
-    useGuardAuth();
-
     return {
       drawerItems,
     };

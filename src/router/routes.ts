@@ -81,6 +81,12 @@ const routes: RouteConfig[] = [
         component: () => import('pages/admin/ProgramForm.vue'),
         props: { formTitle: 'Edit program', donation: true },
       },
+      {
+        path: 'programs/donation/:programURL/detail',
+        name: 'AdminProgramDonationResult',
+        component: () => import('pages/admin/ProgramDonationResult.vue'),
+        meta: { transitionName: 'slideInRight' },
+      },
     ],
   },
 

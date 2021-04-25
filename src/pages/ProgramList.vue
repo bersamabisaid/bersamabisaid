@@ -3,7 +3,7 @@
     padding
     class="min-h-screen"
   >
-    <section class="relative flex flex-col sm:flex-row sm:justify-center items-stretch gap-6 sm:gap-12">
+    <section class="relative flex flex-col sm:flex-row sm:justify-center content-center items-stretch gap-6 sm:gap-12">
       <card-program
         v-for="(el, i) in programData"
         :key="`${i}-${el.title}`"

@@ -88,6 +88,7 @@
                       class="opacity-0 font-medium text-xs text-primary transition-opacity group-hover:opacity-100"
                     />
                   </router-link>
+
                   <q-btn
                     label="Edit"
                     :icon="roundEdit"
@@ -101,6 +102,27 @@
                     class="opacity-0 ml-3 bg-opacity-80 font-medium text-blue-500 transition-opacity group-hover:opacity-100"
                   />
                   <!-- eslint-enable max-len -->
+                </div>
+              </q-td>
+            </template>
+
+            <template #body-cell-achieved="props">
+              <q-td :props="props">
+                <div class="flex justify-end items-center gap-x-3">
+                  <span>{{ props.value }}</span>
+
+                  <q-btn
+                    :icon="roundVisibility"
+                    :to="{
+                      name: 'AdminProgramDonationResult',
+                      params: {programURL: props.row._uid}
+                    }"
+                    round
+                    flat
+                    no-caps
+                    size="sm"
+                    class="bg-opacity-80 font-medium text-blue-400"
+                  />
                 </div>
               </q-td>
             </template>
@@ -125,25 +147,15 @@
 
 <script lang="ts">
 import { defineComponent, watch, computed } from '@vue/composition-api';
-import { roundOpenInNew, roundEdit } from '@quasar/extras/material-icons-round';
-import firestoreCollection from 'src/firestoreCollection';
+import { roundOpenInNew, roundEdit, roundVisibility } from '@quasar/extras/material-icons-round';
+import firestoreCollection, { modelToObject } from 'src/firestoreCollection';
+import useGuardAuth from 'src/composables/useGuardAuth';
 import useCollection from 'src/composables/useCollection';
 import { notifyError } from 'src/composables/useNotification';
-import type { QTable } from 'quasar';
 import type fb from 'firebase';
+import type { qComponent } from 'src/models';
 import type { Program, ProgramDonation } from 'shared/types/modelData';
 import type { Model } from 'shared/types/model';
-
-type ColumnDefinition<T = Record<string, unknown>> = Omit<
-  NonNullable<QTable['columns']>[number],
-  'field' | 'format' | 'sort' | 'name' | 'align'
-> & {
-  name: keyof T | string;
-  field: ((row: T) => string) | keyof T;
-  format?: (val: T[keyof T], row: T) => string;
-  sort?: (a: T[keyof T], b: T[keyof T], rowA: T, rowB: T) => number;
-  align?: 'left' | 'center' | 'right';
-}
 
 const baseColumnDefinition = [
   {
@@ -177,7 +189,7 @@ const baseColumnDefinition = [
     format: (val) => (val as fb.firestore.Timestamp).toDate().toLocaleString(),
     sortable: true,
   },
-] as ColumnDefinition<Model<Program>>[];
+] as qComponent.ColumnDefinition<Model<Program>>[];
 
 const donationPageColumnDefinition = [
   {
@@ -185,10 +197,12 @@ const donationPageColumnDefinition = [
     name: 'achieved',
     align: 'right',
     // use optional chaining to handle transition between column definition
-    field: (row) => `${row?._ui?.progress.value || 0}%`,
+    field: (row) => `${row?._ui?.progress.value
+      ? (row._ui.progress.value / (row.target || 1))
+      : 0}%`,
     sortable: true,
   },
-] as ColumnDefinition<Model<ProgramDonation>>[];
+] as qComponent.ColumnDefinition<Model<ProgramDonation>>[];
 
 export default defineComponent({
   name: 'PageAdminProgramIndex',
@@ -199,11 +213,20 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const dbRef = computed(() => firestoreCollection.Programs.where('donation', '==', props.donation));
-    const [data, isDataLoading, error] = useCollection(dbRef);
+    useGuardAuth();
+
+    const dbRef = computed(() => (props.donation
+      ? firestoreCollection.Programs.where('donation', '==', true)
+      : firestoreCollection.Programs));
+    const [data, isDataLoading, error] = useCollection(dbRef, { mapper: modelToObject });
     const columnDefinition = computed(() => (props.donation
       ? [...baseColumnDefinition, ...donationPageColumnDefinition]
       : baseColumnDefinition));
+    // const onTableServerRequest: QTable['requestServerInteraction'] = (props) => {
+    //   if (props) {
+    //     const { pagination, filter } = props;
+    //   }
+    // };
 
     watch(error, () => error && notifyError(error));
 
@@ -214,7 +237,11 @@ export default defineComponent({
 
       roundOpenInNew,
       roundEdit,
+      roundVisibility,
     };
+  },
+  preFetch() {
+    return undefined;
   },
   data() {
     return {

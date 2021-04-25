@@ -143,6 +143,7 @@ import { notifyError, notifySuccess } from 'src/composables/useNotification';
 import { getStorageFile } from 'src/composables/useStorage';
 import { dateToDateString, dateStringToDate } from 'shared/utils/formatter';
 import type { Program, IBaseProgram } from 'shared/types/modelData';
+import useGuardAuth from 'src/composables/useGuardAuth';
 
 const createFileInput = (accept = '*') => {
   const el = document.createElement('input');
@@ -164,6 +165,8 @@ export default defineComponent({
     },
   },
   setup(props, { root }) {
+    useGuardAuth();
+
     const { tasks, state, upload } = useStorageUpload(storageRef.Programs);
     const docId = computed<string | undefined>(() => root.$route.params.programURL);
     const docRef = computed(() => firestoreCollection.Programs.doc(docId.value));
