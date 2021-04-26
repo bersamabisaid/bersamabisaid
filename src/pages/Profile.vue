@@ -140,20 +140,28 @@
                 <h6 class="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-6">
                   Atas apa yang telah kita lakukan bersama, kita berharap
                 </h6>
-                <p>
+                <ul>
+                  <li>
                   1. Meningkatnya angka orientasi pendidikan masyarakat
                   kurang mampu
-                </p>
-                <p>
-                  2. Meningkatnya akses belajar melalui program yang dilaksanakan
-                </p>
-                <p>
-                  3. Tersedianya fasilitas belajar untuk daerah yang membutuhkan
-                  dan prioritas
-                </p>
-                <p>
-                  4. Masyarakat kurang mampu tidak khawatir dengan pendidikan anaknya
-                </p>
+                  </li>
+                </ul>
+                <ul>
+                  <li>
+                    2. Meningkatnya akses belajar melalui program yang dilaksanakan
+                  </li>
+                </ul>
+                <ul>
+                  <li>
+                    3. Tersedianya fasilitas belajar untuk daerah yang membutuhkan
+                    dan prioritas
+                  </li>
+                </ul>
+                <ul>
+                  <li>
+                    4. Masyarakat kurang mampu tidak khawatir dengan pendidikan anaknya
+                  </li>
+                </ul>
               </q-card-section>
             </q-card>
           </div>
@@ -166,8 +174,8 @@
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
 import { mdiInstagram, mdiTwitter } from '@quasar/extras/mdi-v5';
-import CardTeam from 'components/ui/Program/Profile/CardTeam.vue';
-import CardPurpose from 'components/ui/Program/Profile/CardPurpose.vue';
+import CardTeam from 'components/ui/Profile/CardTeam.vue';
+import CardPurpose from 'components/ui/Profile/CardPurpose.vue';
 
 const teams = [
   {
