@@ -38,7 +38,7 @@ const routes: RouteConfig[] = [
     component: () => import('pages/Pay.vue'),
   },
   {
-    path: '/dashboard',
+    path: '/admin',
     component: () => import('layouts/DashboardLayout.vue'),
     children: [
       {

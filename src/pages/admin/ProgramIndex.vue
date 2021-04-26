@@ -148,6 +148,7 @@
 <script lang="ts">
 import { defineComponent, watch, computed } from '@vue/composition-api';
 import { roundOpenInNew, roundEdit, roundVisibility } from '@quasar/extras/material-icons-round';
+import { db } from 'src/services/firebaseService';
 import firestoreCollection, { modelToObject, deleteAttrs } from 'src/firestoreCollection';
 import useGuardAuth from 'src/composables/useGuardAuth';
 import useCollection from 'src/composables/useCollection';
@@ -156,8 +157,6 @@ import type fb from 'firebase';
 import type { qComponent } from 'src/models';
 import type { Program, ProgramDonation } from 'shared/types/modelData';
 import type { Model, ModelInObject } from 'shared/types/model';
-import { db } from 'src/services/firebaseService';
-import { notify } from 'app/src-ssr';
 
 const baseColumnDefinition = [
   {
