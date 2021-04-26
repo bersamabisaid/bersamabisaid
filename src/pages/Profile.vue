@@ -54,57 +54,11 @@
       <section class="relative pt-8 pb-10">
         <div class="container relative mx-auto px-4 flex flex-col">
           <div class="py-9 flex justify-center gap-16">
-            <q-card
-              v-for="i in 3"
+            <card-purpose
+              v-for="(purpose, i) in purposes"
               :key="i"
-              flat
-              bordered
-              class="my-card bg-grey-1"
-            >
-              <q-card-section class="bg-blue-400">
-                <div class="row items-center no-wrap">
-                  <div class="col">
-                    <div class="text-h6">
-                      Our Planet
-                    </div>
-                    <div class="text-subtitle2">
-                      by John Doe
-                    </div>
-                  </div>
-
-                  <div class="col-auto">
-                    <q-btn
-                      color="grey-7"
-                      round
-                      flat
-                      icon="arrow_forward"
-                      class="text-dark"
-                    >
-                      <q-menu
-                        cover
-                        auto-close
-                      >
-                        <q-list>
-                          <q-item clickable>
-                            <q-item-section>Remove Card</q-item-section>
-                          </q-item>
-                          <q-item clickable>
-                            <q-item-section>Send Feedback</q-item-section>
-                          </q-item>
-                          <q-item clickable>
-                            <q-item-section>Share</q-item-section>
-                          </q-item>
-                        </q-list>
-                      </q-menu>
-                    </q-btn>
-                  </div>
-                </div>
-              </q-card-section>
-
-              <q-card-section>
-                {{ lorem }}
-              </q-card-section>
-            </q-card>
+              v-bind="purpose"
+            />
           </div>
         </div>
       </section>
@@ -169,91 +123,12 @@
               Tim Yang Kita Miliki
             </h6>
           </div>
-          <div class="py-9 flex justify-center gap-8">
-            <!-- <q-card
-              v-for="i in 5"
+          <div class="py-9 flex justify-center gap-5">
+            <card-team
+              v-for="(team, i) in teams"
               :key="i"
-              flat
-              bordered
-              class="my-card bg-grey-1 outline-none"
-            >
-              <q-card-section class="bg-blue-400">
-                <div class="row items-center no-wrap">
-                  <div class="col">
-                    <div class="text-h6">
-                      Our Planet
-                    </div>
-                    <div class="text-subtitle2">
-                      by John Doe
-                    </div>
-                  </div>
-
-                  <div class="col-auto">
-                    <q-btn
-                      color="grey-7"
-                      round
-                      flat
-                      icon="arrow_forward"
-                      class="text-dark"
-                    >
-                      <q-menu
-                        cover
-                        auto-close
-                      >
-                        <q-list>
-                          <q-item clickable>
-                            <q-item-section>Remove Card</q-item-section>
-                          </q-item>
-                          <q-item clickable>
-                            <q-item-section>Send Feedback</q-item-section>
-                          </q-item>
-                          <q-item clickable>
-                            <q-item-section>Share</q-item-section>
-                          </q-item>
-                        </q-list>
-                      </q-menu>
-                    </q-btn>
-                  </div>
-                </div>
-              </q-card-section>
-
-              <q-card-section>
-                {{ lorem }}
-              </q-card-section>
-            </q-card> -->
-            <div
-              v-for="i in 5"
-              :key="i"
-              class="max-w-xs mx-auto bg-white rounded-lg shadow-lg dark:bg-gray-800 mt-20"
-            >
-              <div class="flex justify-center -mt-16 md:justify-end">
-                <img
-                  class="object-cover w-20 h-20 border-2 border-indigo-500 rounded-full dark:border-indigo-400"
-                  alt="Testimonial avatar"
-                  src="https://images.unsplash.com/photo-1499714608240-22fc6ad53fb2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=76&q=80"
-                >
-              </div>
-              <div class="px-4 py-2">
-                <h1 class="text-3xl font-bold text-gray-800 uppercase dark:text-white">
-                  SOCIAL EDUCATION DEVELOPMENT
-                </h1>
-              </div>
-
-              <div class="px-4 py-2">
-                <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                  {{ lorem }}
-                </p>
-              </div>
-
-              <div class="flex items-center justify-between px-4 py-2 bg-gray-900">
-                <h1 class="text-lg font-bold text-white">
-                  Lorem aja
-                </h1>
-                <button class="px-2 py-1 text-xs font-semibold text-gray-900 uppercase transition-colors duration-200 transform bg-white rounded hover:bg-gray-200 focus:bg-gray-400 focus:outline-none">
-                  Lorem lagi
-                </button>
-              </div>
-            </div>
+              v-bind="team"
+            />
           </div>
         </div>
       </section>
@@ -291,6 +166,46 @@
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
 import { mdiInstagram, mdiTwitter } from '@quasar/extras/mdi-v5';
+import CardTeam from 'components/ui/Program/CardTeam.vue';
+import CardPurpose from 'components/ui/Program/CardPurpose.vue';
+
+const teams = [
+  {
+    title: 'SOCIAL EDUCATION DEVELOPMENT',
+    description: 'Melaksanakan program dalam ranah sosial dan pendidikan',
+  },
+  {
+    title: 'HUMAN RESOURCE DEVELOPMENT',
+    description: 'Melaksanakan program internal dalam rangka menjaga soliditas dan juga kualitas SDM',
+  },
+  {
+    title: 'PUBLIC RELATION',
+    description: 'Memiliki peran penting dalam melakukan hubungan dengan pihak lain dalam menjalankan program',
+  },
+  {
+    title: 'FINANCIAL MANAGEMENT',
+    description: 'Memiliki tim yang fokus dalam agenda fundrising dan juga pengalokasian dana',
+  },
+  {
+    title: 'TECHNOLOGY DEVELOPMENT',
+    description: 'Memiliki wewenang dalam pengembangan desain informasi di media sosial',
+  },
+];
+
+const purposes = [
+  {
+    title: 'Melihat Kondisi Masyarakat',
+    description: 'Pendidikan menjadi isu yang terus hadir di masyarakat, mulai dari akses pendidikan, fasilitas pendidikan, dan kualitas kurikulum pendidikan',
+  },
+  {
+    title: 'Melihat Potensi Generasi Muda',
+    description: 'Generasi muda punya potensi untuk menggarap serius isu pendidikan dengan peningkatan kualitas pendidikan di masyarakat ',
+  },
+  {
+    title: 'Melihat Harapan Masa Depan',
+    description: 'Harapan tentang pembangunan generasi bangsa secara sistematis dilakukan melalui wadah yang kolektif untuk bergerak',
+  },
+];
 
 export default defineComponent({
   name: 'PageProfile',
@@ -303,7 +218,13 @@ export default defineComponent({
     return {
       mdiInstagram,
       mdiTwitter,
+      purposes,
+      teams,
     };
+  },
+  components: {
+    CardTeam,
+    CardPurpose,
   },
 });
 </script>
