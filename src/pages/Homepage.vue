@@ -137,7 +137,7 @@
             <div class="container relative mx-auto px-4 flex flex-col">
               <div class="flex justify-center pt-8">
                 <h6 class="text-4xl text-white font-bold">
-                  PROGRAM DONASI
+                  MARI BERDONASI!
                 </h6>
               </div>
 

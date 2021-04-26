@@ -20,27 +20,44 @@
     </div>
 
     <div class="w-full flex flex-row justify-center gap-x-2">
-      <q-btn
-        :icon="mdiWhatsapp"
-        round
-        flat
-        class="text-white"
-        @click="shareToWhatsapp"
-      />
-      <q-btn
-        :icon="mdiFacebook"
-        round
-        flat
-        class="text-white"
-        @click="shareToFacebook"
-      />
-      <q-btn
-        :icon="mdiTwitter"
-        round
-        flat
-        class="text-white"
-        @click="shareToTwitter"
-      />
+      <share-network
+        network="whatsapp"
+        :url="sharedUrl"
+        :title="sharedTitle"
+      >
+        <q-btn
+          :icon="mdiWhatsapp"
+          round
+          flat
+          class="text-white"
+        />
+      </share-network>
+
+      <share-network
+        network="facebook"
+        :url="sharedUrl"
+        :title="sharedTitle"
+      >
+        <q-btn
+          :icon="mdiFacebook"
+          round
+          flat
+          class="text-white"
+        />
+      </share-network>
+
+      <share-network
+        network="twitter"
+        :url="sharedUrl"
+        :title="sharedTitle"
+      >
+        <q-btn
+          :icon="mdiTwitter"
+          round
+          flat
+          class="text-white"
+        />
+      </share-network>
     </div>
   </div>
 </template>
@@ -65,19 +82,15 @@ export default defineComponent({
       mdiTwitter,
     };
   },
+  computed: {
+    sharedTitle(): string {
+      return document.title;
+    },
+  },
   methods: {
     shareToClipboard() {
       return copyToClipboard(this.sharedUrl)
         .then(() => alert?.('copied to clipboard!'));
-    },
-    shareToWhatsapp() {
-      //
-    },
-    shareToFacebook() {
-      //
-    },
-    shareToTwitter() {
-      //
     },
   },
 });
