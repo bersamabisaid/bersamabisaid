@@ -5,17 +5,19 @@
         color="secondary"
         text-color="white"
       >
-        {{ name.charAt(0) }}
+        {{ name.charAt(0).toUpperCase() }}
       </q-avatar>
     </q-item-section>
 
     <q-item-section>
       <q-item-label>
         <span class="font-medium">{{ name }}</span>
-        <span class="ml-4 font-light text-xs text-gray-400 italic">{{ computedTimestamp }}</span>
+        <span class="ml-4 font-light text-xs text-gray-400 italic tracking-tight">{{ computedTimestamp }}</span>
       </q-item-label>
       <q-item-label caption>
-        <p>{{ message }}</p>
+        <p class="font-medium text-xs text-dark tracking-tight">
+          {{ message }}
+        </p>
       </q-item-label>
     </q-item-section>
 
@@ -35,8 +37,6 @@ import { toIdr } from 'shared/utils/formatter';
 import type { DonationUI } from 'shared/types/modelData';
 
 export type DonationItemProps = DonationUI;
-
-const LOCALE_DATE_OPTIONS = { day: 'numeric', month: 'long', year: 'numeric' };
 
 export default defineComponent({
   name: 'DonationItem',
@@ -63,7 +63,39 @@ export default defineComponent({
       return toIdr(this.amount, 0);
     },
     computedTimestamp(): string {
-      return this.timestamp.toDate().toLocaleString('ID', LOCALE_DATE_OPTIONS);
+      const date = this.timestamp.toDate();
+      const secondAgo = (Date.now() - date.getTime()) / 1000;
+
+      if (secondAgo < 60) {
+        return `${secondAgo} detik yang lalu`;
+      }
+
+      const minuteAgo = secondAgo / 60;
+      if (minuteAgo < 60) {
+        return `${Math.round(minuteAgo)} menit yang lalu`;
+      }
+
+      const hourAgo = minuteAgo / 60;
+      if (hourAgo < 24) {
+        return `${Math.round(hourAgo)} jam yang lalu`;
+      }
+
+      const dayAgo = hourAgo / 24;
+      if (dayAgo < 7) {
+        return `${Math.round(dayAgo)} hari yang lalu`;
+      }
+
+      const weekAgo = hourAgo / 7;
+      if (weekAgo < 7) {
+        return `${Math.round(weekAgo)} pekan yang lalu`;
+      }
+
+      return date
+        .toLocaleString('ID', {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric',
+        });
     },
   },
 });
