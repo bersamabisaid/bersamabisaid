@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
 import type { TransactionRequestType } from 'midtrans-node-client/dist/types/snap';
+import { db } from './service/firebaseAdmin';
 import midtrans from './service/midtrans';
 import firestoreCollection, { firestoreProxy, uiDataFactory } from './service/firestoreCollection';
 import type { Transaction, TransactionItem } from '../../shared/types/modelData';
@@ -31,11 +32,11 @@ export interface CreateTransactionFailedResponse {
   error_messages: string;
 }
 
-export const recordTransactionToFirestore = (payload: Transaction<true>) => firestoreCollection
-  .Transactions.add(firestoreProxy.create(payload));
-
 export const createTransaction = async ({ transaction_details, ...payload }: createTransactionParams) => {
-  const transactionRef = await recordTransactionToFirestore({
+  const batch = db.batch();
+  const transactionRef = firestoreCollection.Transactions.doc();
+
+  batch.create(transactionRef, firestoreProxy.create({
     grossAmount: transaction_details.gross_amount,
     client: payload.client.ref,
     items: payload.item_details.map((el) => ({
@@ -47,7 +48,8 @@ export const createTransaction = async ({ transaction_details, ...payload }: cre
     _ui: {
       clientName: uiDataFactory(payload.client.name),
     },
-  });
+  }));
+
   const midtransTransaction = await midtrans.snap.createTransaction({
     snapFull: {
       ...payload,
@@ -57,6 +59,8 @@ export const createTransaction = async ({ transaction_details, ...payload }: cre
       },
     },
   }) as CreateTransactionSuccessResponse;
+
+  await batch.commit();
 
   return [midtransTransaction, transactionRef] as const;
 };
