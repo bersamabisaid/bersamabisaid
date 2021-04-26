@@ -69,7 +69,7 @@
               v-model="amount"
               label="Masukkan nominal"
               filled
-              :rules="[v => (v > 0) || 'Nominal harus diatas 0']"
+              :rules="[minRule(10000, true)]"
             >
               <template #control="{ id, floatingLabel, value, emitValue }">
                 <money
@@ -342,7 +342,7 @@ import { payDonation } from 'src/firebaseFunctions';
 import { programDataRepo } from 'src/dataRepositories';
 import { getStorageFile } from 'src/composables/useStorage';
 import { notifyError } from 'src/composables/useNotification';
-import { requiredRule } from 'src/composables/useInputRules';
+import { requiredRule, minRule } from 'src/composables/useInputRules';
 import useCountdown from 'src/composables/useCountdown';
 import useDocumentRealtime from 'src/composables/useDocumentRealtime';
 import { toIdr } from 'shared/utils/formatter';
@@ -489,6 +489,7 @@ export default defineComponent({
 
       amountChoices,
       requiredRule,
+      minRule,
       toIdr,
       extractTextFromHTML,
     };
