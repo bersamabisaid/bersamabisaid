@@ -7,13 +7,17 @@ import type { DocRef } from '../../../shared/firestoreCollection';
 const HIDDEN_DONATOR_NAME = 'Hamba Allah';
 
 export const pay = async ({ donator, ...data }: Required<PayDonationRequestBody>) => {
+  const batch = db.batch();
   const programRef = firestoreCollection.Programs.doc(data.programId) as DocRef.ProgramDonationModel<true>;
-  const donatorAsClient = await firestoreCollection.TransactionClients.add(firestoreProxy.create({
+  const donatorAsClient = firestoreCollection.TransactionClients.doc();
+
+  batch.create(donatorAsClient, firestoreProxy.create({
     fullname: donator.fullName,
     email: donator.email,
     phoneNumber: donator.phoneNumber,
     address: donator.address,
   }));
+
   const [transactionAction, transactionRef] = await createTransaction({
     transaction_details: {
       gross_amount: data.amount,
@@ -32,7 +36,7 @@ export const pay = async ({ donator, ...data }: Required<PayDonationRequestBody>
   });
 
   const donationRef = firestoreCollection.Donations(programRef).doc(transactionRef.id);
-  await donationRef.set(firestoreProxy.create({
+  batch.create(donationRef, firestoreProxy.create({
     program: programRef,
     transaction: transactionRef,
     donator: donatorAsClient,
@@ -51,6 +55,8 @@ export const pay = async ({ donator, ...data }: Required<PayDonationRequestBody>
     },
     _system: { finishPaymentRedirectURL: data.finishPaymentRedirectURL },
   }));
+
+  await batch.commit();
 
   return {
     programRef,
