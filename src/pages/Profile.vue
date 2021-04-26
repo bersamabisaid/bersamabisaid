@@ -166,8 +166,8 @@
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
 import { mdiInstagram, mdiTwitter } from '@quasar/extras/mdi-v5';
-import CardTeam from 'components/ui/Program/CardTeam.vue';
-import CardPurpose from 'components/ui/Program/CardPurpose.vue';
+import CardTeam from 'components/ui/Program/Profile/CardTeam.vue';
+import CardPurpose from 'components/ui/Program/Profile/CardPurpose.vue';
 
 const teams = [
   {
