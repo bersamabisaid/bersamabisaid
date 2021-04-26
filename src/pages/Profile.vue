@@ -1,17 +1,13 @@
 <template>
   <q-page>
     <main class="w-full">
-      <section class="bg-gray-300">
+      <section class="bg-blue-300">
         <div class="container px-6 py-8 mx-auto">
           <div class="items-center lg:flex">
             <div class="lg:w-1/2">
-              <h2 class="text-3xl font-bold text-gray-800 dark:text-gray-100">
+              <h2 class="text-5xl font-bold text-grey-800 dark:text-gray-100">
                 Mengapa Kami Harus Hadir ?
               </h2>
-
-              <p class="mt-4 text-gray-500 dark:text-gray-400 lg:max-w-md">
-                Hi this is BERSAMABISA, {{ lorem }}
-              </p>
 
               <div class="flex items-center mt-6 gap-x-2">
                 <q-btn
@@ -99,16 +95,16 @@
 
             <div class="mt-8 lg:mt-0 lg:w-1/2">
               <div class="flex items-center justify-center lg:justify-end">
-                <ul class="list-none grid gap-4">
-                  <li
-                    v-for="i in 3"
-                    :key="i"
-                  >
+                <ul class="list-none grid gap-4 sm:mt-8">
+                  <li v-for="button in btnPurpose">
+                  <div class="flex flex-nowrap items-center gap-5">
                     <q-btn
                       class="bg-blue-400 col-start"
                       padding="lg"
                       icon="eco"
                     />
+                    <div class="flex flex-wrap text-lg max-w-md">{{ button.caption }}</div>
+                    </div>
                   </li>
                 </ul>
               </div>
@@ -217,11 +213,20 @@ const purposes = [
 
 export default defineComponent({
   name: 'PageProfile',
-  data() {
-    return {
-      lorem: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-    };
-  },
+  data: () => ({
+    lorem: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+    btnPurpose: [
+      {
+        caption: 'Manusia Indonesia yang beradab dan berpendidikan',
+      },
+      {
+        caption: 'Program yang berkelanjutan',
+      },
+      {
+        caption: 'Memberikan resonansi kebaikan',
+      }
+    ],
+  }),
   setup() {
     return {
       mdiInstagram,
