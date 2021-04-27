@@ -58,52 +58,36 @@
           </div>
         </div>
       </section>
-      <section class="bg-gray-300">
+      <section class="flex items-center justify-center w-screen h-screen m-auto mb-12 bg-fixed bg-center bg-cover custom-img">
+        <div
+          class="absolute w-screen h-screen m-auto bg-fixed bg-center bg-cover bg-black opacity-60"
+        />
         <div class="container px-6 py-8 mx-auto">
           <div class="items-center lg:flex">
             <div class="lg:w-1/2">
-              <h2 class="text-3xl font-bold text-gray-800 dark:text-gray-100">
+              <h2 class="text-5xl font-bold text-dark">
                 Tujuan Besar Kita
               </h2>
 
-              <p class="mt-4 text-gray-500 dark:text-gray-400 lg:max-w-md">
-                Hi this is BERSAMABISA, {{ lorem }}
+              <p class="text-xl mt-4 text-dark lg:max-w-md">
+                {{ bigPurpose }}
               </p>
-
-              <div class="flex items-center mt-6 gap-x-2">
-                <q-btn
-                  type="a"
-                  :icon="mdiTwitter"
-                  href="https://twitter.com/bersamabisaid"
-                  target="_blank"
-                  round
-                  flat
-                  class="text-gray-700 hover:text-gray-600"
-                />
-
-                <q-btn
-                  type="a"
-                  :icon="mdiInstagram"
-                  href="https://www.instagram.com/bersamabisa.id/"
-                  target="_blank"
-                  round
-                  flat
-                  class="text-gray-700 hover:text-gray-600"
-                />
-              </div>
             </div>
 
             <div class="mt-8 lg:mt-0 lg:w-1/2">
               <div class="flex items-center justify-center lg:justify-end">
                 <ul class="list-none grid gap-4 sm:mt-8">
                   <li v-for="button in btnPurpose">
-                  <div class="flex flex-nowrap items-center gap-5">
-                    <q-btn
-                      class="bg-blue-400 col-start"
-                      padding="lg"
-                      icon="eco"
-                    />
-                    <div class="flex flex-wrap text-lg max-w-md">{{ button.caption }}</div>
+                    <div class="flex flex-nowrap items-center gap-5">
+                      <q-btn
+                        class="bg-yellow-400 col-start rounded-2xl"
+                        padding="md"
+                        :icon="button.icon"
+                        size="lg"
+                      />
+                      <div class="flex flex-wrap text-lg max-w-md">
+                        {{ button.caption }}
+                      </div>
                     </div>
                   </li>
                 </ul>
@@ -111,6 +95,7 @@
             </div>
           </div>
         </div>
+        <!-- </q-parallax> -->
       </section>
       <section class="relative pt-8 pb-10">
         <div class="container relative mx-auto px-4 flex flex-col">
@@ -128,36 +113,45 @@
           </div>
         </div>
       </section>
-      <section class="relative pt-4 pb-10">
+      <section class="relative pt-2 pb-10 py-5">
         <div class="container relative mx-auto px-4 flex flex-col">
           <div class="flex justify-center pt-8">
-            <q-card class="bg-grey rounded-2xl">
-              <q-card-section class="m-8">
-                <h6 class="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-6">
-                  Atas apa yang telah kita lakukan bersama, kita berharap
+            <q-card class="rounded-2xl flex items-center justify-center w-auto h-full m-auto mb-12 bg-fixed bg-center bg-cover custom-img-children">
+              <!-- <img
+                :src="require('assets/images/children.jpg')"
+                class="absolute rounded-2xl h-full object-cover bg-scroll"
+              > -->
+              <div
+                class="absolute w-full h-full rounded-2xl bg-black opacity-60"
+              />
+              <q-card-section class="m-8 text-white">
+                <h6 class="text-3xl font-bold mb-10">
+                  Atas apa yang telah kita lakukan bersama, kita berharap...
                 </h6>
-                <ul>
-                  <li>
-                  1. Meningkatnya angka orientasi pendidikan masyarakat
-                  kurang mampu
-                  </li>
-                </ul>
-                <ul>
-                  <li>
-                    2. Meningkatnya akses belajar melalui program yang dilaksanakan
-                  </li>
-                </ul>
-                <ul>
-                  <li>
-                    3. Tersedianya fasilitas belajar untuk daerah yang membutuhkan
-                    dan prioritas
-                  </li>
-                </ul>
-                <ul>
-                  <li>
-                    4. Masyarakat kurang mampu tidak khawatir dengan pendidikan anaknya
-                  </li>
-                </ul>
+                <div class="text-lg grid gap-3">
+                  <ul>
+                    <li>
+                      1. Meningkatnya angka orientasi pendidikan masyarakat
+                      kurang mampu
+                    </li>
+                  </ul>
+                  <ul>
+                    <li>
+                      2. Meningkatnya akses belajar melalui program yang dilaksanakan
+                    </li>
+                  </ul>
+                  <ul>
+                    <li>
+                      3. Tersedianya fasilitas belajar untuk daerah yang membutuhkan
+                      dan prioritas
+                    </li>
+                  </ul>
+                  <ul>
+                    <li>
+                      4. Masyarakat kurang mampu tidak khawatir dengan pendidikan anaknya
+                    </li>
+                  </ul>
+                </div>
               </q-card-section>
             </q-card>
           </div>
@@ -215,16 +209,20 @@ export default defineComponent({
   name: 'PageProfile',
   data: () => ({
     lorem: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+    bigPurpose: 'Menciptakan sumber daya manusia Indonesia yang lebih berpendidikan melalui usaha yang berkelanjutan',
     btnPurpose: [
       {
         caption: 'Manusia Indonesia yang beradab dan berpendidikan',
+        icon: 'menu_book',
       },
       {
         caption: 'Program yang berkelanjutan',
+        icon: 'brush',
       },
       {
         caption: 'Memberikan resonansi kebaikan',
-      }
+        icon: 'settings_input_antenna',
+      },
     ],
   }),
   setup() {
@@ -246,6 +244,12 @@ export default defineComponent({
 @layer components {
   .my-card {
     @apply w-full max-w-xs;
+  }
+  .custom-img {
+    background-image: url("https://cdn.quasar.dev/img/parallax2.jpg");
+  }
+  .custom-img-children {
+    background-image: url("../assets/images/children.jpg");
   }
 }
 </style>
