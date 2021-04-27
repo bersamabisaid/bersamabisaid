@@ -1,5 +1,5 @@
 <template>
-  <q-toolbar :class="['p-6 md:p-10 flex flex-col', transparent ? 'bg-transparent' : 'bg-white']">
+  <q-toolbar :class="['p-6 md:p-6 flex flex-col', transparent ? 'bg-transparent' : 'bg-white']">
     <q-toolbar-title class="w-full relative flex justify-between gap-x-4">
       <router-link
         :to="{name: 'Home'}"
@@ -7,11 +7,11 @@
       >
         <q-img
           :src="brandLogoSrc"
-          class="w-14"
+          class="w-12"
           alt="bersamabisa.id logo"
         />
 
-        <h3 :class="['hidden lg:inline-block font-extrabold text-2xl', transparent ? 'text-white' : 'text-primary']">
+        <h3 :class="['hidden lg:inline-block font-extrabold text-xl', transparent ? 'text-white' : 'text-primary']">
           BERSAMABISA.ID
         </h3>
       </router-link>
