@@ -1,11 +1,14 @@
 <template>
   <q-page>
     <main class="w-full">
-      <section class="bg-blue-300">
-        <div class="container px-6 py-8 mx-auto">
+      <section class="w-full h-96 m-auto mb-12 bg-fixed bg-center bg-cover custom-img-sujud">
+        <div
+          class="absolute w-full h-96 m-auto bg-fixed bg-center bg-cover bg-black opacity-60"
+        />
+        <div class="absolute container mx-6 mt-20">
           <div class="items-center lg:flex">
-            <div class="lg:w-1/2">
-              <h2 class="text-5xl font-bold text-grey-800 dark:text-gray-100">
+            <div>
+              <h2 class="text-5xl font-bold text-white">
                 Mengapa Kami Harus Hadir ?
               </h2>
 
@@ -17,7 +20,7 @@
                   target="_blank"
                   round
                   flat
-                  class="text-gray-700 hover:text-gray-600"
+                  class="text-white"
                 />
 
                 <q-btn
@@ -27,7 +30,7 @@
                   target="_blank"
                   round
                   flat
-                  class="text-gray-700 hover:text-gray-600"
+                  class="text-white"
                 />
               </div>
             </div>
@@ -58,18 +61,18 @@
           </div>
         </div>
       </section>
-      <section class="flex items-center justify-center w-screen h-screen m-auto mb-12 bg-fixed bg-center bg-cover custom-img">
+      <section class="flex items-center justify-center w-full h-screen m-auto mb-12 bg-fixed bg-center bg-cover custom-img">
         <div
-          class="absolute w-screen h-screen m-auto bg-fixed bg-center bg-cover bg-black opacity-60"
+          class="absolute w-full h-screen m-auto bg-fixed bg-center bg-cover bg-black opacity-60"
         />
-        <div class="container px-6 py-8 mx-auto">
+        <div class="absolute container px-6 py-8 mx-auto">
           <div class="items-center lg:flex">
-            <div class="lg:w-1/2">
-              <h2 class="text-5xl font-bold text-dark">
+            <div class="lg:w-1/2 text-white">
+              <h2 class="text-5xl font-bold">
                 Tujuan Besar Kita
               </h2>
 
-              <p class="text-xl mt-4 text-dark lg:max-w-md">
+              <p class="text-xl mt-4 lg:max-w-md">
                 {{ bigPurpose }}
               </p>
             </div>
@@ -85,7 +88,7 @@
                         :icon="button.icon"
                         size="lg"
                       />
-                      <div class="flex flex-wrap text-lg max-w-md">
+                      <div class="flex flex-wrap text-lg max-w-md text-white">
                         {{ button.caption }}
                       </div>
                     </div>
@@ -117,10 +120,6 @@
         <div class="container relative mx-auto px-4 flex flex-col">
           <div class="flex justify-center pt-8">
             <q-card class="rounded-2xl flex items-center justify-center w-auto h-full m-auto mb-12 bg-fixed bg-center bg-cover custom-img-children">
-              <!-- <img
-                :src="require('assets/images/children.jpg')"
-                class="absolute rounded-2xl h-full object-cover bg-scroll"
-              > -->
               <div
                 class="absolute w-full h-full rounded-2xl bg-black opacity-60"
               />
@@ -250,6 +249,9 @@ export default defineComponent({
   }
   .custom-img-children {
     background-image: url("../assets/images/children.jpg");
+  }
+  .custom-img-sujud {
+    background-image: url("../assets/images/sujud.jpg");
   }
 }
 </style>
