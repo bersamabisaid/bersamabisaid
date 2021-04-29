@@ -19,7 +19,7 @@
                   #HADIR UNTUK KEBAIKAN
                 </span>
 
-                <h1 class="font-extrabold text-5xl break-words md:text-7xl">
+                <h1 class="font-extrabold text-4xl sm:text-5xl break-words md:text-7xl">
                   BERSAMABISA.ID
                 </h1>
 
