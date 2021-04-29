@@ -1,12 +1,12 @@
 <template>
   <q-page>
     <main class="w-full">
-      <section class="w-full h-96 m-auto mb-12 bg-fixed bg-center bg-cover custom-img-sujud">
+      <section class="w-full h-screen xl:h-96 m-auto mb-12 bg-fixed bg-center bg-cover custom-img-sujud">
         <div
-          class="absolute w-full h-96 m-auto bg-fixed bg-center bg-cover bg-black opacity-60"
+          class="absolute w-full h-screen xl:h-96 m-auto bg-fixed bg-center bg-cover bg-black opacity-60"
         />
-        <div class="absolute container mx-6 mt-20">
-          <div class="items-center lg:flex">
+        <div class="absolute container px-8 py-8 xl:mt-10">
+          <div class="flex md:flex-row gap-x-12 items-center justify-center">
             <div>
               <h2 class="text-5xl font-bold text-white">
                 Mengapa Kami Harus Hadir ?
@@ -34,19 +34,10 @@
                 />
               </div>
             </div>
-
-            <div class="mt-8 lg:mt-0 lg:w-1/2">
-              <div class="flex items-center justify-center lg:justify-end">
-                <div class="w-full max-w-lg">
-                  <!-- eslint-disable max-len -->
-                  <q-img
-                    src="https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2850&q=80"
-                    class="object-cover object-center w-full h-64 rounded-md shadow"
-                  />
-                  <!-- eslint-enable max-len -->
-                </div>
-              </div>
-            </div>
+            <q-img
+              :src="require('assets/images/children.jpg')"
+              class="flex w-full md:w-3/4 xl:w-96 h-64 rounded-2xl mt-8 xl:mt-0"
+            />
           </div>
         </div>
       </section>
