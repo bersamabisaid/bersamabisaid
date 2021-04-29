@@ -71,7 +71,10 @@
             <div class="mt-8 lg:mt-0 lg:w-1/2">
               <div class="flex items-center justify-center lg:justify-end">
                 <ul class="list-none grid gap-4 sm:mt-8">
-                  <li v-for="button in btnPurpose">
+                  <li
+                    v-for="(button, i) in btnPurpose"
+                    :key="i"
+                  >
                     <div class="flex flex-nowrap items-center gap-5">
                       <q-btn
                         class="bg-yellow-400 col-start rounded-2xl"
@@ -157,6 +160,8 @@ import { mdiInstagram, mdiTwitter } from '@quasar/extras/mdi-v5';
 import CardTeam from 'components/ui/Profile/CardTeam.vue';
 import CardPurpose from 'components/ui/Profile/CardPurpose.vue';
 
+const lorem = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
+
 const teams = [
   {
     title: 'SOCIAL EDUCATION DEVELOPMENT',
@@ -180,6 +185,8 @@ const teams = [
   },
 ];
 
+const bigPurpose = 'Menciptakan sumber daya manusia Indonesia yang lebih berpendidikan melalui usaha yang berkelanjutan';
+
 const purposes = [
   {
     title: 'Melihat Kondisi Masyarakat',
@@ -195,31 +202,31 @@ const purposes = [
   },
 ];
 
+const btnPurpose = [
+  {
+    caption: 'Manusia Indonesia yang beradab dan berpendidikan',
+    icon: 'menu_book',
+  },
+  {
+    caption: 'Program yang berkelanjutan',
+    icon: 'brush',
+  },
+  {
+    caption: 'Memberikan resonansi kebaikan',
+    icon: 'settings_input_antenna',
+  },
+];
+
 export default defineComponent({
   name: 'PageProfile',
-  data: () => ({
-    lorem: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-    bigPurpose: 'Menciptakan sumber daya manusia Indonesia yang lebih berpendidikan melalui usaha yang berkelanjutan',
-    btnPurpose: [
-      {
-        caption: 'Manusia Indonesia yang beradab dan berpendidikan',
-        icon: 'menu_book',
-      },
-      {
-        caption: 'Program yang berkelanjutan',
-        icon: 'brush',
-      },
-      {
-        caption: 'Memberikan resonansi kebaikan',
-        icon: 'settings_input_antenna',
-      },
-    ],
-  }),
   setup() {
     return {
       mdiInstagram,
       mdiTwitter,
+      lorem,
       purposes,
+      bigPurpose,
+      btnPurpose,
       teams,
     };
   },

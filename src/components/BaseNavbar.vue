@@ -1,5 +1,5 @@
 <template>
-  <q-toolbar :class="['p-6 md:p-6 flex flex-col', transparent ? 'bg-transparent' : 'bg-white']">
+  <q-toolbar :class="['p-6 md:px-7 md:py-6 flex flex-col', transparent ? 'bg-transparent' : 'bg-white']">
     <q-toolbar-title class="w-full relative flex justify-between gap-x-4">
       <router-link
         :to="{name: 'Home'}"
@@ -121,3 +121,12 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="scss" scoped>
+// quasar override
+.q-toolbar {
+  &__title {
+    @apply p-0;
+  }
+}
+</style>
