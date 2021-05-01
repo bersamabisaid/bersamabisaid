@@ -37,15 +37,16 @@
       </div>
     </q-toolbar-title>
 
-    <div
-      :class="['w-full bg-white md:hidden', !showMenu && 'hidden']"
-    >
-      <ul class="list-none">
+    <div :class="['w-full bg-white md:hidden', !showMenu && 'hidden']">
+      <ul :class="['list-none grid grid-cols gap-1', transparent ? 'mt-0' : 'mt-4']">
         <li
           v-for="navItem in navItems"
           :key="navItem.title"
+          class="border-t-2 border-dark"
         >
           <q-btn
+            class="w-full"
+            align="left"
             :label="navItem.title"
             flat
             text-color="black"
