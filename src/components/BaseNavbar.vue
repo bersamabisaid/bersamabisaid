@@ -32,29 +32,34 @@
           unelevated
           round
           class="inline-block md:hidden"
-          @click="toggleNavbar()"
+          @click="visible = !visible"
         />
       </div>
     </q-toolbar-title>
 
-    <div :class="['w-full bg-white md:hidden', !showMenu && 'hidden']">
-      <ul :class="['list-none grid grid-cols gap-1', transparent ? 'mt-0' : 'mt-4']">
-        <li
-          v-for="navItem in navItems"
-          :key="navItem.title"
-          class="border-t-2 border-dark"
-        >
-          <q-btn
-            class="w-full"
-            align="left"
-            :label="navItem.title"
-            flat
-            text-color="black"
-            v-bind="navItem"
-          />
-        </li>
-      </ul>
-    </div>
+    <q-slide-transition>
+      <div
+        v-show="visible"
+        :class="['w-full bg-white md:hidden']"
+      >
+        <ul :class="['list-none grid grid-cols gap-1', transparent ? 'mt-0' : 'mt-4']">
+          <li
+            v-for="navItem in navItems"
+            :key="navItem.title"
+            class="border-t-2 border-dark"
+          >
+            <q-btn
+              class="w-full"
+              align="left"
+              :label="navItem.title"
+              flat
+              text-color="black"
+              v-bind="navItem"
+            />
+          </li>
+        </ul>
+      </div>
+    </q-slide-transition>
   </q-toolbar>
 </template>
 
@@ -106,6 +111,7 @@ export default defineComponent({
       navItems,
       evaMenu,
       showMenu: false,
+      visible: false,
     };
   },
   computed: {
@@ -124,10 +130,10 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-// quasar override
-.q-toolbar {
-  &__title {
-    @apply p-0;
+  // quasar override
+  .q-toolbar {
+    &__title {
+      @apply p-0;
+    }
   }
-}
 </style>
