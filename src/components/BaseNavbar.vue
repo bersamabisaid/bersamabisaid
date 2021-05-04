@@ -1,5 +1,5 @@
 <template>
-  <q-toolbar :class="['p-6 md:px-7 md:py-6 flex flex-col', transparent ? 'bg-transparent' : 'bg-white']">
+  <q-toolbar :class="['p-6 md:px-7 md:py-6 flex flex-col', transparent ? 'bg-transparent' : 'bg-white', visible && 'backdrop-filter backdrop-blur-xl']">
     <q-toolbar-title class="w-full relative flex justify-between gap-x-4">
       <router-link
         :to="{name: 'Home'}"
@@ -32,7 +32,7 @@
           unelevated
           round
           class="inline-block md:hidden"
-          @click="visible = !visible"
+          @click="toggleNavbar"
         />
       </div>
     </q-toolbar-title>
@@ -40,20 +40,19 @@
     <q-slide-transition>
       <div
         v-show="visible"
-        :class="['w-full bg-white md:hidden']"
+        :class="['w-screen px-10 backdrop-filter backdrop-blur-xl md:hidden']"
       >
-        <ul :class="['list-none grid grid-cols gap-1', transparent ? 'mt-0' : 'mt-4']">
+        <ul :class="['list-none pb-96 filter grid grid-cols gap-1', transparent ? 'pt-4' : 'mt-4']">
           <li
             v-for="navItem in navItems"
             :key="navItem.title"
-            class="border-t-2 border-dark"
+            :class="['border-t-2 border-black', transparent && 'border-white']"
           >
             <q-btn
-              class="w-full"
+              :class="['w-full', transparent ? 'text-white' : 'text-black']"
               align="left"
               :label="navItem.title"
               flat
-              text-color="black"
               v-bind="navItem"
             />
           </li>
@@ -105,6 +104,10 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    visible: {
+      type: Boolean,
+      default: false,
+    },
   },
   setup() {
     return {
@@ -123,7 +126,7 @@ export default defineComponent({
   },
   methods: {
     toggleNavbar() {
-      this.showMenu = !this.showMenu;
+      this.visible = !this.visible;
     },
   },
 });
