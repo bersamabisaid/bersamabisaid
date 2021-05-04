@@ -28,7 +28,17 @@
         />
 
         <q-btn
-          :icon="evaMenu"
+          v-if="visible"
+          icon="close"
+          unelevated
+          round
+          class="inline-block md:hidden"
+          @click="toggleNavbar"
+        />
+
+        <q-btn
+          v-else
+          icon="menu"
           unelevated
           round
           class="inline-block md:hidden"
@@ -64,7 +74,6 @@
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
-import { evaMenu } from '@quasar/extras/eva-icons';
 import bbidLogoOnlyWhite from 'assets/logo/Bbid-logo-only-white.png';
 import bbidLogoOnly from 'assets/logo/Bbid-logo-only.png';
 import type { RawLocation } from 'vue-router';
@@ -104,17 +113,12 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
-    visible: {
-      type: Boolean,
-      default: false,
-    },
   },
   setup() {
     return {
       navItems,
-      evaMenu,
-      showMenu: false,
       visible: false,
+      persistent: false,
     };
   },
   computed: {
@@ -127,6 +131,9 @@ export default defineComponent({
   methods: {
     toggleNavbar() {
       this.visible = !this.visible;
+    },
+    blockEl() {
+      this.persistent = !this.persistent;
     },
   },
 });
