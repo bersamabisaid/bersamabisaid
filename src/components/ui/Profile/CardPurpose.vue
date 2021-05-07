@@ -2,23 +2,22 @@
   <q-card
     flat
     bordered
-    class="my-card bg-grey-1"
+    class="w-full max-w-xs bg-blue-gray-50 rounded-lg"
   >
-    <q-card-section class="bg-blue-400">
+    <q-card-section class="bg-info">
       <div class="row items-center no-wrap">
         <div class="col">
-          <div class="text-h6">
+          <h6 class="text-h6 text-white">
             {{ title }}
-          </div>
+          </h6>
         </div>
 
         <div class="col-auto">
           <q-btn
-            color="grey-7"
             round
             flat
             icon="arrow_forward"
-            class="text-dark"
+            class="text-white"
           >
             <q-menu
               cover

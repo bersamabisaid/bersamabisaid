@@ -1,7 +1,7 @@
 <template>
   <q-page>
     <main class="w-full">
-      <section class="w-full h-screen xl:h-96 m-auto mb-12 bg-fixed bg-center bg-cover custom-img-sujud">
+      <section class="w-full h-screen xl:h-96 m-auto mb-12 bg-fixed bg-bottom bg-cover custom-img-sujud">
         <div
           class="absolute w-full h-screen xl:h-96 m-auto bg-fixed bg-center bg-cover bg-black opacity-60"
         />
@@ -35,7 +35,7 @@
               </div>
             </div>
             <q-img
-              :src="require('assets/images/children.jpg')"
+              :src="require('assets/images/bersamabisa_profil_santunan anak yatim 1.jpg')"
               class="flex w-full md:w-3/4 xl:w-96 h-64 rounded-2xl mt-8 xl:mt-0"
             />
           </div>
@@ -52,7 +52,7 @@
           </div>
         </div>
       </section>
-      <section class="flex items-center justify-center w-full h-screen m-auto mb-12 bg-fixed bg-center bg-cover custom-img">
+      <section class="flex items-center justify-center w-full h-screen m-auto mb-12 bg-fixed bg-bottom bg-cover custom-img">
         <div
           class="absolute w-full h-screen m-auto bg-fixed bg-center bg-cover bg-black opacity-60"
         />
@@ -166,22 +166,27 @@ const teams = [
   {
     title: 'SOCIAL EDUCATION DEVELOPMENT',
     description: 'Melaksanakan program dalam ranah sosial dan pendidikan',
+    icon: 'volunteer_activism',
   },
   {
     title: 'HUMAN RESOURCE DEVELOPMENT',
     description: 'Melaksanakan program internal dalam rangka menjaga soliditas dan juga kualitas SDM',
+    icon: 'self_improvement',
   },
   {
     title: 'PUBLIC RELATION',
     description: 'Memiliki peran penting dalam melakukan hubungan dengan pihak lain dalam menjalankan program',
+    icon: 'public',
   },
   {
     title: 'FINANCIAL MANAGEMENT',
     description: 'Memiliki tim yang fokus dalam agenda fundrising dan juga pengalokasian dana',
+    icon: 'request_quote',
   },
   {
     title: 'TECHNOLOGY DEVELOPMENT',
     description: 'Memiliki wewenang dalam pengembangan desain informasi di media sosial',
+    icon: 'biotech',
   },
 ];
 
@@ -239,17 +244,14 @@ export default defineComponent({
 
 <style lang="scss">
 @layer components {
-  .my-card {
-    @apply w-full max-w-xs;
-  }
   .custom-img {
-    background-image: url("https://cdn.quasar.dev/img/parallax2.jpg");
+    background-image: url("../assets/images/bersamabisa_profil_berbagi ekspedisi banten.jpg");
   }
   .custom-img-children {
-    background-image: url("../assets/images/children.jpg");
+    background-image: url("../assets/images/bersamabisa_profil_santunan anak yatim 2.jpg");
   }
   .custom-img-sujud {
-    background-image: url("../assets/images/sujud.jpg");
+    background-image: url("../assets/images/bersamabisa_profil_berbagi bersama aksiberbagi.jpg");
   }
 }
 </style>
