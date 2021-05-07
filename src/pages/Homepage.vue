@@ -94,9 +94,9 @@
                         >
                           <q-btn
                             label="Lihat program lainnya"
-                            flat
+                            outline
                             :ripple="false"
-                            class="text-primary rounded-lg"
+                            class="px-5 py-1 text-primary border border-primary rounded-lg"
                           />
                         </router-link>
                       </q-card>

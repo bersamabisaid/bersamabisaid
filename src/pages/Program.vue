@@ -6,7 +6,7 @@
     <q-card
       tag="article"
       flat
-      class="w-full max-w-4xl mr-32 border-b-8 border-r-2 border-info rounded-3xl shadow"
+      class="w-full max-w-4xl mr-32 rounded-3xl shadow-lg"
     >
       <q-img
         :src="imgURL"
@@ -117,7 +117,7 @@
             v-model="tab"
             keep-alive
             animated
-            class="py-4 px-2 md:p-6 bg-secondary bg-opacity-70 rounded-b-xl"
+            class="py-4 px-2 md:p-6 bg-blue-gray-300 bg-opacity-70 rounded-b-xl"
           >
             <q-tab-panel
               name="tentang"

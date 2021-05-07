@@ -64,10 +64,10 @@
     >
       <q-btn
         :label="actionLabel"
+        :to="toLocation"
         no-caps
         unelevated
-        :to="toLocation"
-        class="px-5 py-1 capitalize ring-1 ring-inset ring-gray-200 rounded-lg shadow"
+        class="px-5 py-1 bg-positive text-white capitalize ring-1 ring-inset ring-gray-200 rounded-lg shadow"
       />
     </q-card-actions>
   </q-card>

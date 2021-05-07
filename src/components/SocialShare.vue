@@ -1,5 +1,5 @@
 <template>
-  <div class="p-4 bg-info shadow-sm flex flex-col items-center gap-y-2">
+  <div class="p-4 bg-secondary shadow-sm flex flex-col items-center gap-y-2">
     <slot name="title">
       <div class="self-end font-semibold text-xl text-white flex flex-row items-center gap-x-2">
         <q-icon name="share" />
