@@ -1,7 +1,7 @@
 import * as functions from 'firebase-functions';
 import { db } from '../service/firebaseAdmin';
 import midtrans from '../service/midtrans';
-import firestoreCollection, { getItemRefsFromTransactionRef } from '../service/firestoreCollection';
+import firestoreCollection, { firestoreProxy, getItemRefsFromTransactionRef } from '../service/firestoreCollection';
 import { addProgramDonationProgress } from './donation';
 import hasRequiredBody from '../middleware/hasRequiredBody';
 import apiMethod from '../middleware/apiMethod';
@@ -68,6 +68,8 @@ const donationPaymentWebhookHandler = apiMethod.post(hasRequiredBody(
           const donationRef = firestoreCollection.Donations(programRef).doc(order_id);
 
           await addProgramDonationProgress(donationRef);
+          // set donation document visibility by restoring the document
+          fbt.update(donationRef, firestoreProxy.restore());
         }
 
         fbt.update(transactionRef, { paymentStatus: paymentSummary });

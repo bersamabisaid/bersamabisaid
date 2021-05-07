@@ -11,11 +11,13 @@ export const pay = async ({ donator, ...data }: Required<PayDonationRequestBody>
   const programRef = firestoreCollection.Programs.doc(data.programId) as DocRef.ProgramDonationModel<true>;
   const donatorAsClient = firestoreCollection.TransactionClients.doc();
 
+  // delete the document first to make the document hidden
   batch.create(donatorAsClient, firestoreProxy.create({
     fullname: donator.fullName,
     email: donator.email,
     phoneNumber: donator.phoneNumber,
     address: donator.address,
+    ...firestoreProxy.delete(),
   }));
 
   const [transactionAction, transactionRef] = await createTransaction({

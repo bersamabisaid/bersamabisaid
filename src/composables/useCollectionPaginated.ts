@@ -1,9 +1,7 @@
 import {
   computed, isRef, reactive, ref, toRefs, watch,
 } from '@vue/composition-api';
-import { db } from 'src/services/firebaseService';
 import useCollection from 'src/composables/useCollection';
-import { CollectionRef } from 'shared/firestoreCollection';
 import type { ComputedRef } from '@vue/composition-api';
 import type fb from 'firebase';
 import type { useCollectionOptions } from 'src/composables/useCollection';
@@ -16,7 +14,9 @@ interface useCollectionPaginatedOptions<T, U> extends useCollectionOptions<T, U>
 
 export default function useCollectionPaginated<T, U>(
   collectionRef: fb.firestore.CollectionReference<T>
-    | ComputedRef<fb.firestore.CollectionReference<T>>,
+    | ComputedRef<fb.firestore.CollectionReference<T>>
+    | fb.firestore.Query<T>
+    | ComputedRef<fb.firestore.Query<T>>,
   {
     mapper, orderBy, perPage = 10, asc,
   }: useCollectionPaginatedOptions<T, U>,
@@ -29,8 +29,7 @@ export default function useCollectionPaginated<T, U>(
     done: false,
   });
   const collectionQuery = computed(() => {
-    const origRef = isRef(collectionRef) ? collectionRef.value : collectionRef;
-    const dbRef = db.collection(origRef.path) as CollectionRef.base<T>;
+    const dbRef = isRef(collectionRef) ? collectionRef.value : collectionRef;
     const query = dbRef
       .orderBy(orderBy as string, asc ? 'asc' : 'desc')
       .limit(perPage);

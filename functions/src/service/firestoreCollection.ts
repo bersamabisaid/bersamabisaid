@@ -46,6 +46,20 @@ const firestoreProxy = {
       _updated: now,
     };
   },
+
+  delete() {
+    const now = firebaseAdmin.firestore.Timestamp.now();
+
+    return {
+      _deleted: now,
+    };
+  },
+
+  restore() {
+    return {
+      _deleted: null,
+    };
+  },
 };
 
 const getItemRefsFromTransactionRef = async (transactionRef: DocRef.TransactionModel<true>) => {

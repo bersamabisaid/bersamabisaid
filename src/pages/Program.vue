@@ -143,51 +143,10 @@
             </q-tab-panel>
 
             <q-tab-panel name="berita">
-              <article>
-                <q-timeline color="secondary">
-                  <template v-if="isDataLoading">
-                    <q-timeline-entry
-                      v-for="i in 3"
-                      :key="i"
-                    >
-                      <div class="flex gap-x-3">
-                        <q-skeleton
-                          type="rect"
-                          class="w-20 h-20"
-                        />
-                        <div class="flex-grow flex flex-col">
-                          <q-skeleton type="rect" />
-                          <q-skeleton type="text" />
-                          <q-skeleton
-                            type="text"
-                            class="max-w-xs"
-                          />
-                        </div>
-                      </div>
-                    </q-timeline-entry>
-                  </template>
-
-                  <template v-else>
-                    <template v-if="news.length">
-                      <q-timeline-entry
-                        v-for="(el, i) in news"
-                        :key="`${i}-${el.title}`"
-                        :title="el.title"
-                        :subtitle="el.timestamp.toDate().toLocaleString()"
-                      >
-                        <news-item v-bind="el" />
-                      </q-timeline-entry>
-                    </template>
-
-                    <div
-                      v-else
-                      class="p-4 bg-white text-center text-gray-400 rounded-xl"
-                    >
-                      Tidak ada berita untuk program ini
-                    </div>
-                  </template>
-                </q-timeline>
-              </article>
+              <list-news
+                :data="news"
+                :loading="isDataLoading"
+              />
             </q-tab-panel>
 
             <q-tab-panel
@@ -195,33 +154,14 @@
               name="donatur"
               class="flex flex-col items-stretch gap-y-4"
             >
-              <q-list class="flex flex-col gap-y-4">
-                <template v-if="donationList.length">
-                  <donation-item
-                    v-for="(el, i) in donationList"
-                    :key="`${i}-${el.name}`"
-                    v-bind="el"
-                  />
-                </template>
-
-                <div
-                  v-else
-                  class="p-4 bg-white text-center rounded-xl flex flex-col gap-y-2"
-                >
-                  <span class="text-gray-400">Belum ada donatur untuk sementara ini,</span>
-                  <span class="text-gray-400">Jadilah yang pertama sebagai donatur</span>
-                  <b class="text-lg text-primary">{{ programData.title }}</b>
-                  <q-btn
-                    label="donasi sekarang"
-                    :to="donateActionURL"
-                    flat
-                    class="self-center bg-positive text-white rounded-lg"
-                  />
-                </div>
-              </q-list>
+              <list-donation
+                :program-name="programData.title"
+                :donate-url="donateActionURL"
+                :data="donationList"
+              />
 
               <q-btn
-                v-if="!isMaximumReachedDonationList"
+                v-if="donationList.length && !isMaximumReachedDonationList"
                 label="Lihat lebih banyak"
                 unelevated
                 class="self-center bg-primary text-white rounded-lg"
@@ -251,7 +191,15 @@
           :to="donateActionURL"
           flat
           class="flex-grow bg-positive font-semibold text-xl lg:text-xl text-white rounded-none lg:shadow-sm"
+          :disable="isExpired"
         />
+
+        <small
+          v-if="isExpired"
+          class="text-xs text-red-500 italic"
+        >
+          *Program ini telah selesai
+        </small>
 
         <social-share
           :shared-url="url"
@@ -270,8 +218,8 @@ import { date } from 'quasar';
 import { preFetch } from 'quasar/wrappers';
 import { mdiFacebook, mdiWhatsapp, mdiTwitter } from '@quasar/extras/mdi-v5';
 import SocialShare from 'components/SocialShare.vue';
-import DonationItem from 'components/ui/Program/DonationItem.vue';
-import NewsItem from 'components/ui/Program/NewsItem.vue';
+import ListNews from 'components/ui/Program/ListNews.vue';
+import ListDonation from 'components/ui/Program/ListDonation.vue';
 import firestoreCollection, { modelToObject } from 'src/firestoreCollection';
 import { getProgramByURL } from 'src/firestoreApis';
 import { programDataRepo } from 'src/dataRepositories';
@@ -287,6 +235,7 @@ import type { RawLocation } from 'vue-router';
 import type { Store } from 'vuex';
 import type { StateInterface } from 'src/store';
 import type { Model, ModelInObject } from 'shared/types/model';
+import { notifyError } from 'src/composables/useNotification';
 
 const getProgram = async (programURL: string) => {
   const programSnapshot = await getProgramByURL(programURL);
@@ -344,10 +293,11 @@ export default defineComponent({
     const isDataLoading = ref(true);
     const programRef = computed(() => firestoreCollection.Programs.doc(data.value._uid || undefined));
     const donationList = ref<DonationUI[]>([]);
-    const donationCollectionRef = computed(() => firestoreCollection.Donations(programRef.value));
+    const donationCollectionRef = computed(() => firestoreCollection.Donations(programRef.value)
+      .where('_deleted', '==', null));
     const [
       { data: donationDataList },
-      { isLoading: donationLoading, done: isMaximumReachedDonationList },
+      { isLoading: donationLoading, done: isMaximumReachedDonationList, error },
       { next },
     ] = useCollectionPaginated(donationCollectionRef, {
       orderBy: '_created',
@@ -379,6 +329,8 @@ export default defineComponent({
     });
 
     watch(donationDataList, (newVal) => donationList.value.push(...newVal));
+
+    watch(error, (err) => notifyError(err));
 
     return {
       programData: data,
@@ -440,10 +392,13 @@ export default defineComponent({
 
       return Infinity;
     },
+    isExpired(): boolean {
+      return this.dayRemaining < 0;
+    },
     dayRemainingMessage(): string {
-      return this.dayRemaining === Infinity
-        ? '-'
-        : `tersisa ${this.dayRemaining} hari lagi`;
+      return this.isExpired
+        ? 'Yaah, kesempatan untuk berdonasi telah usai 😁🙏'
+        : `tersisa ${this.dayRemaining === Infinity ? '∞' : this.dayRemaining} hari lagi`;
     },
     progressPercentage(): number {
       if (isProgramDonation(this.programData)) {
@@ -501,8 +456,8 @@ export default defineComponent({
   },
   components: {
     SocialShare,
-    DonationItem,
-    NewsItem,
+    ListNews,
+    ListDonation,
   },
 });
 
