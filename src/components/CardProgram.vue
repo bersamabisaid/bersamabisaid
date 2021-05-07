@@ -155,15 +155,10 @@ export default defineComponent({
     }
 
     &__title {
-      @apply cursor-pointer relative font-bold text-xl text-primary line-clamp-1;
+      @apply mb-1 cursor-pointer relative font-bold text-lg text-primary line-clamp-2 leading-tight;
 
-      &::after {
-        content: '';
-        @apply absolute left-0 bottom-0 opacity-0 w-full h-0.5 bg-primary rounded-lg transition-opacity;
-      }
-
-      &:hover::after {
-          @apply opacity-100;
+      &:hover {
+        @apply underline;
       }
     }
 
