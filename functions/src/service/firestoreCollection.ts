@@ -47,16 +47,18 @@ const firestoreProxy = {
     };
   },
 
-  delete() {
+  delete<T extends TimestampedModel>(data: T): Model<T, true> {
     const now = firebaseAdmin.firestore.Timestamp.now();
 
     return {
+      ...data,
       _deleted: now,
     };
   },
 
-  restore() {
+  restore<T extends TimestampedModel>(data: T): Model<T, true> {
     return {
+      ...data,
       _deleted: null,
     };
   },
