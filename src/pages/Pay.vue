@@ -114,7 +114,7 @@
                 name="phoneNumber"
                 label="Nomor Telfon"
                 type="tel"
-                mask="(+62) ###-####-####"
+                mask="(+62) ###-####-#####"
                 fill-mask
                 hint="*opsional"
                 unmasked-value
