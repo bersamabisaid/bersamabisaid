@@ -29,7 +29,7 @@
             row-key="title"
             :loading="isDataLoading"
             :filter="search"
-            :pagination="{rowsPerPage: 20}"
+            :pagination="pagination"
             selection="multiple"
             :selected.sync="selection"
             class="bg-info text-white"
@@ -38,6 +38,63 @@
             table-class="bg-white text-dark"
             bordered
           >
+            <template #bottom="{ pagination, ...scope }">
+              <div class="w-full flex flex-row flex-nowrap justify-between items-center">
+                <q-checkbox
+                  v-model="isShowSuccesOnly"
+                  label="Hanya tampilkan transaksi berhasil"
+                  class="mr-2 flex flex-nowrap"
+                />
+
+                <div>
+                  <span>page {{ pagination.page }} of {{ scope.pagesNumber }}</span>
+
+                  <q-btn
+                    v-if="scope.pagesNumber > 2"
+                    icon="first_page"
+                    :disable="scope.isFirstPage"
+                    round
+                    dense
+                    flat
+                    class="text-gray-600"
+                    @click="scope.firstPage"
+                  />
+
+                  <q-btn
+                    icon="chevron_left"
+                    :disable="scope.isFirstPage"
+                    round
+                    dense
+                    flat
+                    class="text-gray-600"
+                    @click="scope.prevPage"
+                  />
+
+                  <q-btn
+                    icon="chevron_right"
+                    :disable="scope.isLastPage"
+                    round
+                    dense
+                    flat
+                    class="text-gray-600"
+                    @click="scope.nextPage"
+                  />
+
+                  <q-btn
+                    v-if="scope.pagesNumber > 2"
+                    icon="last_page"
+                    :disable="scope.isLastPage"
+                    color="grey-8"
+                    round
+                    dense
+                    flat
+                    class="text-gray-600"
+                    @click="scope.lastPage"
+                  />
+                </div>
+              </div>
+            </template>
+
             <template #loading>
               <q-inner-loading showing>
                 <div class="flex flex-col items-center gap-y-3">
@@ -57,11 +114,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import {
+  defineComponent, computed, reactive, watch, toRefs,
+} from '@vue/composition-api';
 import useGuardAuth from 'src/composables/useGuardAuth';
 import useCollectionPaginated from 'src/composables/useCollectionPaginated';
+import { notifyError } from 'src/composables/useNotification';
 import firestoreCollection, { modelToObject } from 'src/firestoreCollection';
 import type fb from 'firebase';
+import type { QTable } from 'quasar';
 import type { qComponent } from 'src/models';
 import type { ModelInObject, Model } from 'shared/types/model';
 import type { Donation } from 'shared/types/modelData';
@@ -99,28 +160,43 @@ export default defineComponent({
   setup(props, { root }) {
     useGuardAuth();
 
+    const state = reactive({
+      isShowSuccesOnly: true,
+      search: '',
+      selection: [],
+      pagination: {
+        rowsPerPage: 20,
+      } as NonNullable<QTable['pagination']>,
+    });
     const programURL = computed(() => root.$route.params.programURL);
     const programRef = computed(() => firestoreCollection.Programs.doc(programURL.value));
-    const collectionRef = computed(() => firestoreCollection.Donations(programRef.value));
+    const collectionRef = computed(() => {
+      const ref = firestoreCollection.Donations(programRef.value);
+
+      return state.isShowSuccesOnly
+        ? ref.where('_deleted', '==', null)
+        : ref;
+    });
     const [
       { data },
-      { isLoading },
+      { isLoading, error },
+      { update },
     ] = useCollectionPaginated(collectionRef, {
       orderBy: '_created',
-      perPage: 20,
+      perPage: state.pagination.rowsPerPage,
       mapper: modelToObject,
     });
+
+    watch(error, (err) => notifyError(err));
+
+    watch(collectionRef, () => update());
 
     return {
       data,
       isDataLoading: isLoading,
       columns,
-    };
-  },
-  data() {
-    return {
-      search: '',
-      selection: [],
+
+      ...toRefs(state),
     };
   },
 });
