@@ -75,31 +75,56 @@
         <template v-if="donation">
           <q-separator spaced />
 
-          <q-field
-            ref="inputAmount"
-            v-model="donationTarget"
-            label="Target donasi"
-            hint="*opsional"
-          >
-            <template #control="{ id, floatingLabel, value, emitValue }">
-              <money
-                v-show="floatingLabel"
-                :id="id"
-                :value="value"
-                v-bind="moneyFormat"
-                class="q-field__input"
-                @input="emitValue"
-              />
-            </template>
-          </q-field>
+          <div class="flex flex-col">
+            <q-checkbox
+              v-model="useDonationTarget"
+              label="Atur target donasi"
+              class="flex"
+            />
 
-          <span class="program-form__input-label mt-2">Batas waktu (opsional)</span>
+            <transition
+              appear
+              enter-active-class="animated slideInDown"
+              leave-active-class="animated slideOutUp"
+            >
+              <q-field
+                v-if="useDonationTarget"
+                ref="inputAmount"
+                v-model="donationTarget"
+                class="px-2"
+              >
+                <template #control="{ id, floatingLabel, value, emitValue }">
+                  <money
+                    v-show="floatingLabel"
+                    :id="id"
+                    :value="value"
+                    v-bind="moneyFormat"
+                    class="q-field__input"
+                    @input="emitValue"
+                  />
+                </template>
+              </q-field>
+            </transition>
+          </div>
 
-          <q-date
-            v-model="donationDeadline"
-            mask="DD/MM/YYYY"
-            minimal
+          <q-checkbox
+            v-model="useDonationDeadline"
+            label="Atur batas waktu pengumpulan donasi"
+            class="flex"
           />
+
+          <transition
+            appear
+            enter-active-class="animated slideInDown"
+            leave-active-class="animated slideOutUp"
+          >
+            <q-date
+              v-if="useDonationDeadline"
+              v-model="donationDeadline"
+              mask="DD/MM/YYYY"
+              minimal
+            />
+          </transition>
         </template>
 
         <div class="mt-auto flex justify-end gap-x-2">
@@ -137,13 +162,13 @@ import { requiredRule } from 'src/composables/useInputRules';
 import fbs, { storageRef } from 'src/services/firebaseService';
 import firestoreCollection, { modelUiDataFactory, createAttrs, updateAttrs } from 'src/firestoreCollection';
 import { programDataRepo } from 'src/dataRepositories';
+import useGuardAuth from 'src/composables/useGuardAuth';
 import useStorageUpload from 'src/composables/useStorageUpload';
 import useDocument from 'src/composables/useDocument';
 import { notifyError, notifySuccess } from 'src/composables/useNotification';
 import { getStorageFile } from 'src/composables/useStorage';
 import { dateToDateString, dateStringToDate } from 'shared/utils/formatter';
 import type { Program, IBaseProgram } from 'shared/types/modelData';
-import useGuardAuth from 'src/composables/useGuardAuth';
 
 const createFileInput = (accept = '*') => {
   const el = document.createElement('input');
@@ -193,7 +218,9 @@ export default defineComponent({
       programDescription: '',
       programThumbnail: '',
       programURL: '',
+      useDonationTarget: true,
       donationTarget: 0,
+      useDonationDeadline: true,
       donationDeadline: dateToDateString(Date.now()),
 
       vFileInput: createFileInput('image/*'),
@@ -259,8 +286,8 @@ export default defineComponent({
 
       const data: Partial<Program> = this.donation ? {
         ...baseProgramData,
-        target: this.donationTarget || null,
-        deadline: fbs.firestore.Timestamp.fromDate(dateStringToDate(this.donationDeadline)),
+        target: this.useDonationTarget ? this.donationTarget : null,
+        deadline: this.useDonationDeadline ? fbs.firestore.Timestamp.fromDate(dateStringToDate(this.donationDeadline)) : null,
       } : {
         ...baseProgramData,
       };
@@ -282,8 +309,8 @@ export default defineComponent({
         const data: Program = this.donation ? {
           ...baseProgramData,
           donation: this.donation,
-          target: this.donationTarget || null,
-          deadline: fbs.firestore.Timestamp.fromDate(dateStringToDate(this.donationDeadline)),
+          target: this.donationTarget ? this.donationTarget : null,
+          deadline: this.useDonationDeadline ? fbs.firestore.Timestamp.fromDate(dateStringToDate(this.donationDeadline)) : null,
           _ui: {
             progress: modelUiDataFactory(0),
             numOfDonations: modelUiDataFactory(0),
