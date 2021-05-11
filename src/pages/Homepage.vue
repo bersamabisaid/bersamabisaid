@@ -317,35 +317,33 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@layer components {
-  .card-program__grid {
-    @apply px-8 py-8 flex grid-flow-col auto-cols-min object-contain gap-x-8;
+.card-program__grid {
+  @apply px-8 py-8 flex grid-flow-col auto-cols-min object-contain gap-x-8;
 
-    &__scroll-area {
-      @apply w-full max-w-screen-xl;
-      height: theme('maxWidth.lg');
-    }
-
-    @screen sm {
-      @apply pr-8 gap-x-14;
-
-      > div.card-program {
-        @apply shadow-lg;
-      }
-
-      > div.card-program:not(:first-child) {
-        @apply m-0;
-      }
-    }
+  &__scroll-area {
+    @apply w-full max-w-screen-xl;
+    height: theme('maxWidth.lg');
   }
 
-  .card-program--more {
-    @apply w-72 bg-white bg-opacity-25 rounded-2xl border-t border-gray-100 shadow-lg flex flex-col transition-shadow;
-    @apply backdrop-filter backdrop-blur-md;
+  @screen sm {
+    @apply pr-8 gap-x-14;
 
-    &:hover {
-      @apply shadow-2xl;
+    > div.card-program {
+      @apply shadow-lg;
     }
+
+    > div.card-program:not(:first-child) {
+      @apply m-0;
+    }
+  }
+}
+
+.card-program--more {
+  @apply w-72 bg-white bg-opacity-25 rounded-2xl border-t border-gray-100 shadow-lg flex flex-col transition-shadow;
+  @apply backdrop-filter backdrop-blur-md;
+
+  &:hover {
+    @apply shadow-2xl;
   }
 }
 </style>

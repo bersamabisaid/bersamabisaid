@@ -7,7 +7,7 @@ const defaultTheme = require('tailwindcss/defaultTheme');
 const colors = require('tailwindcss/colors');
 
 module.exports = {
-  // mode: 'jit',
+  mode: 'jit',
   important: true,
   purge: [
     './src/**/*.{js,jsx,ts,tsx,vue,html}',
@@ -49,7 +49,6 @@ module.exports = {
   },
   variants: {
     extend: {
-      borderWidth: ['group-hover'],
     },
   },
   plugins: [

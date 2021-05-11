@@ -203,15 +203,13 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-
-@layer components {
-  .program-donation-result {
-    thead tr th {
-      @apply sticky top-0 z-10;
-    }
-
-    .q-responsive {
-      max-height: 70vh;
-    }
+.program-donation-result {
+  thead tr th {
+    @apply sticky top-0 z-10;
   }
-}</style>
+
+  .q-responsive {
+    max-height: 70vh;
+  }
+}
+</style>

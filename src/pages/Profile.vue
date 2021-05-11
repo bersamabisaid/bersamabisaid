@@ -243,15 +243,13 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@layer components {
-  .custom-img {
-    background-image: url("../assets/images/bersamabisa_profil_berbagi ekspedisi banten.jpg");
-  }
-  .custom-img-children {
-    background-image: url("../assets/images/bersamabisa_profil_santunan anak yatim 2.jpg");
-  }
-  .custom-img-sujud {
-    background-image: url("../assets/images/bersamabisa_profil_berbagi bersama aksiberbagi.jpg");
-  }
+.custom-img {
+  background-image: url("../assets/images/bersamabisa_profil_berbagi ekspedisi banten.jpg");
+}
+.custom-img-children {
+  background-image: url("../assets/images/bersamabisa_profil_santunan anak yatim 2.jpg");
+}
+.custom-img-sujud {
+  background-image: url("../assets/images/bersamabisa_profil_berbagi bersama aksiberbagi.jpg");
 }
 </style>

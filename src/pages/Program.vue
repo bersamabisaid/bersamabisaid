@@ -464,65 +464,63 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@layer components {
-  .program {
-    &__tab {
-      @apply bg-warning bg-opacity-60 text-primary text-opacity-90;
+.program {
+  &__tab {
+    @apply bg-warning bg-opacity-60 text-primary text-opacity-90;
 
-      &:first-child {
-        @apply rounded-tl-xl;
-      }
-      &:last-child {
-        @apply rounded-tr-xl;
-      }
-
-      // quasar override
-      .q-tab__label {
-        @apply py-2 md:text-lg;
-      }
+    &:first-child {
+      @apply rounded-tl-xl;
+    }
+    &:last-child {
+      @apply rounded-tr-xl;
     }
 
-    &__tabs {
-      // quasar override
-      .q-tabs__arrow {
-        @apply text-blue-600;
-      }
-    }
-
-  }
-
-  .quick-action {
-    @apply w-screen max-w-screen-sm mx-2 px-4 pt-3 pb-1 bg-white flex justify-end gap-x-1;
-    @apply border-t-2 border-l border-r border-blue-gray-300 rounded-t-xl shadow-2xl;
-
-    @screen lg {
-      @apply w-auto p-4 flex-col items-end border-none rounded-none gap-y-4;
-    }
-
-    @screen xl {
-      @apply px-8 py-10;
+    // quasar override
+    .q-tab__label {
+      @apply py-2 md:text-lg;
     }
   }
 
-  // scoping quasar override
-  .page-program {
-    .q-tab-panel {
-      min-height: theme('height.52');
+  &__tabs {
+    // quasar override
+    .q-tabs__arrow {
+      @apply text-blue-600;
+    }
+  }
+
+}
+
+.quick-action {
+  @apply w-screen max-w-screen-sm mx-2 px-4 pt-3 pb-1 bg-white flex justify-end gap-x-1;
+  @apply border-t-2 border-l border-r border-blue-gray-300 rounded-t-xl shadow-2xl;
+
+  @screen lg {
+    @apply w-auto p-4 flex-col items-end border-none rounded-none gap-y-4;
+  }
+
+  @screen xl {
+    @apply px-8 py-10;
+  }
+}
+
+// scoping quasar override
+.page-program {
+  .q-tab-panel {
+    min-height: theme('height.52');
+  }
+
+  .q-timeline {
+    &__title {
+      @apply mb-2 font-semibold text-primary;
     }
 
-    .q-timeline {
-      &__title {
-        @apply mb-2 font-semibold text-primary;
-      }
-
-      &__content {
-        @apply mb-4 py-4 px-6 bg-white rounded-2xl shadow-sm;
-      }
+    &__content {
+      @apply mb-4 py-4 px-6 bg-white rounded-2xl shadow-sm;
     }
+  }
 
-    .q-skeleton {
-      @apply rounded-xl;
-    }
+  .q-skeleton {
+    @apply rounded-xl;
   }
 }
 </style>
