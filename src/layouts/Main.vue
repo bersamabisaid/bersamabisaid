@@ -8,17 +8,8 @@
       <base-navbar />
     </q-header>
 
-    <q-drawer
-      v-model="leftDrawerOpen"
-      bordered
-      content-class="bg-grey-1"
-    />
-
     <q-page-container>
-      <router-view
-        @hide-navbar="hideNavbar"
-        @show-navbar="showNavbar"
-      />
+      <router-view />
     </q-page-container>
 
     <base-footer />
@@ -26,28 +17,18 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { defineComponent } from '@vue/composition-api';
 import BaseNavbar from 'components/BaseNavbar.vue';
 import BaseFooter from 'components/BaseFooter.vue';
 
 export default defineComponent({
   name: 'MainLayout',
   setup() {
-    const leftDrawerOpen = ref(false);
-
-    return { leftDrawerOpen };
+    //
   },
   components: {
     BaseNavbar,
     BaseFooter,
-  },
-  methods: {
-    hideNavbar() {
-      //
-    },
-    showNavbar() {
-      //
-    },
   },
 });
 </script>
