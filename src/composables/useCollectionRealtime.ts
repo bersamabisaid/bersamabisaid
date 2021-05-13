@@ -1,4 +1,6 @@
-import { ref } from '@vue/composition-api';
+import {
+  ref, ComputedRef, computed, isRef,
+} from '@vue/composition-api';
 import type fb from 'firebase';
 
 type collectionMapper<T, U> = (value: T, index: number, array: T[]) => U;
@@ -8,22 +10,27 @@ interface useCollectionOptions<T, U> {
 }
 
 export default function useCollectionRealtime<T, U>(
-  collectionRef: fb.firestore.CollectionReference<T>,
+  collectionRef: fb.firestore.CollectionReference<T>
+    | ComputedRef<fb.firestore.CollectionReference<T>>
+    | fb.firestore.Query<T>
+    | ComputedRef<fb.firestore.Query<T>>,
   { mapper }: useCollectionOptions<T, U> = {},
 ) {
     type Tdata = typeof mapper extends undefined ? T : U;
+    const dbRef = computed(() => (isRef(collectionRef) ? collectionRef.value : collectionRef));
     const data = ref<Tdata[]>([]);
     const loading = ref(true);
     const error = ref<fb.firestore.FirestoreError | null>(null);
-    const listen = () => collectionRef.onSnapshot(
+    const listen = () => dbRef.value.onSnapshot(
       (snapshots) => {
         loading.value = false;
+
         data.value = (mapper
           ? snapshots.docs.map(mapper)
           : snapshots.docs.map((doc) => doc.data())) as Tdata[];
       },
       (err) => {
-      // eslint-disable-next-line no-console
+        // eslint-disable-next-line no-console
         console.log('%cuseCollectionRealtime error!', 'color: red;');
         error.value = err;
       },
@@ -33,6 +40,6 @@ export default function useCollectionRealtime<T, U>(
       data,
       loading,
       error,
-      listen(),
+      listen,
     ] as const;
 }
