@@ -9,6 +9,7 @@ const defaultProgramBaseModelData: Model<IBaseProgram> = {
   description: '',
   image: '',
   URL: '',
+  orderPriority: 0,
   ...createAttrs(),
 };
 

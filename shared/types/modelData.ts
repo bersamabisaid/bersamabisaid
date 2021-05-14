@@ -69,6 +69,7 @@ export interface IBaseProgram {
   description: string;
   organizer: string;
   URL: string;
+  orderPriority: number;
 }
 
 export interface IDonationProgram<isNodeCtx = false> {
