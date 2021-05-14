@@ -12,6 +12,9 @@
 - PageProgramList: tambah fitur pagination
 - BBID Blogs
 
+## Week 10/5 - 16/5
+- Fitur untuk mengatur urutan prioritas program ditampilkan ✅
+
 ## Week 19/4 - 25/4
 - PageAdminProgramIndex: tabel list donatur ✅
 - PageHome
