@@ -24,17 +24,16 @@
             leave-active-class="animated fadeOut"
             class="flex gap-x-2"
           >
-            <template v-if="selection.length">
-              <q-btn
-                key="Hapus program"
-                label="Hapus program"
-                icon="delete"
-                flat
-                rounded
-                class="bg-red-100 text-dark"
-                @click="deleteSelected"
-              />
-            </template>
+            <q-btn
+              v-if="selection.length"
+              key="Hapus program"
+              label="Hapus program"
+              icon="delete"
+              flat
+              rounded
+              class="bg-red-100 text-dark"
+              @click="() => deleteSelected()"
+            />
 
             <q-btn
               key="Tambah program"
@@ -58,7 +57,7 @@
             row-key="title"
             :loading="isDataLoading"
             :filter="search"
-            :pagination="{rowsPerPage: 20}"
+            :pagination="pagination"
             selection="multiple"
             :selected.sync="selection"
             class="bg-info text-white"
@@ -72,56 +71,142 @@
                 class="group"
                 :props="props"
               >
-                <div class="flex items-center">
-                  <!-- eslint-disable max-len -->
-                  <router-link
-                    class="cursor-pointer max-w-sm font-semibold text-sm text-primary truncate border-b-0 border-primary transition-all flex items-center gap-x-1 group-hover:border-b-2"
-                    :to="{
-                      name: 'Program',
-                      params: {programURL: props.row.URL}
-                    }"
-                    target="_blank"
-                  >
-                    <span>{{ props.value }}</span>
-                    <q-icon
-                      :name="roundOpenInNew"
-                      class="opacity-0 font-medium text-xs text-primary transition-opacity group-hover:opacity-100"
-                    />
-                  </router-link>
+                <div class="w-full flex flex-col items-start gap-y-2">
+                  <span class="font-semibold text-sm text-primary underline line-clamp-2">{{ props.value }}</span>
 
-                  <q-btn
-                    label="Edit"
-                    :icon="roundEdit"
-                    :to="{
-                      name: donation ? 'AdminProgramDonationEdit' : 'AdminProgramEdit',
-                      params: {programURL: props.row._uid}
-                    }"
-                    flat
-                    no-caps
-                    size="sm"
-                    class="opacity-0 ml-3 bg-opacity-80 font-medium text-blue-500 transition-opacity group-hover:opacity-100"
-                  />
-                  <!-- eslint-enable max-len -->
+                  <div class="w-full flex flex-nowrap justify-start gap-x-4">
+                    <q-btn
+                      :icon="roundOpenInNew"
+                      type="a"
+                      :href="$router.resolve({
+                        name: 'Program',
+                        params: {programURL: props.row.URL}
+                      }).href"
+                      target="_blank"
+                      round
+                      flat
+                      no-caps
+                      size="xs"
+                      class="font-medium text-primary shadow-md"
+                    >
+                      <q-tooltip>
+                        Lihat program ini pada halaman web
+                      </q-tooltip>
+                    </q-btn>
+
+                    <q-btn
+                      :icon="roundEdit"
+                      :to="{
+                        name: donation ? 'AdminProgramDonationEdit' : 'AdminProgramEdit',
+                        params: {programURL: props.row._uid}
+                      }"
+                      round
+                      flat
+                      no-caps
+                      size="xs"
+                      class="font-medium text-blue-500 shadow-md"
+                    >
+                      <q-tooltip>
+                        Edit program
+                      </q-tooltip>
+                    </q-btn>
+                  </div>
                 </div>
               </q-td>
             </template>
 
             <template #body-cell-achieved="props">
               <q-td :props="props">
-                <div class="flex justify-end items-center gap-x-3">
-                  <span>{{ props.value }}</span>
+                <div class="w-full flex flex-col justify-start gap-y-2">
+                  <span>{{ (props.value * 100).toPrecision(3) }}%</span>
+
+                  <q-linear-progress :value="+props.value" />
 
                   <q-btn
-                    :icon="roundVisibility"
+                    label="Lihat daftar donatur"
                     :to="{
                       name: 'AdminProgramDonationResult',
                       params: {programURL: props.row._uid}
                     }"
-                    round
                     flat
-                    no-caps
                     size="sm"
                     class="bg-opacity-80 font-medium text-blue-400"
+                  />
+                </div>
+              </q-td>
+            </template>
+
+            <template #body-cell-created="props">
+              <q-td :props="props">
+                <div class="flex flex-col gap-y-1">
+                  <div class="flex gap-x-2">
+                    <q-badge
+                      label="created"
+                      rounded
+                      class="bg-positive bg-opacity-90 text-white italic"
+                    />
+                    <span>{{ props.row._created.toDate().toLocaleString('id-ID') }}</span>
+                  </div>
+                  <div class="flex gap-x-2">
+                    <q-badge
+                      label="updated"
+                      rounded
+                      class="bg-secondary bg-opacity-90 text-white italic"
+                    />
+                    <span>{{ props.row._updated.toDate().toLocaleString('id-ID') }}</span>
+                  </div>
+                </div>
+              </q-td>
+            </template>
+
+            <template #header-cell-priority="props">
+              <q-th
+                auto-width
+                :props="props"
+              >
+                <div class="flex flex-nowrap items-center gap-x-1">
+                  <span>{{ props.col.label }}</span>
+
+                  <q-icon name="info">
+                    <q-tooltip content-class="max-w-prose">
+                      <p>
+                        Urutan ini akan digunakan ketika menampilkan daftar program.
+                      </p>
+                      <p class="text-blue-gray-300">
+                        misal pada homepage maka pada daftar program yang akan ditampilkan merupakan 8 daftar program dengan prioritas tertinggi.
+                      </p>
+                    </q-tooltip>
+                  </q-icon>
+                </div>
+              </q-th>
+            </template>
+
+            <template #body-cell-priority="props">
+              <q-td :props="props">
+                <div class="flex flex-col items-stretch">
+                  <q-btn
+                    icon="keyboard_arrow_up"
+                    flat
+                    size="xs"
+                    class="rounded-b-none"
+                    @click="() => orderMoveUp(props.row._uid)"
+                  />
+
+                  <q-input
+                    :value="props.row.orderPriority"
+                    type="number"
+                    readonly
+                    dense
+                    outlined
+                    input-class="order-priority__input"
+                  />
+
+                  <q-btn
+                    icon="keyboard_arrow_down"
+                    flat
+                    size="xs"
+                    class="rounded-t-none"
+                    @click="() => orderMoveDown(props.row._uid)"
                   />
                 </div>
               </q-td>
@@ -146,14 +231,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, watch, computed } from '@vue/composition-api';
-import { roundOpenInNew, roundEdit, roundVisibility } from '@quasar/extras/material-icons-round';
-import { db } from 'src/services/firebaseService';
-import firestoreCollection, { modelToObject, deleteAttrs } from 'src/firestoreCollection';
+import {
+  defineComponent, watch, computed, reactive, toRefs, onMounted, onUnmounted,
+} from '@vue/composition-api';
+import { roundOpenInNew, roundEdit } from '@quasar/extras/material-icons-round';
+import fbs, { db } from 'src/services/firebaseService';
+import firestoreCollection, { modelToObject, deleteAttrs, updateAttrs } from 'src/firestoreCollection';
 import useGuardAuth from 'src/composables/useGuardAuth';
-import useCollection from 'src/composables/useCollection';
+import useCollectionRealtime from 'src/composables/useCollectionRealtime';
 import { notifyError, notifySuccess } from 'src/composables/useNotification';
 import type fb from 'firebase';
+import type { QTable } from 'quasar';
 import type { qComponent } from 'src/models';
 import type { Program, ProgramDonation } from 'shared/types/modelData';
 import type { Model, ModelInObject } from 'shared/types/model';
@@ -161,8 +249,8 @@ import type { Model, ModelInObject } from 'shared/types/model';
 const baseColumnDefinition = [
   {
     label: 'Nama Program',
-    required: true,
     name: 'title',
+    required: true,
     align: 'left',
     field: (row) => row.title,
     sortable: true,
@@ -175,24 +263,17 @@ const baseColumnDefinition = [
     sortable: true,
   },
   {
-    label: 'Ditambahkan pada',
-    name: '_created',
+    label: 'Created/Updated',
+    name: 'created',
     align: 'left',
     field: (row) => row._created,
     format: (val) => (val as fb.firestore.Timestamp).toDate().toLocaleString(),
     sortable: true,
+    classes: 'font-light text-xs',
   },
-  {
-    label: 'Terakhir diperbarui pada',
-    name: '_updated',
-    align: 'left',
-    field: (row) => row._updated,
-    format: (val) => (val as fb.firestore.Timestamp).toDate().toLocaleString(),
-    sortable: true,
-  },
-] as qComponent.ColumnDefinition<Model<Program>>[];
+] as qComponent.ColumnDefinition<ModelInObject<Model<Program>>>[];
 
-const donationPageColumnDefinition = [
+const donationColumnDefinition = [
   {
     label: 'Presentase Ketercapaian',
     name: 'achieved',
@@ -200,10 +281,10 @@ const donationPageColumnDefinition = [
     // use optional chaining to handle transition between column definition
     field: (row) => `${row?._ui?.progress.value
       ? (row._ui.progress.value / (row.target || 1))
-      : 0}%`,
+      : 0}`,
     sortable: true,
   },
-] as qComponent.ColumnDefinition<Model<ProgramDonation>>[];
+] as qComponent.ColumnDefinition<ModelInObject<Model<ProgramDonation>>>[];
 
 export default defineComponent({
   name: 'PageAdminProgramIndex',
@@ -216,45 +297,80 @@ export default defineComponent({
   setup(props) {
     useGuardAuth();
 
+    const state = reactive({
+      search: '',
+      selection: [] as ModelInObject<Model<Program>>[],
+      pagination: {
+        sortBy: 'orderPriority',
+        rowsPerPage: 20,
+        descending: true,
+      } as QTable['pagination'],
+    });
+    let unsubscribeListener: () => void;
     const dbRef = computed(() => (props.donation
       ? firestoreCollection.Programs.where('donation', '==', true)
       : firestoreCollection.Programs)
-      .where('_deleted', '==', null));
-    const [data, isDataLoading, error, updateData] = useCollection(
+      .where('_deleted', '==', null)
+      .orderBy('orderPriority', 'desc'));
+    const [data, isDataLoading, error, listen] = useCollectionRealtime(
       dbRef,
       { mapper: modelToObject },
     );
-    const columnDefinition = computed(() => (props.donation
-      ? [...baseColumnDefinition, ...donationPageColumnDefinition]
-      : baseColumnDefinition));
+    const columnDefinition = computed(() => [
+      ...(props.donation
+        ? [...baseColumnDefinition, ...donationColumnDefinition]
+        : baseColumnDefinition),
+      {
+        label: 'Urutan',
+        name: 'priority',
+        align: 'right',
+        field: (row) => row._uid,
+        sortable: false,
+      } as qComponent.ColumnDefinition<ModelInObject<Model<Program>>>]);
     // const onTableServerRequest: QTable['requestServerInteraction'] = (props) => {
     //   if (props) {
     //     const { pagination, filter } = props;
     //   }
     // };
+    const orderSet = (id: string, order: number | fb.firestore.FieldValue) => {
+      isDataLoading.value = true;
 
-    watch(error, () => error && notifyError(error));
+      const programRef = firestoreCollection.Programs.doc(id);
+
+      return programRef.update({
+        orderPriority: order,
+        ...updateAttrs(),
+      })
+        .finally(() => { isDataLoading.value = false; });
+    };
+
+    watch(dbRef, () => {
+      unsubscribeListener?.();
+      unsubscribeListener = listen();
+    });
+
+    watch(error, () => error.value && notifyError(error.value));
+
+    onMounted(() => {
+      unsubscribeListener = listen();
+    });
+
+    onUnmounted(() => unsubscribeListener?.());
 
     return {
+      // data & state related
       data,
       isDataLoading,
-      updateData,
+      ...toRefs(state),
+      // methods
+      orderSet,
+      // ui data
       columns: columnDefinition,
-
       roundOpenInNew,
       roundEdit,
-      roundVisibility,
     };
   },
-  preFetch() {
-    return undefined;
-  },
-  data() {
-    return {
-      search: '',
-      selection: [] as ModelInObject<Model<Program>>[],
-    };
-  },
+  preFetch: () => undefined,
   methods: {
     async deleteSelected() {
       const confirmedToDelete = await this.confirmDeleted();
@@ -278,8 +394,6 @@ export default defineComponent({
           this.selection.splice(0, this.selection.length);
           progressDialog.hide();
           notifySuccess(`success deleted ${titleList}`);
-
-          return this.updateData();
         });
     },
     async confirmDeleted() {
@@ -300,19 +414,43 @@ export default defineComponent({
 
       return this.selection;
     },
+    orderMoveUp(id: string) {
+      return this.orderSet(id, fbs.firestore.FieldValue.increment(1));
+    },
+    orderMoveDown(id: string) {
+      return this.orderSet(id, fbs.firestore.FieldValue.increment(-1));
+    },
+    orderReset(id: string) {
+      return this.orderSet(id, 0);
+    },
   },
 });
 </script>
 
 <style lang="scss">
-@layer components {
-  .program-index {
-    thead tr th {
-      @apply sticky top-0 z-10;
-    }
+.program-index {
+  thead tr th {
+    @apply sticky top-0 z-10;
+  }
 
-    .q-responsive {
-      max-height: 70vh;
+  .q-responsive {
+    max-height: 70vh;
+  }
+
+  .q-table {
+    tr:nth-child(even) {
+      @apply bg-blue-gray-100 bg-opacity-30;
+    }
+  }
+
+  .order-priority {
+    &__input {
+      @apply text-center;
+
+      &::-webkit-outer-spin-button,
+      &::-webkit-inner-spin-button {
+        @apply appearance-none;
+      }
     }
   }
 }

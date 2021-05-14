@@ -48,6 +48,7 @@ export default defineComponent({
       ? firestoreCollection.Programs.where('donation', '==', true)
       : firestoreCollection.Programs)
       .where('_deleted', '==', null)
+      .orderBy('orderPriority', 'desc')
       .limit(10));
     const [programs, isDataLoading] = useCollection(query, { mapper: modelToObject });
     const programData = ref<IProgramData[]>([]);

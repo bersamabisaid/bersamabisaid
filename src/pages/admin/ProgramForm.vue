@@ -5,7 +5,7 @@
   >
     <div class="text-dark flex items-center gap-x-4">
       <q-btn
-        v-go-back="{ name: 'AdminProgramIndex' }"
+        v-go-back="{ name: donation ? 'AdminProgramDonation' : 'AdminProgramIndex' }"
         icon="arrow_back"
         round
         flat
@@ -281,6 +281,7 @@ export default defineComponent({
         description: this.programDescription,
         organizer: this.programOrganizer,
         URL: this.maskedProgramURL,
+        orderPriority: 0,
         ...(newFilePathRef && { image: newFilePathRef }),
       };
 
@@ -304,6 +305,7 @@ export default defineComponent({
           description: this.programDescription,
           organizer: this.programOrganizer,
           URL: this.maskedProgramURL,
+          orderPriority: 0,
         };
 
         const data: Program = this.donation ? {
@@ -379,18 +381,16 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@layer components {
-  .program-form {
-    $root: &;
+.program-form {
+  $root: &;
 
-    &__input-label {
-      @apply font-medium text-base text-dark text-opacity-50 tracking-tight;
-    }
+  &__input-label {
+    @apply font-medium text-base text-dark text-opacity-50 tracking-tight;
+  }
 
-    .q-field {
-      &__label {
-        @extend #{$root}__input-label;
-      }
+  .q-field {
+    &__label {
+      @extend #{$root}__input-label;
     }
   }
 }
