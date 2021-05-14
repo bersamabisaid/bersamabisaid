@@ -14,6 +14,7 @@
 
 ## Week 10/5 - 16/5
 - Fitur untuk mengatur urutan prioritas program ditampilkan ✅
+- Ganti favicon ✅
 
 ## Week 19/4 - 25/4
 - PageAdminProgramIndex: tabel list donatur ✅
