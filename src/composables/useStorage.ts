@@ -20,7 +20,13 @@ export type StorageFileMetadata<TcustomMetadata = Record<string, unknown>> = {
   ref: fb.storage.Reference;
 }
 
-export const getStorageFile = async (storageRef: fb.storage.Reference) => ({
-  URL: await storageRef.getDownloadURL() as Readonly<string>,
-  metadata: await storageRef.getMetadata() as Readonly<StorageFileMetadata>,
-});
+export const getStorageFile = async (storageRef: fb.storage.Reference) => {
+  try {
+    return {
+      URL: await storageRef.getDownloadURL() as Readonly<string>,
+      metadata: await storageRef.getMetadata() as Readonly<StorageFileMetadata>,
+    };
+  } catch (err) {
+    return null;
+  }
+};

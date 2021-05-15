@@ -224,9 +224,10 @@ import { resolveProgramCollectionImage } from 'src/firestoreApis';
 import useCollection from 'src/composables/useCollection';
 import { extractTextFromHTML } from 'shared/utils/dom';
 import { Singleton } from 'shared/utils/pattern';
-import type { StorageFileMetadata } from 'src/composables/useStorage';
+import { getStorageFile, StorageFileMetadata } from 'src/composables/useStorage';
 import type { ModelInObject } from 'shared/types/model';
 import type { ProgramDonation, Program } from 'shared/types/modelData';
+import { storage } from 'src/services/firebaseService';
 
 type TallProgramDataOri = ModelInObject<Program>;
 type TprogramDonationDataOri = ModelInObject<ProgramDonation>;

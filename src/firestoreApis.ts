@@ -47,9 +47,12 @@ export const getDocumentByFactory = function <T = unknown, U extends keyof T = k
 export const getProgramByURL = getDocumentByFactory(firestoreCollection.Programs, 'URL');
 
 export const resolveProgramImage = async function <T extends Program = Program> ({ image, ...data }: T) {
+  // trying to get 300x300 image first
+  const file = await getStorageFile(storageRef.root.child(`${image}_300x300`)) ?? await getStorageFile(storageRef.root.child(image));
+
   return {
     ...data,
-    image: await getStorageFile(storageRef.root.child(image)),
+    image: file,
   };
 };
 

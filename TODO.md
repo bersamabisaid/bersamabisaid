@@ -2,7 +2,6 @@
 ## Todo (this week)
 - Hapus prefix /program untuk setiap program
   - Untuk validasi link menggunakan $router.resolve() + getProgramByURL
-- PageAdminProgramForm: Implements firebase image resize extensions
 - Implements SSR, problem:
   - vue ssr berada dalam konteks node, sehingga tidak bisa menggunakan firebase browser client
 
@@ -15,6 +14,7 @@
 ## Week 10/5 - 16/5
 - Fitur untuk mengatur urutan prioritas program ditampilkan ✅
 - Ganti favicon ✅
+- PageAdminProgramForm: Implements firebase image resize extensions ✅
 
 ## Week 19/4 - 25/4
 - PageAdminProgramIndex: tabel list donatur ✅
