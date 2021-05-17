@@ -1,6 +1,6 @@
 import { onMounted, ref } from '@vue/composition-api';
 import firestoreCollection from 'src/firestoreCollection';
-import { storageRef } from 'src/services/firebaseService';
+import { storageRef, isStorageError } from 'src/services/firebaseService';
 import { getStorageFile } from 'src/composables/useStorage';
 import { Program } from 'shared/types/modelData';
 import type fb from 'firebase';
@@ -47,13 +47,26 @@ export const getDocumentByFactory = function <T = unknown, U extends keyof T = k
 export const getProgramByURL = getDocumentByFactory(firestoreCollection.Programs, 'URL');
 
 export const resolveProgramImage = async function <T extends Program = Program> ({ image, ...data }: T) {
-  // trying to get 300x300 image first
-  const file = await getStorageFile(storageRef.root.child(`${image}_300x300`)) ?? await getStorageFile(storageRef.root.child(image));
+  try {
+    // trying to get 300x300 image first
+    const file = await getStorageFile(storageRef.root.child(`${image}_300x300`));
 
-  return {
-    ...data,
-    image: file,
-  };
+    return {
+      ...data,
+      image: file,
+    };
+  } catch (err) {
+    if (isStorageError(err) && err.code === 'storage/object-not-found') {
+      const file = await getStorageFile(storageRef.root.child(image));
+
+      return {
+        ...data,
+        image: file,
+      };
+    }
+
+    return { ...data, image: null };
+  }
 };
 
 export const resolveProgramCollectionImage = async function <T extends Program = Program> (data: T[]) {

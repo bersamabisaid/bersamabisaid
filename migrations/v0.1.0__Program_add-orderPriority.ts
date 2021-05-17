@@ -1,8 +1,8 @@
 import type { MigrateOptions } from 'fireway';
 import firestoreCollectionName from '../shared/firestoreCollection';
 
-export const migrate = ({ firestore }: MigrateOptions) => {
-  firestore.runTransaction(async (fbt) => {
+export const migrate = ({ firestore }: MigrateOptions) => firestore
+  .runTransaction(async (fbt) => {
     const collectionRef = firestore.collection(firestoreCollectionName.PROGRAMS);
     const collectionDocs = await collectionRef.listDocuments();
     const collectionSnapshots = await fbt.getAll(...collectionDocs);
@@ -16,4 +16,3 @@ export const migrate = ({ firestore }: MigrateOptions) => {
       });
     });
   });
-};

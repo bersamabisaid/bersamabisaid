@@ -345,7 +345,8 @@ export default defineComponent({
       getStorageFile(thumbnailPathRef)
         .then(({ URL }) => {
           this.programThumbnail = URL;
-        }).finally(() => {
+        })
+        .finally(() => {
           this.isLoading = false;
         });
     },

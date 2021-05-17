@@ -213,26 +213,23 @@
 
 <script lang="ts">
 import {
-  defineComponent, ref, computed, watch,
+  defineComponent, ref, computed,
 } from '@vue/composition-api';
 import { scroll } from 'quasar';
 import BaseNavbar from 'components/BaseNavbar.vue';
 import BaseFooter from 'components/BaseFooter.vue';
 import CardProgram from 'components/CardProgram.vue';
-import firestoreCollection, { modelToObject } from 'src/firestoreCollection';
-import { resolveProgramCollectionImage } from 'src/firestoreApis';
-import useCollection from 'src/composables/useCollection';
+import { storageRef } from 'src/services/firebaseAdmin';
 import { extractTextFromHTML } from 'shared/utils/dom';
 import { Singleton } from 'shared/utils/pattern';
-import { getStorageFile, StorageFileMetadata } from 'src/composables/useStorage';
+import type { StorageFileMetadata } from 'src/composables/useStorage';
 import type { ModelInObject } from 'shared/types/model';
 import type { ProgramDonation, Program } from 'shared/types/modelData';
-import { storage } from 'src/services/firebaseService';
 
 type TallProgramDataOri = ModelInObject<Program>;
 type TprogramDonationDataOri = ModelInObject<ProgramDonation>;
 
-interface IallProgramData extends Omit<TallProgramDataOri, 'image'> {
+interface IprogramData extends Omit<TallProgramDataOri, 'image'> {
   image: {
     URL: string;
     metadata: StorageFileMetadata;
@@ -247,31 +244,13 @@ interface IprogramDonationData extends Omit<TprogramDonationDataOri, 'image'> {
 }
 
 const setupData = new Singleton(() => {
-  const [programData, isLoading, , updateProgramData] = useCollection(
-    firestoreCollection.Programs
-      .where('_deleted', '==', null)
-      .limit(8),
-    { mapper: modelToObject },
-  );
-  const allProgramData = ref<IallProgramData[]>([]);
+  const allProgramData = ref<IprogramData[]>([]);
   const programDonationData = computed(() => allProgramData.value
     .filter(({ donation }) => donation) as IprogramDonationData[]);
-  const toggleLoading = (load = !isLoading.value) => {
-    isLoading.value = load;
-  };
-  const getUpdatedImage = async () => {
-    toggleLoading(true);
-    allProgramData.value = await resolveProgramCollectionImage(programData.value);
-    toggleLoading(false);
-  };
-
-  watch(programData, () => getUpdatedImage());
 
   return {
     allProgramData,
     programDonationData,
-    isLoading,
-    updateProgramData,
   };
 });
 
@@ -285,13 +264,13 @@ export default defineComponent({
   name: 'PageHome',
   setup() {
     const {
-      allProgramData, programDonationData, isLoading,
+      allProgramData, programDonationData,
     } = setupData.value;
 
     return {
       allProgramData,
       programDonationData,
-      isLoading,
+      isLoading: ref(true),
 
       extractTextFromHTML,
       scrollToElement,
@@ -299,7 +278,7 @@ export default defineComponent({
   },
   preFetch({ ssrContext }) {
     if (ssrContext) {
-      return setupData.value.updateProgramData();
+      console.log(storageRef.Programs('4Nkm7HcmpAh9qG7hTS8i').publicUrl());
     }
 
     return undefined;
@@ -308,6 +287,9 @@ export default defineComponent({
     reportUnloadedProgramList() {
       window.open('http://wa.me/6285156348055');
     },
+  },
+  mounted() {
+    console.log(process.env.FIREBASE_storageBucket);
   },
   components: {
     BaseFooter,

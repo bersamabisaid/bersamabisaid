@@ -22,12 +22,9 @@
 
 <script lang="ts">
 import {
-  defineComponent, computed, watch, ref,
+  defineComponent, ref,
 } from '@vue/composition-api';
 import CardProgram from 'components/CardProgram.vue';
-import firestoreCollection, { modelToObject } from 'src/firestoreCollection';
-import { resolveProgramCollectionImage } from 'src/firestoreApis';
-import useCollection from 'src/composables/useCollection';
 import { StorageFileMetadata } from 'src/composables/useStorage';
 import { extractTextFromHTML } from 'shared/utils/dom';
 import type { Model, ModelInObject } from 'shared/types/model';
@@ -42,24 +39,12 @@ interface IProgramData extends Omit<ModelInObject<Model<Program>>, 'image'> {
 
 export default defineComponent({
   name: 'PageProgramList',
-  setup(props, { root }) {
-    const isDonation = computed(() => root.$route.query.category === 'donasi');
-    const query = computed(() => (isDonation.value
-      ? firestoreCollection.Programs.where('donation', '==', true)
-      : firestoreCollection.Programs)
-      .where('_deleted', '==', null)
-      .orderBy('orderPriority', 'desc')
-      .limit(10));
-    const [programs, isDataLoading] = useCollection(query, { mapper: modelToObject });
+  setup() {
     const programData = ref<IProgramData[]>([]);
-
-    watch(programs, async () => {
-      programData.value = await resolveProgramCollectionImage(programs.value);
-    });
 
     return {
       programData,
-      isDataLoading,
+      isDataLoading: ref(true),
       extractTextFromHTML,
     };
   },

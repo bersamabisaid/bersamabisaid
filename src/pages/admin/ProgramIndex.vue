@@ -345,6 +345,7 @@ export default defineComponent({
     };
 
     watch(dbRef, () => {
+      // eslint-disable-next-line no-unused-expressions
       unsubscribeListener?.();
       unsubscribeListener = listen();
     });

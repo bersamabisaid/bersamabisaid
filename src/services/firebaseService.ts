@@ -1,11 +1,12 @@
-import { Singleton } from 'shared/utils/pattern';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
 import 'firebase/storage';
 import 'firebase/functions';
 import storageReferencePathName from 'shared/storageReference';
+import { Singleton } from 'shared/utils/pattern';
 import { emulators } from 'app/firebase.json';
+import type fb from 'firebase';
 
 const service = new Singleton(() => {
   if (firebase.apps.length) {
@@ -26,16 +27,10 @@ const service = new Singleton(() => {
 });
 
 const fbs = service.value;
-
-export default fbs;
-
-export const db = fbs.firestore();
-
-export const storage = fbs.storage().ref();
-
-export const auth = fbs.auth();
-
-export const fns = fbs.functions();
+const db = fbs.firestore();
+const storage = fbs.storage().ref();
+const auth = fbs.auth();
+const fns = fbs.functions();
 
 if (process.env.NODE_ENV !== 'production') {
   const DEV_HOST = 'localhost';
@@ -43,7 +38,30 @@ if (process.env.NODE_ENV !== 'production') {
   fns.useEmulator(DEV_HOST, emulators.functions.port);
 }
 
-export const storageRef = Object.assign(storage, {
+const storageRef = Object.assign(storage, {
   Programs: storage.child(storageReferencePathName.PROGRAMS),
 
 });
+
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access */
+const isFirebaseError = function (data: any): data is fb.FirebaseError {
+  return typeof data.code === 'string'
+  && typeof data.message === 'string'
+  && typeof data.name === 'string';
+};
+
+const isStorageError = function (data: any): data is fb.storage.FirebaseStorageError {
+  return (typeof data?.serverResponse === 'string' || data?.serverResponse === null)
+    && isFirebaseError(data);
+};
+
+export {
+  fbs as default,
+  db,
+  storage,
+  auth,
+  fns,
+  storageRef,
+  isFirebaseError,
+  isStorageError,
+};
