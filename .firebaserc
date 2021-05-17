@@ -1,7 +1,0 @@
-{
-  "projects": {
-    "default": "bersamabisaid-web-dev",
-    "dev": "bersamabisaid-web-dev",
-    "prod": "bersamabisaid-web-production"
-  }
-}
