@@ -11,12 +11,20 @@
   },
   "dependencies": {
     "@quasar/extras": "^1.0.0",
+    "@tailwindcss/line-clamp": "^0.2.0",
     "core-js": "^3.6.5",
-    "quasar": "^2.0.0-beta.1"
+    "firebase": "^8.6.1",
+    "firebase-admin": "^9.8.0",
+    "lodash": "^4.17.21",
+    "quasar": "^2.0.0-beta.1",
+    "tailwindcss": "^2.1.2",
+    "v-money": "^0.8.1",
+    "vue-social-sharing": "^3.0.7"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.13.14",
     "@quasar/app": "^3.0.0-beta.1",
+    "@quasar/quasar-app-extension-dotenv": "^1.1.0",
     "@types/node": "^10.17.15",
     "@typescript-eslint/eslint-plugin": "^4.16.1",
     "@typescript-eslint/parser": "^4.16.1",
