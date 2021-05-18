@@ -5,3 +5,15 @@ declare module '*.vue' {
   const component: ComponentOptions;
   export default component;
 }
+
+declare module '*.png' {
+  export default String;
+}
+
+declare module '*.jpg' {
+  export default String;
+}
+
+declare module '*.svg' {
+  export default String;
+}
