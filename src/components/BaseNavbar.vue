@@ -1,5 +1,5 @@
 <template>
-  <q-toolbar :class="['p-6 md:px-7 md:py-6 flex flex-col', transparent ? 'bg-transparent' : 'bg-white', visible && 'backdrop-filter backdrop-blur-xl']">
+  <q-toolbar :class="['p-6 md:px-7 md:py-6 flex flex-col', transparent ? 'bg-transparent' : 'bg-white', visible && 'backdrop-filter backdrop-blur-xl fixed']">
     <q-toolbar-title class="w-full relative flex justify-between gap-x-4">
       <router-link
         :to="{name: 'Home'}"
@@ -52,7 +52,7 @@
         v-show="visible"
         :class="['w-screen px-10 backdrop-filter backdrop-blur-xl md:hidden']"
       >
-        <ul :class="['list-none pb-96 filter grid grid-cols gap-1', transparent ? 'pt-4' : 'mt-4']">
+        <ul :class="['list-none filter grid grid-cols gap-1', transparent ? 'pt-4' : 'mt-4']">
           <li
             v-for="navItem in navItems"
             :key="navItem.title"
@@ -64,8 +64,10 @@
               :label="navItem.title"
               flat
               v-bind="navItem"
+              @click="toggleNavbar"
             />
           </li>
+          <div class="h-screen" />
         </ul>
       </div>
     </q-slide-transition>

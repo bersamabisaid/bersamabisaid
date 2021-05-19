@@ -18,24 +18,7 @@
             flat
             icon="arrow_forward"
             class="text-white"
-          >
-            <q-menu
-              cover
-              auto-close
-            >
-              <q-list>
-                <q-item clickable>
-                  <q-item-section>Remove Card</q-item-section>
-                </q-item>
-                <q-item clickable>
-                  <q-item-section>Send Feedback</q-item-section>
-                </q-item>
-                <q-item clickable>
-                  <q-item-section>Share</q-item-section>
-                </q-item>
-              </q-list>
-            </q-menu>
-          </q-btn>
+          />
         </div>
       </div>
     </q-card-section>
