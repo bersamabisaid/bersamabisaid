@@ -1,7 +1,6 @@
 <template>
   <q-layout view="lHh Lpr lff">
     <q-header
-      reveal
       elevated
       class="bg-white"
     >
@@ -12,7 +11,9 @@
       <router-view />
     </q-page-container>
 
+    <!-- <q-footer elevated> -->
     <base-footer />
+    <!-- </q-footer> -->
   </q-layout>
 </template>
 
