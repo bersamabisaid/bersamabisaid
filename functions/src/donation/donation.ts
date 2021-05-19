@@ -11,16 +11,12 @@ export const pay = async ({ donator, ...data }: Required<PayDonationRequestBody>
   const programRef = firestoreCollection.Programs.doc(data.programId) as DocRef.ProgramDonationModel<true>;
   const donatorAsClient = firestoreCollection.TransactionClients.doc();
 
-  // delete the document first to make the document hidden
-  batch.create(donatorAsClient, {
-    ...firestoreProxy.create({
-      fullname: donator.fullName,
-      email: donator.email,
-      phoneNumber: donator.phoneNumber,
-      address: donator.address,
-    }),
-    ...firestoreProxy.delete(),
-  });
+  batch.create(donatorAsClient, firestoreProxy.create({
+    fullname: donator.fullName,
+    email: donator.email,
+    phoneNumber: donator.phoneNumber,
+    address: donator.address,
+  }));
 
   const [transactionAction, transactionRef] = await createTransaction({
     transaction_details: {
@@ -40,25 +36,29 @@ export const pay = async ({ donator, ...data }: Required<PayDonationRequestBody>
   });
 
   const donationRef = firestoreCollection.Donations(programRef).doc(transactionRef.id);
-  batch.create(donationRef, firestoreProxy.create({
-    program: programRef,
-    transaction: transactionRef,
-    donator: donatorAsClient,
-    hideDonator: data.hideDonator,
-    amount: data.amount,
-    message: data.message,
-    _ui: {
-      donatorName: uiDataFactory({
-        foreignKey: donatorAsClient,
-        data: data.hideDonator ? HIDDEN_DONATOR_NAME : donator.fullName,
-      }),
-      programName: uiDataFactory({
-        foreignKey: programRef,
-        data: data.programName,
-      }),
-    },
-    _system: { finishPaymentRedirectURL: data.finishPaymentRedirectURL },
-  }));
+  // delete the document first to make the document hidden
+  batch.create(donationRef, {
+    ...firestoreProxy.create({
+      program: programRef,
+      transaction: transactionRef,
+      donator: donatorAsClient,
+      hideDonator: data.hideDonator,
+      amount: data.amount,
+      message: data.message,
+      _ui: {
+        donatorName: uiDataFactory({
+          foreignKey: donatorAsClient,
+          data: data.hideDonator ? HIDDEN_DONATOR_NAME : donator.fullName,
+        }),
+        programName: uiDataFactory({
+          foreignKey: programRef,
+          data: data.programName,
+        }),
+      },
+      _system: { finishPaymentRedirectURL: data.finishPaymentRedirectURL },
+    }),
+    ...firestoreProxy.delete(),
+  });
 
   await batch.commit();
 
