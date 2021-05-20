@@ -92,8 +92,7 @@ const navItems: NavItem[] = [
   },
   {
     title: 'PROGRAM',
-    // to: { name: 'ProgramList' },
-    to: '#',
+    to: { name: 'ProgramList' },
   },
   {
     title: 'DONASI',
