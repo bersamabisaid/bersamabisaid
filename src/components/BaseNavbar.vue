@@ -27,7 +27,7 @@
           class="hidden md:inline-block"
         />
 
-        <q-btn
+        <q-fab
           v-if="visible"
           icon="close"
           unelevated
@@ -36,7 +36,7 @@
           @click="toggleNavbar"
         />
 
-        <q-btn
+        <q-fab
           v-else
           icon="menu"
           unelevated
@@ -47,7 +47,7 @@
       </div>
     </q-toolbar-title>
 
-    <q-slide-transition>
+    <q-slide-transition :duration="750">
       <div
         v-show="visible"
         :class="['w-screen px-10 backdrop-filter backdrop-blur-xl md:hidden']"
@@ -120,7 +120,6 @@ export default defineComponent({
     return {
       navItems,
       visible: false,
-      persistent: false,
     };
   },
   computed: {
@@ -133,9 +132,6 @@ export default defineComponent({
   methods: {
     toggleNavbar() {
       this.visible = !this.visible;
-    },
-    blockEl() {
-      this.persistent = !this.persistent;
     },
   },
 });
