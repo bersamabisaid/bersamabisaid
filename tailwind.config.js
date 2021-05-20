@@ -3,6 +3,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable global-require */
 const defaultTheme = require('tailwindcss/defaultTheme');
+const colors = require('tailwindcss/colors');
 
 module.exports = {
   mode: 'jit',
@@ -22,6 +23,8 @@ module.exports = {
         negative: '#C10015',
         info: '#31CCEC',
         warning: '#F2C037',
+        'blue-gray': colors.blueGray,
+        'light-blue': colors.lightBlue,
       },
     },
     fontFamily: {
@@ -35,5 +38,7 @@ module.exports = {
   variants: {
     extend: {},
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/line-clamp'),
+  ],
 };
