@@ -118,7 +118,7 @@ export default defineComponent({
       default: false,
     },
   },
-  setup() {
+  data() {
     return {
       navItems,
       visible: false,
