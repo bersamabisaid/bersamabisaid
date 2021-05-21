@@ -49,12 +49,12 @@
       </div>
     </q-toolbar-title>
 
-    <q-slide-transition>
+    <q-slide-transition :duration="750">
       <div
         v-show="visible"
         :class="['w-screen px-10 backdrop-filter backdrop-blur-xl md:!hidden']"
       >
-        <ul :class="['list-none pb-96 filter grid grid-cols gap-1', transparent ? 'pt-4' : 'mt-4']">
+        <ul :class="['list-none filter grid grid-cols gap-1', transparent ? 'pt-4' : 'mt-4']">
           <li
             v-for="navItem in navItems"
             :key="navItem.title"
@@ -66,8 +66,10 @@
               :label="navItem.title"
               flat
               v-bind="navItem"
+              @click="toggleNavbar"
             />
           </li>
+          <div class="h-screen" />
         </ul>
       </div>
     </q-slide-transition>
@@ -122,7 +124,6 @@ export default defineComponent({
     return {
       navItems,
       visible: false,
-      persistent: false,
     };
   },
   computed: {
@@ -135,9 +136,6 @@ export default defineComponent({
   methods: {
     toggleNavbar() {
       this.visible = !this.visible;
-    },
-    blockEl() {
-      this.persistent = !this.persistent;
     },
   },
 });
