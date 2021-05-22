@@ -34,6 +34,11 @@ export const isAddress = function (data: any) {
     && typeof data?.zipCode === 'number';
 };
 
+export interface PaymentStatus {
+  status: 'accepted' | 'pending' | 'need_action' | 'fail' | 'cancel' | 'expire' | 'refund';
+  timestamp: GetStatusTransaction['transaction_time'];
+}
+
 export interface TransactionItem<isNodeCtx = false> {
   ref: (isNodeCtx extends true
     ? fbNode.firestore.DocumentReference
@@ -133,11 +138,6 @@ export const isDonator = function (data: any): data is Donator {
     && isAddress(data?.address)
     && typeof data?.phoneNumber === 'string';
 };
-
-export interface PaymentStatus {
-  status: 'accepted' | 'pending' | 'need_action' | 'fail' | 'cancel' | 'expire' | 'refund';
-  timestamp: GetStatusTransaction['transaction_time'];
-}
 
 export interface Donation<isNodeCtx = false> {
   program: DocRef.ProgramDonationModel<isNodeCtx>;
