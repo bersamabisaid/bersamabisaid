@@ -21,19 +21,21 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent } from 'vue';
 import CardProgram from 'components/CardProgram.vue';
+import useCollection from 'composables/useCollection';
+import { firestoreClient } from 'src/firebaseClientService';
 import { extractTextFromHTML } from 'shared/utils/browser/dom';
-import type { Model, ModelInObject } from 'shared/types/model';
-import type { Program } from 'shared/types/schema';
-import type { Storage } from 'shared/types/firebase';
+// import type { Model, ModelInObject } from 'shared/types/model';
+// import type { Program } from 'shared/types/schema';
+// import type { Storage } from 'shared/types/firebase';
 
-interface IProgramData extends Omit<ModelInObject<Model<Program>>, 'image'> {
-  image: {
-    URL: string;
-    metadata: Storage.metadata;
-  }
-}
+// interface IProgramData extends Omit<ModelInObject<Model<Program>>, 'image'> {
+//   image: {
+//     URL: string;
+//     metadata: Storage.metadata;
+//   }
+// }
 
 export default defineComponent({
   name: 'PageProgramList',
@@ -41,11 +43,16 @@ export default defineComponent({
     CardProgram,
   },
   setup() {
-    const programData = ref<IProgramData[]>([]);
+    const [programData, isDataLoading] = useCollection(
+      firestoreClient.collections.Programs
+        .where('_deleted', '==', null)
+        .orderBy('orderPriority', 'desc'),
+      { mapper: firestoreClient.utils.modelToObject },
+    );
 
     return {
       programData,
-      isDataLoading: ref(true),
+      isDataLoading,
       extractTextFromHTML,
     };
   },

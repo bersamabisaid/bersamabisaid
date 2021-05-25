@@ -6,5 +6,13 @@
   "vetur.experimental.templateInterpolationService": true,
   "tailwindCSS.experimental.classRegex": [
     "\\w*-class=\"([^\"]*)",
+  ],
+  "conventionalCommits.scopes": [
+    "api",
+    "page",
+    "ui",
+    "vscode",
+    "composables",
+    "functions"
   ]
 }
