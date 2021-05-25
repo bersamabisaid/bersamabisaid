@@ -97,6 +97,9 @@ module.exports = configure((ctx) => ({
       ripple: {
         early: true,
       },
+      loadingBar: {
+        skipHijack: true,
+      },
     },
 
     // iconSet: 'material-icons', // Quasar icon set
