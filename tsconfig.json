@@ -4,6 +4,7 @@
     "baseUrl": ".",
     "skipLibCheck": true,
     "paths": {
+      "composables/*": ["src/composables/*"],
       "components/*": ["src/components/*"],
       "layouts/*": ["src/layouts/*"],
       "pages/*": ["src/pages/*"],

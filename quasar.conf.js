@@ -78,6 +78,7 @@ module.exports = configure((ctx) => ({
       cfg.resolve.alias = {
         ...cfg.resolve.alias,
 
+        composables: path.resolve(__dirname, './src/composables'),
         shared: path.resolve(__dirname, './shared'),
       };
     },
