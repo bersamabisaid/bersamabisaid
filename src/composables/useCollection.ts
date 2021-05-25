@@ -3,9 +3,10 @@ import {
 } from 'vue';
 import type { ComputedRef } from 'vue';
 import type fb from 'firebase';
+import type { Unpromisify } from 'shared/types/utils';
 
 // eslint-disable-next-line no-unused-vars
-type collectionMapper<T, U> = (value: T, index: number, array: T[]) => U;
+export type collectionMapper<T, U> = (value: T, index: number, array: T[]) => U;
 
 export interface useCollectionOptions<T, U> {
   mapper?: collectionMapper<fb.firestore.QueryDocumentSnapshot<T>, U> | null;
@@ -18,7 +19,7 @@ export default function useCollection<T, U = T>(
     | ComputedRef<fb.firestore.Query<T>>,
   { mapper }: useCollectionOptions<T, U> = {},
 ) {
-  type Tdata = typeof mapper extends undefined ? T : U;
+  type Tdata = Unpromisify<typeof mapper extends undefined ? T : U>;
   const dbRef = computed(() => (isRef(collectionRef) ? collectionRef.value : collectionRef));
   const data = ref<Tdata[]>([]);
   const loading = ref(true);
@@ -27,11 +28,12 @@ export default function useCollection<T, U = T>(
     loading.value = true;
 
     try {
-      const snapshot = await dbRef.value.get();
+      const snapshots = await dbRef.value.get();
+      const mappedData = (mapper
+        ? snapshots.docs.map((el, i, arr) => Promise.resolve(mapper(el, i, arr)))
+        : snapshots.docs.map((doc) => Promise.resolve(doc.data()))) as Promise<Tdata>[];
 
-      data.value = (mapper
-        ? snapshot.docs.map(mapper)
-        : snapshot.docs.map((doc) => doc.data())) as typeof data.value;
+      data.value = (await Promise.all(mappedData)) as typeof data.value;
     } catch (err) {
       // eslint-disable-next-line no-console
       console.log('%cuseCollection error!', 'color: red;');

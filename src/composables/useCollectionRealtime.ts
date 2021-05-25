@@ -1,6 +1,7 @@
 import {
   ref, ComputedRef, computed, isRef,
 } from 'vue';
+import { Unpromisify } from 'shared/types/utils';
 import type fb from 'firebase';
 
 // eslint-disable-next-line no-unused-vars
@@ -17,7 +18,7 @@ export default function useCollectionRealtime<T, U>(
     | ComputedRef<fb.firestore.Query<T>>,
   { mapper }: useCollectionOptions<T, U> = {},
 ) {
-    type Tdata = typeof mapper extends undefined ? T : U;
+    type Tdata = Unpromisify<typeof mapper extends undefined ? T : U>;
     const dbRef = computed(() => (isRef(collectionRef) ? collectionRef.value : collectionRef));
     const data = ref<Tdata[]>([]);
     const loading = ref(true);
@@ -25,10 +26,13 @@ export default function useCollectionRealtime<T, U>(
     const listen = () => dbRef.value.onSnapshot(
       (snapshots) => {
         loading.value = false;
+        const mappedData = (mapper
+          ? snapshots.docs.map((el, i, arr) => Promise.resolve(mapper(el, i, arr)))
+          : snapshots.docs.map((doc) => Promise.resolve(doc.data()))) as Promise<Tdata>[];
 
-        data.value = (mapper
-          ? snapshots.docs.map(mapper)
-          : snapshots.docs.map((doc) => doc.data())) as typeof data.value;
+        Promise.all(mappedData)
+          .then((res) => { data.value = res as typeof data.value; })
+          .finally(null);
       },
       (err) => {
         // eslint-disable-next-line no-console
