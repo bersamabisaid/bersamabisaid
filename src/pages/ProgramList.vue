@@ -24,18 +24,9 @@
 import { defineComponent } from 'vue';
 import CardProgram from 'components/CardProgram.vue';
 import useCollection from 'composables/useCollection';
-import { firestoreClient } from 'src/firebaseClientService';
+import { firestoreClient, storageClient } from 'src/firebaseClientService';
 import { extractTextFromHTML } from 'shared/utils/browser/dom';
-// import type { Model, ModelInObject } from 'shared/types/model';
-// import type { Program } from 'shared/types/schema';
-// import type { Storage } from 'shared/types/firebase';
-
-// interface IProgramData extends Omit<ModelInObject<Model<Program>>, 'image'> {
-//   image: {
-//     URL: string;
-//     metadata: Storage.metadata;
-//   }
-// }
+import { getStorageFile } from 'shared/firebase/storageClient';
 
 export default defineComponent({
   name: 'PageProgramList',
@@ -47,7 +38,16 @@ export default defineComponent({
       firestoreClient.collections.Programs
         .where('_deleted', '==', null)
         .orderBy('orderPriority', 'desc'),
-      { mapper: firestoreClient.utils.modelToObject },
+      {
+        async mapper(snapshot) {
+          const { image, ...data } = firestoreClient.utils.modelToObject(snapshot);
+
+          return {
+            ...data,
+            image: await getStorageFile(storageClient.storage.ref(image)),
+          };
+        },
+      },
     );
 
     return {

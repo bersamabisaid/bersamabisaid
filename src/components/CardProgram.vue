@@ -67,7 +67,7 @@
         :to="toLocation"
         no-caps
         unelevated
-        class="px-5 py-1 bg-positive text-white capitalize ring-1 ring-inset ring-gray-200 rounded-lg shadow"
+        class="!px-5 !py-2.5 bg-positive text-white capitalize ring-1 ring-inset ring-gray-200 !rounded-lg shadow"
       />
     </q-card-actions>
   </q-card>
