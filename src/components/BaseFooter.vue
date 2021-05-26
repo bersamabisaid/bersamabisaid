@@ -1,5 +1,5 @@
 <template>
-  <q-toolbar class="px-0 pt-8 column border-t-4 shadow-2xl">
+  <q-toolbar class="px-0 pt-8 bg-white border-t-4 shadow-2xl column">
     <div class="container py-10 px-4 column gap-y-8">
       <div class="flex flex-wrap md:pb-4">
         <div class="w-full md:w-3/12 px-4 flex items-center justify-center mb-8">

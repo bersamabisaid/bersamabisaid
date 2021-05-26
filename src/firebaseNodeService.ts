@@ -2,7 +2,7 @@ import * as fbAdmin from 'firebase-admin';
 import initializeNodeFirestore from 'shared/firebase/firestoreNode';
 import initializeNodeStorage from 'shared/firebase/storageNode';
 import { getNodeServiceInstance } from 'shared/firebase/serviceNode';
-import { base64 } from 'shared/utils/browser/node/encoding';
+import { base64 } from 'shared/utils/node/encoding';
 
 const credentialString = base64.decode(process.env.GCLOUD_CREDENTIALS as string);
 const credential = JSON.parse(credentialString) as fbAdmin.ServiceAccount;

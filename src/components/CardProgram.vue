@@ -128,11 +128,10 @@ export default defineComponent({
   computed: {
     toLocation(): RouteLocationRaw {
       // it means prior to 'to' property
-      return this.to || this.url;
-      // return this.to
-      //   || (this.url
-      //     ? { name: 'Program', params: { programURL: this.url } }
-      //     : { name: 'ProgramList', query: { notFound: 'true' } });
+      return this.to
+        || (this.url
+          ? { name: 'Program', params: { programUrl: this.url } }
+          : { name: 'ProgramList', query: { notFound: 'true' } });
     },
   },
 });
