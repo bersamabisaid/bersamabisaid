@@ -6,7 +6,7 @@
     <q-card
       tag="article"
       flat
-      class="mr-32 w-full max-w-3xl rounded-3xl !shadow-lg"
+      class="lg:mr-32 w-full max-w-3xl rounded-3xl !shadow-lg"
     >
       <q-img
         :src="imgUrl"
@@ -316,10 +316,10 @@ export default defineComponent({
       @apply text-blue-600
 
   .quick-action
-    @apply w-screen max-w-screen-sm m-2 bg-white border border-blue-gray-300 rounded-xl shadow-sm flex justify-end gap-x-1
+    @apply w-screen max-w-screen-sm m-2 flex justify-end gap-x-1
 
     @screen lg
-      @apply w-auto p-4 rounded-md flex-col items-end gap-y-4
+      @apply w-auto p-4 bg-white border border-blue-gray-300 rounded-md shadow-sm flex-col items-end gap-y-4
 
     @screen xl
       @apply px-8 py-10
