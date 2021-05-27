@@ -41,4 +41,17 @@ export namespace CollectionRef {
   export type DonatorModel<isNodeCtx = false> = base<Donator, isNodeCtx>;
 }
 
+export namespace Snapshot {
+  export type base<T, isNodeCtx = false> = isNodeCtx extends true
+    ? fbNode.firestore.DocumentSnapshot<Model<T, isNodeCtx>>
+    : fb.firestore.DocumentSnapshot<Model<T, isNodeCtx>>;
+  export type ProgramModel<isNodeCtx = false> = base<Program<isNodeCtx>, isNodeCtx>;
+  export type ProgramDonationModel<isNodeCtx = false> = base<ProgramDonation<isNodeCtx>, isNodeCtx>;
+  export type ProgramCommonModel<isNodeCtx = false> = base<ProgramCommon, isNodeCtx>;
+  export type TransactionModel<isNodeCtx = false> = base<Transaction<isNodeCtx>, isNodeCtx>;
+  export type TransactionClientModel<isNodeCtx = false> = base<TransactionClient, isNodeCtx>;
+  export type DonationModel<isNodeCtx = false> = base<Donation<isNodeCtx>, isNodeCtx>;
+  export type DonatorModel<isNodeCtx = false> = base<Donator, isNodeCtx>;
+}
+
 export default firestoreCollectionName;
