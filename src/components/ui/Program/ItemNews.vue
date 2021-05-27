@@ -20,6 +20,7 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
+  name: 'NewsItem',
   props: {
     title: {
       type: String,

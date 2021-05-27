@@ -52,6 +52,7 @@ import ItemNews from 'components/ui/Program/ItemNews.vue';
 import type { ProgramNews } from 'shared/types/schema';
 
 export default defineComponent({
+  name: 'NewsList',
   components: {
     ItemNews,
   },

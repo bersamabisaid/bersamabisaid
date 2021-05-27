@@ -46,6 +46,7 @@ import type { RouteLocationRaw } from 'vue-router';
 import type { DonationUI } from 'shared/types/schema';
 
 export default defineComponent({
+  name: 'DonationList',
   components: {
     ItemDonation,
   },
