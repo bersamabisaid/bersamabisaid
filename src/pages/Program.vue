@@ -251,13 +251,12 @@ export default defineComponent({
       return url.toString();
     },
     donateActionURL(): RouteLocationRaw {
-      return this.programURL;
-      // return {
-      //   name: 'Payment',
-      //   query: {
-      //     programId: this.programURL,
-      //   },
-      // };
+      return {
+        name: 'Payment',
+        query: {
+          programId: this.programURL,
+        },
+      };
     },
     dayRemaining(): number {
       if (isProgramDonation(this.data) && this.data.deadline) {

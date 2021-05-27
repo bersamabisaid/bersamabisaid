@@ -27,6 +27,11 @@ const routes: RouteRecordRaw[] = [
       },
     ],
   },
+  {
+    path: '/pay',
+    name: 'Payment',
+    component: () => import('pages/Pay.vue'),
+  },
 
   // Always leave this as last one,
   // but you can also remove it
