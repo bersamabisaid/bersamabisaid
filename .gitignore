@@ -44,4 +44,5 @@ firebase-service-account.json
 .firebase
 
 .env.development
+.env.production
 .env

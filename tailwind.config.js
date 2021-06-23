@@ -33,7 +33,7 @@ module.exports = {
         // emerald: colors.emerald,
         // teal: colors.teal,
         // cyan: colors.cyan,
-        'light-blue': colors.lightBlue,
+        'light-blue': colors.sky,
         // violet: colors.violet,
         // fuchsia: colors.fuchsia,
         // rose: colors.rose,
