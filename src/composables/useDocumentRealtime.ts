@@ -25,8 +25,15 @@ export default function useDocumentRealtime<T = unknown>(
           data.value = (docSnapshot.data() || initialValue) as typeof data['value'];
         },
         (err) => {
-        // eslint-disable-next-line no-console
-          console.log('%cuseCollectionRealtime error!', 'color: red;');
+          /* eslint-disable no-console */
+          if (process.env.NODE_ENV !== 'production') {
+            console.group('%cuseDocumentRealtime error!', 'color: red;');
+            console.error(err);
+            console.groupEnd();
+          } else {
+            console.log('%cuseDocumentRealtime error!', 'color: red;');
+          }
+          /* eslint-enable no-console */
           error.value = err;
         },
         () => {

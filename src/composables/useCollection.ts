@@ -32,8 +32,15 @@ export default function useCollection<T, U = T>(
         ? snapshot.docs.map(mapper)
         : snapshot.docs.map((doc) => doc.data())) as Tdata[];
     } catch (err) {
-      // eslint-disable-next-line no-console
-      console.log('%cuseCollection error!', 'color: red;');
+      /* eslint-disable no-console */
+      if (process.env.NODE_ENV !== 'production') {
+        console.group('%cuseCollection error!', 'color: red;');
+        console.error(err);
+        console.groupEnd();
+      } else {
+        console.log('%cuseCollection error!', 'color: red;');
+      }
+      /* eslint-enable no-console */
       error.value = err as fb.firestore.FirestoreError;
     }
 

@@ -30,8 +30,15 @@ export default function useCollectionRealtime<T, U>(
           : snapshots.docs.map((doc) => doc.data())) as Tdata[];
       },
       (err) => {
-        // eslint-disable-next-line no-console
-        console.log('%cuseCollectionRealtime error!', 'color: red;');
+        /* eslint-disable no-console */
+        if (process.env.NODE_ENV !== 'production') {
+          console.group('%cuseCollectionRealtime error!', 'color: red;');
+          console.error(err);
+          console.groupEnd();
+        } else {
+          console.log('%cuseCollectionRealtime error!', 'color: red;');
+        }
+        /* eslint-enable no-console */
         error.value = err;
       },
     );
