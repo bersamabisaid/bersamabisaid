@@ -184,7 +184,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@layer components {
+// @layer components {
   // quasar override
   .admin-layout {
     .q-expansion-item {
@@ -201,5 +201,5 @@ export default defineComponent({
       }
     }
   }
-}
+// }
 </style>

@@ -30,6 +30,16 @@ const routes: RouteConfig[] = [
         name: 'Profile',
         component: () => import('pages/Profile.vue'),
       },
+      // {
+      //   path: '/form',
+      //   name: 'FormEmbed',
+      //   component: () => import('pages/GoogleForm.vue'),
+      // },
+      {
+        path: '/OprecKadivSGI',
+        component: () => import('pages/GoogleForm.vue'),
+        props: { gformId: '1FAIpQLSfojnZ_z5k3CA_scPVKw8a1LnRPwtCs4_AvVPMgzMu-koaPnQ' },
+      },
     ],
   },
   {
