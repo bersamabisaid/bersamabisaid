@@ -7,17 +7,17 @@
 }
 
 // @layer components {
-  header {
-    .q-field {
-      &__label {
-        @apply px-2.5;
-      }
+header {
+  .q-field {
+    &__label {
+      @apply px-2.5;
+    }
 
-      &--standout.q-field--dark {
-        .q-field__control {
-          @apply bg-blue-gray-600 bg-opacity-80 ring-2 ring-light-blue-900;
-        }
+    &--standout.q-field--dark {
+      .q-field__control {
+        @apply bg-blue-gray-600 bg-opacity-80 ring-2 ring-light-blue-900;
       }
     }
   }
+}
 // }

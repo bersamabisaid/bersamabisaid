@@ -1,3 +1,4 @@
+import shortlinkRoutes from 'src/router/shortlinks';
 import { RouteConfig } from 'vue-router';
 
 const routes: RouteConfig[] = [
@@ -35,11 +36,7 @@ const routes: RouteConfig[] = [
       //   name: 'FormEmbed',
       //   component: () => import('pages/GoogleForm.vue'),
       // },
-      {
-        path: '/OprecKadivSGI',
-        component: () => import('pages/GoogleForm.vue'),
-        props: { gformId: '1FAIpQLSfojnZ_z5k3CA_scPVKw8a1LnRPwtCs4_AvVPMgzMu-koaPnQ' },
-      },
+      ...shortlinkRoutes,
     ],
   },
   {

@@ -10,7 +10,8 @@
     "ui",
     "vscode",
     "composables",
-    "functions"
+    "functions",
+    "shortlink"
   ],
   "tailwindCSS.experimental.classRegex": [
     "\\w*-class=\"([^\"]*)",
