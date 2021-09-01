@@ -1,5 +1,5 @@
 import type { MigrateOptions } from 'fireway';
-import firestoreCollectionName from '../shared/firestoreCollection';
+import firestoreCollectionName from '../shared/firebase/firestoreCollection';
 
 export const migrate = ({ firestore }: MigrateOptions) => firestore
   .runTransaction(async (fbt) => {

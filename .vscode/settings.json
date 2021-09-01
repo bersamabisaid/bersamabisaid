@@ -13,6 +13,7 @@
     "ui",
     "vscode",
     "composables",
-    "functions"
+    "functions",
+    "migration"
   ]
 }
