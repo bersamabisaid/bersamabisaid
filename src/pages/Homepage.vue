@@ -1,7 +1,7 @@
 <template>
   <q-layout view="lHh lpr lff">
     <q-page-container>
-      <q-page>
+      <q-page :class="[visible ? 'h-screen overflow-hidden' : '']">
         <header class="relative w-full h-screen flex content-center items-center justify-center">
           <img
             :src="require('assets/images/homepagePicture.png')"
@@ -40,7 +40,10 @@
           </div>
 
           <nav class="absolute top-0 right-0 w-full">
-            <base-navbar transparent />
+            <base-navbar
+              transparent
+              @toggleNavbar="isVisible($event)"
+            />
           </nav>
         </header>
 
@@ -207,7 +210,10 @@
       </q-page>
     </q-page-container>
 
-    <base-footer />
+    <base-footer
+      :class="[visible ? 'hidden' : '']"
+    />
+    <!-- <base-footer v-else /> -->
   </q-layout>
 </template>
 
@@ -291,6 +297,7 @@ export default defineComponent({
       allProgramData,
       programDonationData,
       isLoading,
+      visible: ref(false),
 
       extractTextFromHTML,
       scrollToElement,
@@ -306,6 +313,10 @@ export default defineComponent({
   methods: {
     reportUnloadedProgramList() {
       window.open('http://wa.me/6285156348055');
+    },
+    isVisible(update) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      this.visible = update;
     },
   },
   components: {

@@ -31,6 +31,11 @@ const routes: RouteConfig[] = [
         name: 'Profile',
         component: () => import('pages/Profile.vue'),
       },
+      {
+        path: '/blog',
+        name: 'Blog',
+        component: () => import('pages/Blog.vue'),
+      },
       // {
       //   path: '/form',
       //   name: 'FormEmbed',

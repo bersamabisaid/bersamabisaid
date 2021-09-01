@@ -17,7 +17,7 @@
         bordered
         content-class="flex flex-col"
       >
-        <div class="p-4 bg-red-500 border-b-4 border-negative flex items-center gap-x-4">
+        <div class="p-4 py-5 bg-blue-5 border-b-4 flex items-center gap-x-4">
           <q-img
             :src="require('assets/logo/Bbid-logo-only-white.png')"
             class="flex-shrink w-9"
@@ -28,7 +28,7 @@
           </span>
         </div>
 
-        <q-scroll-area class="flex-grow w-full bg-warning">
+        <q-scroll-area class="flex-grow w-full bg-grey-3">
           <q-list padding>
             <template
               v-for="{ label, icon, children, onClick = () => {}, ...item } in drawerItems"
@@ -39,29 +39,24 @@
                 :label="label"
                 :icon="icon"
                 default-opened
-                active-class="bg-yellow-500"
-                :content-inset-level=".25"
+                active-class="bg-blue-3"
+                :content-inset-level=".80"
                 v-bind="item"
               >
-                <q-list class="bg-yellow-500 bg-opacity-30">
+                <q-list class="bg-opacity-30 pl-8">
                   <q-item
                     v-for="{label: childLabel, icon: childIcon, onClick: childOnClick = () => {}, ...child} in children"
                     :key="childLabel"
                     v-ripple
                     clickable
-                    class="pl-4 py-3"
-                    active-class="bg-yellow-500"
+                    class="py-3"
+                    active-class="bg-blue-3"
                     v-bind="child"
                     @click="childOnClick"
                   >
                     <q-item-section
-                      avatar
-                      class="text-yellow-900 text-opacity-95"
+                      class="font-medium text-sm text-dark"
                     >
-                      <q-icon :name="childIcon" />
-                    </q-item-section>
-
-                    <q-item-section class="font-medium text-sm text-white">
                       {{ childLabel }}
                     </q-item-section>
                   </q-item>
@@ -74,18 +69,18 @@
                 v-ripple
                 clickable
                 class="py-5"
-                active-class="bg-yellow-500"
+                active-class="bg-blue-3"
                 v-bind="item"
                 @click="onClick"
               >
                 <q-item-section
                   avatar
-                  class="text-yellow-900 text-opacity-95"
+                  class="text-dark text-opacity-95"
                 >
                   <q-icon :name="icon" />
                 </q-item-section>
 
-                <q-item-section class="font-medium text-base text-white">
+                <q-item-section class="font-medium text-base text-dark">
                   {{ label }}
                 </q-item-section>
               </q-item>
@@ -192,11 +187,11 @@ export default defineComponent({
         @apply py-5;
 
         &__section--main {
-          @apply font-medium text-base text-white;
+          @apply font-medium text-base text-dark;
         }
         &__section--avatar,
         &__section--side {
-          @apply text-yellow-900 text-opacity-95;
+          @apply text-dark text-opacity-95;
         }
       }
     }

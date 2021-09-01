@@ -92,7 +92,6 @@
             </div>
           </div>
         </div>
-        <!-- </q-parallax> -->
       </section>
       <section class="relative pt-8 pb-10">
         <div class="container relative mx-auto px-4 flex flex-col">

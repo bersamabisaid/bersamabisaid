@@ -1,5 +1,7 @@
 <template>
-  <q-toolbar :class="['p-6 md:px-7 md:py-6 flex flex-col', transparent ? 'bg-transparent' : 'bg-white', visible && 'backdrop-filter backdrop-blur-xl fixed']">
+  <q-toolbar
+    :class="['p-6 md:px-7 md:py-6 flex flex-col', transparent ? 'bg-transparent' : 'bg-white', visible && 'backdrop-filter backdrop-blur-xl fixed']"
+  >
     <q-toolbar-title class="w-full relative flex justify-between gap-x-4">
       <router-link
         :to="{name: 'Home'}"
@@ -28,16 +30,6 @@
         />
 
         <q-fab
-          v-if="visible"
-          icon="close"
-          unelevated
-          round
-          class="inline-block md:hidden"
-          @click="toggleNavbar"
-        />
-
-        <q-fab
-          v-else
           icon="menu"
           unelevated
           round
@@ -103,7 +95,7 @@ const navItems: NavItem[] = [
     to: { name: 'Profile' },
   },
   {
-    title: 'KONTAK',
+    title: 'BLOG',
     to: { name: 'Home', hash: '#contact', replace: true },
   },
 ];
@@ -115,11 +107,14 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    visible: {
+      type: Boolean,
+      default: false,
+    },
   },
   setup() {
     return {
       navItems,
-      visible: false,
     };
   },
   computed: {
@@ -131,8 +126,9 @@ export default defineComponent({
   },
   methods: {
     toggleNavbar() {
-      this.visible = !this.visible;
+      this.$emit('toggleNavbar', this.visible = !this.visible);
     },
+
   },
 });
 </script>
